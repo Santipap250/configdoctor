@@ -19,7 +19,7 @@ Flask-WTF==1.2.1
 
 # Flask-Limiter v3.5.0: Rate limiting API abuse prevention
 Flask-Limiter==3.5.0
-limits[redis]>=3.6.0
+# limits[redis]>=3.6.0
 
 # ─── Performance ───────────────────────────────────────────────
 # Flask-Compress: gzip/brotli compression (~70% size reduction)
