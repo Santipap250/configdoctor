@@ -195,6 +195,9 @@ app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10MB global upload limit
 # ── SHA-256 hash cache (avoid recomputing on every /downloads request) ────
 _HASH_CACHE: dict = {}
 
+# ── App start timestamp — ใช้ทำ ETag ให้ lightweight (เปลี่ยนทุก redeploy) ──
+_APP_START_TIME: str = str(int(time.time()))
+
 # ── Enable gzip/brotli compression ───────────────────────────────────────
 if COMPRESS_AVAILABLE:
     Compress(app)
@@ -1132,14 +1135,21 @@ def set_security_headers(response):
         "  https://*.supabase.net; "
         "frame-ancestors 'self';"
     )
-    # PATCH BW-1: Static assets 1 year cache
+    # PATCH BW-1: Static assets 1 year cache (immutable fingerprinted files)
     if request.path.startswith('/static/'):
         response.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
-    # PATCH BW-2: HTML pages — 5 min cache + ETag (ลด bot re-fetch)
+    # FIX SEC-1: HTML pages — MUST be private because every page contains a
+    # per-user CSRF token via og_tags.html meta tag.
+    # Using 'public' or 's-maxage' would allow CDN/proxy to cache one user's
+    # CSRF token and serve it to another user → token leak.
+    # ETag is computed from request.path + template mtime (not response body)
+    # to avoid loading the full HTML into memory on every request.
     elif request.method == 'GET' and response.status_code == 200:
         if 'text/html' in response.content_type:
-            response.headers['Cache-Control'] = 'public, max-age=300, s-maxage=60'
-            etag_val = hashlib.md5(response.get_data()).hexdigest()[:16]
+            response.headers['Cache-Control'] = 'private, max-age=300'
+            # Lightweight ETag: hash of path + app start time (changes on redeploy)
+            etag_src = f"{request.path}:{_APP_START_TIME}"
+            etag_val = hashlib.md5(etag_src.encode()).hexdigest()[:16]
             response.headers['ETag'] = f'"{etag_val}"'
             if_none_match = request.headers.get('If-None-Match', '').strip('"')
             if if_none_match and if_none_match == etag_val:
