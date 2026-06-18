@@ -178,22 +178,23 @@ class TestCompareDumps:
 
     def test_identical_dumps_all_same(self, minimal_dump):
         result = compare_dumps(minimal_dump, minimal_dump)
-        assert result["changed"] == {}
-        assert result["only_in_a"] == {}
-        assert result["only_in_b"] == {}
+        assert result["changed"] == []
+        assert result["only_in_a"] == []
+        assert result["only_in_b"] == []
 
     def test_detects_changed_pid_value(self, minimal_dump):
         dump_b = minimal_dump.replace("set p_roll = 48", "set p_roll = 55")
         result = compare_dumps(minimal_dump, dump_b)
-        assert "p_roll" in result["changed"]
+        assert any(row[0] == "p_roll" for row in result["changed"])
 
     def test_changed_value_shows_before_after(self, minimal_dump):
         dump_b = minimal_dump.replace("set p_roll = 48", "set p_roll = 55")
         result = compare_dumps(minimal_dump, dump_b)
-        change = result["changed"].get("p_roll", {})
-        # ค่า before ควรเป็น 48, after ควรเป็น 55
-        assert change.get("a") == 48 or str(change.get("a")) == "48"
-        assert change.get("b") == 55 or str(change.get("b")) == "55"
+        change = next((row for row in result["changed"] if row[0] == "p_roll"), None)
+        assert change is not None
+        # row = (key, value_a, value_b, description) — before ควรเป็น 48, after ควรเป็น 55
+        assert str(change[1]) == "48"
+        assert str(change[2]) == "55"
 
     def test_detects_param_only_in_a(self, minimal_dump):
         dump_b = "set p_roll = 48\nsave\n"
@@ -204,7 +205,7 @@ class TestCompareDumps:
     def test_detects_param_only_in_b(self, minimal_dump):
         dump_b = minimal_dump + "set extra_param = 999\n"
         result = compare_dumps(minimal_dump, dump_b)
-        assert "extra_param" in result["only_in_b"]
+        assert any(row[0] == "extra_param" for row in result["only_in_b"])
 
     def test_summary_is_string(self, minimal_dump):
         result = compare_dumps(minimal_dump, minimal_dump)

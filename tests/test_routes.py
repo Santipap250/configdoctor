@@ -201,7 +201,7 @@ class TestAPIRoutes:
         response = self._post_json(client, "/compare_cli",
                                    {"dump_a": minimal_dump, "dump_b": dump_b})
         data = json.loads(response.data)
-        assert "p_roll" in data.get("changed", {})
+        assert any(row[0] == "p_roll" for row in data.get("changed", []))
 
     def test_compare_cli_missing_dump_b_returns_400(self, client, minimal_dump):
         response = self._post_json(client, "/compare_cli", {"dump_a": minimal_dump})
