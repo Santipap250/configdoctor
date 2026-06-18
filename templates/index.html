@@ -548,7 +548,7 @@ pre::-webkit-scrollbar-thumb{background:rgba(0,255,136,0.2);border-radius:2px}
     </details>
 
     <!-- ANALYZE BUTTON -->
-    <button type="submit" class="btn-analyze" id="btnAnalyze">
+    <button type="submit" class="btn-analyze" id="btnAnalyze" onclick="this.disabled=true;this.querySelector('.bta-main').textContent='ANALYZING...';this.querySelector('.bta-sub').textContent='กำลังคำนวณ Physics · PID · Filter'">
       <span class="bta-icon">🚀</span>
       <div>
         <div class="bta-main">ANALYZE DRONE</div>
@@ -650,10 +650,12 @@ pre::-webkit-scrollbar-thumb{background:rgba(0,255,136,0.2);border-radius:2px}
   {% endif %}
 
   <!-- Alerts -->
-  {% if analysis.warnings or analysis.rules %}
+  {% set _warns = analysis.warnings | default([]) %}
+  {% set _rules = analysis.rules | default([]) %}
+  {% if _warns or _rules %}
   <div style="margin-bottom:12px">
-    {% for w in analysis.warnings %}<div class="alert {{ w.level }}">{% if w.level=='danger' %}❌{% elif w.level=='warning' %}⚠️{% else %}ℹ️{% endif %} {{ w.msg }}</div>{% endfor %}
-    {% for r in analysis.rules %}{% if r.level in ['danger','warning'] %}<div class="alert {{ r.level }}">{% if r.level=='danger' %}❌{% else %}⚠️{% endif %} {{ r.msg }}{% if r.suggestion %} → {{ r.suggestion }}{% endif %}</div>{% endif %}{% endfor %}
+    {% for w in _warns %}<div class="alert {{ w.level }}">{% if w.level=='danger' %}❌{% elif w.level=='warning' %}⚠️{% else %}ℹ️{% endif %} {{ w.msg }}</div>{% endfor %}
+    {% for r in _rules %}{% if r.level in ['danger','warning'] %}<div class="alert {{ r.level }}">{% if r.level=='danger' %}❌{% else %}⚠️{% endif %} {{ r.msg }}{% if r.suggestion %} → {{ r.suggestion }}{% endif %}</div>{% endif %}{% endfor %}
   </div>
   {% endif %}
 
