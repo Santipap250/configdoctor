@@ -2,538 +2,635 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>OBIXConfig Doctor — FPV Drone Analyzer v6</title>
+<title>OBIXConfig Doctor — FPV Mission Computer</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-{% set og_title       = "FPV Drone Analyzer — OBIXConfig Doctor" %}
-{% set og_description = "วิเคราะห์โดรน FPV — TWR · PID · Filter · CLI ครบในที่เดียว" %}
+{% set og_title       = "FPV Mission Computer — OBIXConfig Doctor" %}
+{% set og_description = "วิเคราะห์โดรน FPV อัจฉริยะ — Build DNA · Propwash Predictor · Thermal Risk · PID · Filter · CLI" %}
 {% set og_url         = "https://configdoctor.onrender.com/app" %}
 {% include "partials/og_tags.html" %}
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#00060e; --bg2:#000d1a; --surf:#020b18; --surf2:#041428;
-  --border:rgba(0,255,136,0.1); --borderB:rgba(0,160,255,0.12);
-  --text:#cce0f5; --text2:#7aa0c0; --muted:#2a4560;
-  --green:#00ff88; --blue:#00aaff; --amber:#ffbb00;
-  --red:#ff3344; --purple:#b060ff; --cyan:#00d4ff;
-  --font-d:'Orbitron',sans-serif; --font-m:'JetBrains Mono',monospace;
-  --font-t:'Sarabun',sans-serif;
-  --nav-h:52px; --panel-w:340px; --r:8px;
+/* ═══════════════════════════════════════════
+   OBIX FPV MISSION COMPUTER — v7.0
+   Brand new design & feature set
+═══════════════════════════════════════════ */
+:root{
+  --bg:#00050d; --bg2:#000a18; --bg3:#010e1f;
+  --surf:#02111f; --surf2:#031826;
+  --g:#00ff88; --g2:#00cc6a; --g3:rgba(0,255,136,0.08);
+  --b:#00aaff; --b2:rgba(0,170,255,0.08);
+  --a:#ffbb00; --a2:rgba(255,187,0,0.08);
+  --r:#ff3344; --r2:rgba(255,51,68,0.08);
+  --p:#b060ff; --p2:rgba(176,96,255,0.08);
+  --c:#00d4ff;
+  --t:#cce0f5; --t2:#6a90b0; --t3:#2a4560;
+  --fd:'Orbitron',sans-serif;
+  --fm:'JetBrains Mono',monospace;
+  --ft:'Sarabun',sans-serif;
+  --nh:50px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--font-t);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body{font-family:var(--ft);background:var(--bg);color:var(--t);min-height:100vh;overflow-x:hidden}
 
-/* Background */
-.bg-photo{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:url("{{ url_for('static', filename='img/index-bg-desktop.jpg') }}");
-  background-size:cover;background-position:center top;background-attachment:fixed;opacity:0.2;
-  mask-image:linear-gradient(to bottom,black 0%,black 50%,transparent 100%);
-  -webkit-mask-image:linear-gradient(to bottom,black 0%,black 50%,transparent 100%)}
-@media(max-width:768px){.bg-photo{
-  background-image:url("{{ url_for('static', filename='img/index-bg-mobile.jpg') }}");
-  background-attachment:scroll;opacity:0.15}}
+/* BG */
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 70% 50% at 15% 15%,rgba(0,255,136,0.04) 0%,transparent 60%),
-    radial-gradient(ellipse 60% 40% at 85% 75%,rgba(0,170,255,0.035) 0%,transparent 55%),
-    linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%)}
+  background:
+    radial-gradient(ellipse 60% 45% at 10% 10%,rgba(0,255,136,0.05) 0%,transparent 55%),
+    radial-gradient(ellipse 55% 40% at 88% 80%,rgba(0,170,255,0.04) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 35% at 50% 50%,rgba(0,20,40,0.8) 0%,transparent 70%),
+    linear-gradient(170deg,#00050d 0%,#000c1a 100%)}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.025;
+  background-image:linear-gradient(rgba(0,255,136,0.6) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,136,0.6) 1px,transparent 1px);
+  background-size:40px 40px}
 
-/* Top bar */
-.topbar{position:sticky;top:0;z-index:200;height:var(--nav-h);
-  display:flex;align-items:center;padding:0 clamp(10px,3vw,20px);gap:10px;
-  background:rgba(0,4,12,0.96);backdrop-filter:blur(22px);
-  border-bottom:1px solid rgba(0,255,136,0.09)}
+/* TOP BAR */
+.topbar{position:sticky;top:0;z-index:300;height:var(--nh);
+  display:flex;align-items:center;padding:0 16px;gap:8px;
+  background:rgba(0,3,10,0.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(0,255,136,0.07)}
 .topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--green) 30%,var(--cyan) 55%,var(--green) 80%,transparent);
-  background-size:200% 100%;animation:sweep 7s linear infinite}
-@keyframes sweep{0%{background-position:100%}100%{background-position:-100%}}
-.tb-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
-.tb-logo img{height:26px;filter:drop-shadow(0 0 6px rgba(0,255,136,0.3))}
-.tb-divider{width:1px;height:18px;background:rgba(0,255,136,0.12);flex-shrink:0}
-.tb-nav{display:flex;align-items:center;gap:2px;overflow:hidden}
-.tb-link{font-family:var(--font-d);font-size:7px;letter-spacing:.12em;
-  color:var(--text2);padding:5px 10px;border-radius:6px;text-decoration:none;
-  border:1px solid transparent;transition:all .15s;white-space:nowrap}
-.tb-link:hover{color:var(--text);background:rgba(0,255,136,0.04);border-color:var(--border)}
-.tb-link.active{color:var(--green);background:rgba(0,255,136,0.07);border-color:rgba(0,255,136,0.2)}
-.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
-.tb-ver{font-family:var(--font-d);font-size:7px;letter-spacing:.18em;color:var(--green);
-  padding:4px 11px;border-radius:5px;border:1px solid rgba(0,255,136,0.25);background:rgba(0,255,136,0.06)}
-.tb-theme{background:none;border:1px solid rgba(0,255,136,0.12);border-radius:6px;
-  color:var(--text);padding:5px 7px;cursor:pointer;font-size:13px;transition:.2s}
-.tb-theme:hover{border-color:rgba(0,255,136,0.35);background:rgba(0,255,136,0.05)}
+  background:linear-gradient(90deg,transparent 0%,var(--g) 25%,var(--c) 50%,var(--g) 75%,transparent 100%);
+  background-size:300% 100%;animation:scan 8s linear infinite;opacity:.5}
+@keyframes scan{0%{background-position:200%}100%{background-position:-100%}}
+.tb-logo{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0}
+.tb-logo img{height:24px;filter:drop-shadow(0 0 8px rgba(0,255,136,0.4))}
+.tb-sep{width:1px;height:16px;background:rgba(0,255,136,0.1);flex-shrink:0}
+.tb-nav{display:flex;gap:1px;overflow:hidden}
+.tb-a{font-family:var(--fd);font-size:6.5px;letter-spacing:.12em;color:var(--t2);
+  padding:4px 9px;border-radius:5px;text-decoration:none;transition:.15s;
+  border:1px solid transparent;white-space:nowrap}
+.tb-a:hover{color:var(--t);border-color:rgba(0,255,136,0.12)}
+.tb-a.on{color:var(--g);background:rgba(0,255,136,0.06);border-color:rgba(0,255,136,0.18)}
+.tb-r{margin-left:auto;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.tb-ver{font-family:var(--fd);font-size:6.5px;letter-spacing:.2em;color:var(--g);
+  padding:3px 10px;border-radius:4px;border:1px solid rgba(0,255,136,0.2);background:rgba(0,255,136,0.05)}
 
-/* App shell */
-.app-shell{position:relative;z-index:1;display:grid;
-  grid-template-columns:var(--panel-w) 1fr;min-height:calc(100vh - var(--nav-h))}
+/* 3-COLUMN SHELL */
+.shell{position:relative;z-index:1;display:grid;
+  grid-template-columns:300px 280px 1fr;
+  min-height:calc(100vh - var(--nh));
+  align-items:start}
 
-/* ══ LEFT PANEL ══ */
-.form-panel{position:sticky;top:var(--nav-h);align-self:start;
-  height:calc(100vh - var(--nav-h));overflow-y:auto;overflow-x:hidden;
-  background:rgba(0,6,16,0.94);backdrop-filter:blur(12px);
-  border-right:1px solid rgba(0,255,136,0.07);padding-bottom:90px}
-.form-panel::-webkit-scrollbar{width:3px}
-.form-panel::-webkit-scrollbar-thumb{background:rgba(0,255,136,0.15);border-radius:3px}
+/* ════ COL 1: INPUT ════ */
+.col-input{position:sticky;top:var(--nh);height:calc(100vh - var(--nh));
+  overflow-y:auto;overflow-x:hidden;
+  background:rgba(0,5,14,0.95);border-right:1px solid rgba(0,255,136,0.06)}
+.col-input::-webkit-scrollbar{width:2px}
+.col-input::-webkit-scrollbar-thumb{background:rgba(0,255,136,0.12);border-radius:2px}
 
-/* Config wizard header */
-.cw-header{display:flex;align-items:center;gap:10px;padding:14px 16px 12px;
-  border-bottom:1px solid rgba(0,255,136,0.07);
-  background:linear-gradient(180deg,rgba(0,255,136,0.04),transparent)}
-.cw-icon{font-size:18px}
-.cw-title{font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--green)}
-.cw-sub{font-size:10px;color:var(--text2);margin-top:1px}
-.cw-badge{margin-left:auto;font-family:var(--font-d);font-size:7px;letter-spacing:.1em;
-  color:var(--green);padding:3px 8px;border-radius:4px;
-  background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);
-  display:flex;align-items:center;gap:4px}
-.dot-pulse{width:5px;height:5px;border-radius:50%;background:var(--green);animation:dp 2s ease-in-out infinite}
-@keyframes dp{0%,100%{opacity:1}50%{opacity:0.3}}
+/* input header */
+.ih{padding:12px 14px 10px;border-bottom:1px solid rgba(0,255,136,0.06);
+  background:linear-gradient(180deg,rgba(0,255,136,0.03),transparent)}
+.ih-title{font-family:var(--fd);font-size:9px;font-weight:700;letter-spacing:.14em;color:var(--g)}
+.ih-sub{font-size:9px;color:var(--t2);margin-top:2px}
+.ready-dot{display:inline-flex;align-items:center;gap:4px;font-family:var(--fd);font-size:6.5px;
+  letter-spacing:.1em;color:var(--g);float:right;margin-top:2px}
+.rd{width:5px;height:5px;border-radius:50%;background:var(--g);animation:pd 2s ease-in-out infinite}
+@keyframes pd{0%,100%{opacity:1;box-shadow:0 0 4px var(--g)}50%{opacity:.3;box-shadow:none}}
 
-/* Steps */
-.cw-step{padding:14px 16px 0}
-.step-label{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.step-num{font-family:var(--font-d);font-size:8px;font-weight:700;letter-spacing:.1em;
-  color:var(--bg);background:var(--green);padding:2px 7px;border-radius:4px}
-.step-name{font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.14em;color:var(--text)}
-.cw-sep{height:1px;background:rgba(255,255,255,0.04);margin:14px 0 0}
+/* step blocks */
+.blk{padding:12px 14px 0}
+.blk+.blk{border-top:1px solid rgba(255,255,255,0.04);margin-top:0}
+.blk-hd{display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.blk-n{font-family:var(--fd);font-size:7.5px;font-weight:700;letter-spacing:.1em;
+  background:var(--g);color:#000;padding:2px 6px;border-radius:3px}
+.blk-t{font-family:var(--fd);font-size:8.5px;font-weight:700;letter-spacing:.12em;color:var(--t)}
+.blk-hint{font-size:8px;color:var(--t3);margin-left:auto}
 
-/* Frame size chips */
-.size-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:10px}
-.sz{display:flex;flex-direction:column;align-items:center;gap:2px;
-  padding:8px 4px;border-radius:7px;cursor:pointer;transition:all .15s;
-  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);user-select:none}
-.sz:hover{border-color:rgba(0,255,136,0.2);background:rgba(0,255,136,0.04)}
-.sz.active{border-color:var(--green);background:rgba(0,255,136,0.1);box-shadow:0 0 12px rgba(0,255,136,0.1)}
-.sz-main{font-family:var(--font-d);font-size:12px;font-weight:700;color:var(--text)}
-.sz.active .sz-main{color:var(--green)}
-.sz-sub{font-size:9px;color:var(--text2)}
-.sz.active .sz-sub{color:var(--green)}
+/* Frame chips */
+.szg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:9px}
+.sz{display:flex;flex-direction:column;align-items:center;gap:1.5px;
+  padding:7px 2px;border-radius:6px;cursor:pointer;transition:all .13s;
+  background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);user-select:none}
+.sz:hover{border-color:rgba(0,255,136,0.18);background:rgba(0,255,136,0.03)}
+.sz.on{border-color:var(--g);background:rgba(0,255,136,0.08)}
+.sz-v{font-family:var(--fd);font-size:11px;font-weight:700;color:var(--t)}
+.sz.on .sz-v{color:var(--g)}
+.sz-s{font-size:8px;color:var(--t2)}
 
-/* Prop + weight row */
-.prop-row{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:7px;
+/* Prop/weight row */
+.pr{display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:6px;
   background:rgba(0,170,255,0.04);border:1px solid rgba(0,170,255,0.08);margin-bottom:4px}
-.prop-lbl{font-size:9px;color:var(--text2);flex-shrink:0}
-.prop-val{font-family:var(--font-m);font-size:11px;color:var(--blue)}
-.prop-sep{flex:1}
-.wt-input{width:70px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
-  border-radius:5px;padding:4px 7px;color:var(--text);font-family:var(--font-m);
-  font-size:12px;text-align:right;transition:border-color .15s}
-.wt-input:focus{outline:none;border-color:rgba(0,170,255,0.4)}
-.wt-unit{font-size:10px;color:var(--text2)}
+.pr-l{font-size:8.5px;color:var(--t2);flex-shrink:0}
+.pr-v{font-family:var(--fm);font-size:10.5px;color:var(--b)}
+.pr-sp{flex:1}
+.ninput{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);
+  border-radius:5px;padding:4px 6px;color:var(--t);font-family:var(--fm);
+  font-size:12px;transition:border .15s}
+.ninput:focus{outline:none;border-color:rgba(0,170,255,0.35)}
+.ninput.w70{width:70px;text-align:right}
+.ninput.w55{width:55px;text-align:right}
+.pr-u{font-size:9px;color:var(--t2)}
+
+/* BF Version selector (NEW) */
+.bfv-row{display:flex;gap:4px;margin-bottom:9px}
+.bfv{flex:1;padding:6px 2px;border-radius:6px;cursor:pointer;transition:.13s;
+  border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);
+  text-align:center;font-family:var(--fd);font-size:7.5px;letter-spacing:.08em;color:var(--t2)}
+.bfv:hover{border-color:rgba(0,170,255,0.2)}
+.bfv.on{border-color:var(--b);background:rgba(0,170,255,0.08);color:var(--b)}
+.bfv-sub{font-size:7px;color:var(--t3);display:block;margin-top:1px;font-family:var(--ft);letter-spacing:0}
 
 /* Battery pills */
-.batt-row{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:10px}
+.bg6{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px}
 .bp{display:flex;flex-direction:column;align-items:center;gap:1px;
-  padding:8px 4px;border-radius:7px;cursor:pointer;transition:all .15s;
-  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)}
-.bp:hover{opacity:.85}
-.bp-s{font-family:var(--font-d);font-size:13px;font-weight:900}
-.bp-v{font-size:9px;opacity:.7}
-.bp.bp-3s .bp-s{color:#44ff88}.bp.bp-4s .bp-s{color:#00aaff}.bp.bp-5s .bp-s{color:#ffbb00}
-.bp.bp-6s .bp-s{color:#ff8800}.bp.bp-7s .bp-s{color:#ff5500}.bp.bp-8s .bp-s{color:#ff3344}
-.bp.bp-3s.active{border-color:#44ff88;background:rgba(68,255,136,0.09)}
-.bp.bp-4s.active{border-color:#00aaff;background:rgba(0,170,255,0.09)}
-.bp.bp-5s.active{border-color:#ffbb00;background:rgba(255,187,0,0.09)}
-.bp.bp-6s.active{border-color:#ff8800;background:rgba(255,136,0,0.09)}
-.bp.bp-7s.active{border-color:#ff5500;background:rgba(255,85,0,0.09)}
-.bp.bp-8s.active{border-color:#ff3344;background:rgba(255,51,68,0.09)}
-
-/* mAh row */
-.mah-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;
+  padding:7px 2px;border-radius:6px;cursor:pointer;transition:.13s;
   background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05)}
-.mah-lbl{font-family:var(--font-d);font-size:8px;letter-spacing:.1em;color:var(--text2);flex-shrink:0}
-.mah-input{flex:1;background:none;border:none;color:var(--text);
-  font-family:var(--font-m);font-size:13px;font-weight:600;padding:2px 0;min-width:0}
-.mah-input:focus{outline:none}
-.mah-hint{font-family:var(--font-m);font-size:10px;color:var(--green);flex-shrink:0;min-width:60px;text-align:right}
+.bp-s{font-family:var(--fd);font-size:12px;font-weight:900}
+.bp-v{font-size:8.5px;opacity:.65}
+.bp.bp3s .bp-s{color:#44ff88}.bp.bp4s .bp-s{color:#00aaff}.bp.bp5s .bp-s{color:#ffbb00}
+.bp.bp6s .bp-s{color:#ff8800}.bp.bp7s .bp-s{color:#ff5500}.bp.bp8s .bp-s{color:#ff3344}
+.bp.bp3s.on{border-color:#44ff88;background:rgba(68,255,136,0.08)}
+.bp.bp4s.on{border-color:#00aaff;background:rgba(0,170,255,0.08)}
+.bp.bp5s.on{border-color:#ffbb00;background:rgba(255,187,0,0.08)}
+.bp.bp6s.on{border-color:#ff8800;background:rgba(255,136,0,0.08)}
+.bp.bp7s.on{border-color:#ff5500;background:rgba(255,85,0,0.08)}
+.bp.bp8s.on{border-color:#ff3344;background:rgba(255,51,68,0.08)}
 
-/* Flight style */
-.style-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:4px}
-.sc{display:flex;flex-direction:column;align-items:center;gap:4px;
-  padding:10px 4px;border-radius:8px;cursor:pointer;transition:all .15s;
-  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);text-align:center}
-.sc:hover{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1)}
-.sc.active.s-free{border-color:var(--green);background:rgba(0,255,136,0.08)}
-.sc.active.s-race{border-color:var(--amber);background:rgba(255,187,0,0.08)}
-.sc.active.s-lr{border-color:var(--purple);background:rgba(176,96,255,0.08)}
-.sc-ico{font-size:20px}
-.sc-name{font-family:var(--font-d);font-size:7.5px;font-weight:700;letter-spacing:.1em;color:var(--text)}
-.sc.active.s-free .sc-name{color:var(--green)}
-.sc.active.s-race .sc-name{color:var(--amber)}
-.sc.active.s-lr .sc-name{color:var(--purple)}
-.sc-sub{font-size:9px;color:var(--text2);line-height:1.3}
+/* mAh */
+.mahr{display:flex;align-items:center;gap:7px;padding:5px 9px;border-radius:6px;
+  background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05)}
+.mahl{font-family:var(--fd);font-size:7.5px;letter-spacing:.1em;color:var(--t2);flex-shrink:0}
+.mahi{flex:1;background:none;border:none;color:var(--t);font-family:var(--fm);
+  font-size:13px;font-weight:600;padding:2px 0;min-width:0}
+.mahi:focus{outline:none}
+.mahh{font-family:var(--fm);font-size:9.5px;color:var(--g);flex-shrink:0;min-width:58px;text-align:right}
+
+/* Style cards */
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:4px}
+.sc{display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:9px 3px;border-radius:7px;cursor:pointer;transition:.13s;
+  background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);text-align:center}
+.sc-i{font-size:18px}
+.sc-n{font-family:var(--fd);font-size:7px;font-weight:700;letter-spacing:.1em;color:var(--t)}
+.sc-s{font-size:8.5px;color:var(--t2);line-height:1.3}
+.sc.free.on{border-color:var(--g);background:rgba(0,255,136,0.07)}
+.sc.race.on{border-color:var(--a);background:rgba(255,187,0,0.07)}
+.sc.lr.on{border-color:var(--p);background:rgba(176,96,255,0.07)}
+.sc.free.on .sc-n{color:var(--g)}.sc.race.on .sc-n{color:var(--a)}.sc.lr.on .sc-n{color:var(--p)}
 
 /* Advanced */
-.cw-adv{margin:14px 16px 0;border:1px solid rgba(255,255,255,0.05);border-radius:8px;overflow:hidden}
-.cw-adv summary{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;
-  font-family:var(--font-d);font-size:8px;letter-spacing:.1em;color:var(--text2);
-  list-style:none;transition:.15s}
-.cw-adv summary:hover{color:var(--text)}
-.cw-adv summary::-webkit-details-marker{display:none}
-.adv-hint{margin-left:auto;font-size:8px;color:var(--muted);font-family:var(--font-t);letter-spacing:0}
-.adv-body{padding:10px 12px;border-top:1px solid rgba(255,255,255,0.05);display:grid;gap:8px}
-.adv-field label{display:block;font-size:9px;color:var(--text2);margin-bottom:4px}
-.adv-input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);
-  border-radius:6px;padding:6px 10px;color:var(--text);font-family:var(--font-m);
-  font-size:12px;transition:border-color .15s}
-.adv-input:focus{outline:none;border-color:rgba(0,255,136,0.3)}
-.adv-note{font-size:9px;color:var(--muted);margin-top:3px;display:block}
-.adv-g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.adv-select{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);
-  border-radius:6px;padding:6px 10px;color:var(--text);font-family:var(--font-t);font-size:11px;cursor:pointer}
-.adv-select option{background:var(--bg2)}
+.adv{margin:10px 14px 0;border:1px solid rgba(255,255,255,0.04);border-radius:7px;overflow:hidden}
+.adv summary{display:flex;align-items:center;gap:7px;padding:8px 11px;cursor:pointer;
+  font-family:var(--fd);font-size:7.5px;letter-spacing:.1em;color:var(--t2);
+  list-style:none;transition:.13s}
+.adv summary:hover{color:var(--t)}
+.adv summary::-webkit-details-marker{display:none}
+.adv-h{margin-left:auto;font-size:8px;color:var(--t3);font-family:var(--ft);letter-spacing:0}
+.adv-b{padding:9px 11px;border-top:1px solid rgba(255,255,255,0.04);display:grid;gap:7px}
+.adv-l{font-size:8.5px;color:var(--t2);margin-bottom:3px;display:block}
+.ainput{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
+  border-radius:5px;padding:5px 9px;color:var(--t);font-family:var(--fm);font-size:11.5px;transition:.15s}
+.ainput:focus{outline:none;border-color:rgba(0,255,136,0.28)}
+.anote{font-size:8px;color:var(--t3);margin-top:2px;display:block}
+.ag2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.asel{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
+  border-radius:5px;padding:5px 9px;color:var(--t);font-family:var(--ft);font-size:10.5px;cursor:pointer}
+.asel option{background:var(--bg2)}
 
 /* Analyze button */
-.btn-analyze{display:flex;align-items:center;gap:12px;width:calc(100% - 32px);margin:16px;
-  padding:14px 20px;background:linear-gradient(135deg,rgba(0,255,136,0.12) 0%,rgba(0,212,255,0.08) 100%);
-  border:1.5px solid rgba(0,255,136,0.35);border-radius:10px;cursor:pointer;transition:all .2s;
-  position:relative;overflow:hidden;color:var(--text);font-family:var(--font-d);text-align:left}
-.btn-analyze::before{content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,rgba(0,255,136,0.1),transparent);
-  transform:translateX(-100%);transition:transform .5s}
-.btn-analyze:hover{border-color:var(--green);box-shadow:0 0 24px rgba(0,255,136,0.18);transform:translateY(-1px)}
-.btn-analyze:hover::before{transform:translateX(100%)}
-.btn-analyze:active{transform:translateY(0)}
-.bta-icon{font-size:22px;flex-shrink:0}
-.bta-main{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--green)}
-.bta-sub{font-size:8px;color:var(--text2);letter-spacing:.05em;margin-top:2px}
-.bta-badge{margin-left:auto;font-size:7px;letter-spacing:.12em;color:var(--green);
-  background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.2);
-  padding:3px 8px;border-radius:4px;flex-shrink:0;display:flex;align-items:center;gap:4px}
+.bta{display:flex;align-items:center;gap:10px;width:calc(100% - 28px);margin:12px 14px;
+  padding:13px 16px;border:1.5px solid rgba(0,255,136,0.3);border-radius:9px;
+  cursor:pointer;transition:all .2s;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(0,255,136,0.1),rgba(0,212,255,0.07));
+  color:var(--t);font-family:var(--fd);text-align:left}
+.bta::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(0,255,136,0.08),transparent);
+  transform:translateX(-100%);transition:.5s}
+.bta:hover{border-color:var(--g);box-shadow:0 0 20px rgba(0,255,136,0.15);transform:translateY(-1px)}
+.bta:hover::before{transform:translateX(100%)}
+.bta:active{transform:translateY(0)}
+.bta-ic{font-size:20px;flex-shrink:0}
+.bta-m{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--g)}
+.bta-s{font-size:7.5px;color:var(--t2);margin-top:1px}
+.bta-b{margin-left:auto;font-size:6.5px;letter-spacing:.12em;color:var(--g);
+  background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.18);
+  padding:3px 7px;border-radius:3px;flex-shrink:0;display:flex;align-items:center;gap:3px}
 
-/* ══ RIGHT STAGE ══ */
-.stage{padding:16px;min-height:calc(100vh - var(--nav-h))}
+/* ════ COL 2: LIVE RADAR ════ */
+.col-radar{position:sticky;top:var(--nh);height:calc(100vh - var(--nh));
+  overflow-y:auto;overflow-x:hidden;
+  background:rgba(0,6,16,0.9);border-right:1px solid rgba(0,170,255,0.07);
+  padding:14px}
+.col-radar::-webkit-scrollbar{width:2px}
+.col-radar::-webkit-scrollbar-thumb{background:rgba(0,170,255,0.12);border-radius:2px}
 
-/* Live HUD */
-.live-hud{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
-.hud-cell{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px 12px}
-.hud-val{font-family:var(--font-d);font-size:18px;font-weight:700;line-height:1;margin-bottom:3px;transition:color .3s}
-.hud-val.green{color:var(--green)}.hud-val.amber{color:var(--amber)}.hud-val.blue{color:var(--blue)}.hud-val.red{color:var(--red)}
-.hud-lbl{font-size:8px;color:var(--text2);letter-spacing:.06em;margin-bottom:5px}
-.hud-bar{height:2px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
-.hud-fill{height:100%;border-radius:2px;transition:width .4s ease,background .4s}
+/* Radar header */
+.rh{margin-bottom:10px}
+.rh-title{font-family:var(--fd);font-size:8px;font-weight:700;letter-spacing:.14em;color:var(--b)}
+.rh-sub{font-size:9px;color:var(--t2);margin-top:2px}
 
-/* Cards */
-.card{background:rgba(0,8,20,0.8);border:1px solid rgba(255,255,255,0.06);border-radius:10px;overflow:hidden;margin-bottom:12px}
-.card-head{display:flex;align-items:center;gap:10px;padding:10px 14px;
-  border-bottom:1px solid rgba(255,255,255,0.05);
-  background:linear-gradient(90deg,rgba(255,255,255,0.03),transparent);
-  font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--text2)}
-.card-ico{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.card-body{padding:12px 14px}
+/* DNA Radar chart */
+.radar-wrap{position:relative;width:100%;aspect-ratio:1;max-width:240px;margin:0 auto 12px}
+#dnaRadar{width:100%;height:100%}
 
-/* Result tabs */
-.res-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:14px;overflow-x:auto}
-.res-tabs::-webkit-scrollbar{display:none}
-.rtab{font-family:var(--font-d);font-size:8px;letter-spacing:.12em;color:var(--text2);
-  padding:8px 16px 9px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;
-  transition:.15s;background:none;border-top:none;border-left:none;border-right:none}
-.rtab:hover{color:var(--text)}
-.rtab.active{color:var(--green);border-bottom-color:var(--green)}
-.res-pane{display:none}
-.res-pane.active{display:block}
+/* Confidence meter */
+.conf-meter{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);
+  border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.conf-label{font-family:var(--fd);font-size:7.5px;letter-spacing:.1em;color:var(--t2);margin-bottom:6px}
+.conf-bar{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin-bottom:4px}
+.conf-fill{height:100%;border-radius:3px;transition:width .4s ease,background .4s}
+.conf-vals{display:flex;justify-content:space-between;font-family:var(--fd);font-size:8.5px}
+.conf-pct{font-weight:700}
+.conf-txt{color:var(--t2)}
 
-/* Score header */
-.score-header{display:flex;align-items:center;gap:14px;padding:12px 14px;
-  background:rgba(0,8,20,0.8);border:1px solid rgba(255,255,255,0.06);border-radius:10px;margin-bottom:12px}
-.score-ring{position:relative;flex-shrink:0;width:74px;height:74px}
-.score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.score-num{font-family:var(--font-d);font-size:20px;font-weight:900;line-height:1}
-.score-grade{font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.06em}
-.score-pers-name{font-family:var(--font-d);font-size:12px;font-weight:900;letter-spacing:.06em}
-.score-pers-sub{font-size:11px;color:var(--text2);margin-top:2px}
-.score-vitals{margin-left:auto;display:flex;gap:12px;flex-shrink:0}
-.sv{text-align:center}
-.sv-val{font-family:var(--font-d);font-size:18px;font-weight:700;line-height:1}
-.sv-lbl{font-size:8px;color:var(--text2);letter-spacing:.06em}
+/* Live mini metrics */
+.mini-metrics{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.mm{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);
+  border-radius:7px;padding:8px 10px;cursor:pointer;transition:.13s}
+.mm:hover{border-color:rgba(255,255,255,0.1)}
+.mm-val{font-family:var(--fd);font-size:16px;font-weight:700;line-height:1;margin-bottom:2px;transition:color .3s}
+.mm-lbl{font-size:7.5px;color:var(--t2);letter-spacing:.05em}
+.mm-bar{height:2px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;margin-top:5px}
+.mm-fill{height:100%;border-radius:2px;transition:width .4s,background .4s}
+
+/* Propwash Risk Index */
+.pri-box{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);
+  border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.pri-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.pri-title{font-family:var(--fd);font-size:7.5px;letter-spacing:.1em;color:var(--t2)}
+.pri-badge{font-family:var(--fd);font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px}
+.pri-bar{height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;margin-bottom:5px;
+  background:linear-gradient(90deg,rgba(0,255,136,0.15),rgba(255,187,0,0.15),rgba(255,51,68,0.15))}
+.pri-needle{height:100%;width:3px;background:white;border-radius:2px;transition:margin-left .4s ease;margin-left:0;
+  box-shadow:0 0 6px rgba(255,255,255,0.6)}
+.pri-hint{font-size:9px;color:var(--t2);line-height:1.5}
+
+/* Throttle Thermal */
+.therm-box{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);
+  border-radius:8px;padding:10px 12px}
+.therm-title{font-family:var(--fd);font-size:7.5px;letter-spacing:.1em;color:var(--t2);margin-bottom:8px}
+.therm-bands{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.tb2{border-radius:7px;padding:8px 6px;text-align:center;border:1px solid transparent}
+.tb2-lbl{font-size:7.5px;color:var(--t2);margin-bottom:4px;letter-spacing:.06em}
+.tb2-val{font-family:var(--fd);font-size:13px;font-weight:700;line-height:1;margin-bottom:3px}
+.tb2-risk{font-size:8px}
+.tb2.cool{background:rgba(0,255,136,0.05);border-color:rgba(0,255,136,0.12)}
+.tb2.cool .tb2-val{color:var(--g)}
+.tb2.warm{background:rgba(255,187,0,0.05);border-color:rgba(255,187,0,0.12)}
+.tb2.warm .tb2-val{color:var(--a)}
+.tb2.hot{background:rgba(255,51,68,0.06);border-color:rgba(255,51,68,0.15)}
+.tb2.hot .tb2-val{color:var(--r)}
+
+/* ════ COL 3: RESULTS ════ */
+.col-res{padding:14px;min-height:calc(100vh - var(--nh))}
+
+/* Empty */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:calc(100vh - var(--nh) - 28px);text-align:center;padding:30px 20px}
+.empty-ic{font-size:50px;margin-bottom:12px;opacity:.65}
+.empty-t{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--g);margin-bottom:6px}
+.empty-s{font-size:11.5px;color:var(--t2);max-width:300px;line-height:1.7;margin-bottom:16px}
+.howto{background:rgba(0,170,255,0.05);border:1px solid rgba(0,170,255,0.1);border-radius:9px;
+  padding:12px 16px;max-width:300px;text-align:left;font-size:11px;color:var(--t2);line-height:2}
+.howto strong{font-family:var(--fd);font-size:7.5px;letter-spacing:.12em;color:var(--b);display:block;margin-bottom:6px}
+
+/* Results */
+.rtabs{display:flex;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:12px;overflow-x:auto;gap:0}
+.rtabs::-webkit-scrollbar{display:none}
+.rt{font-family:var(--fd);font-size:7.5px;letter-spacing:.1em;color:var(--t2);
+  padding:8px 14px 9px;cursor:pointer;border-bottom:2px solid transparent;
+  white-space:nowrap;transition:.13s;background:none;border-top:none;border-left:none;border-right:none}
+.rt:hover{color:var(--t)}.rt.on{color:var(--g);border-bottom-color:var(--g)}
+.rp{display:none}.rp.on{display:block}
+
+/* Score bar */
+.score-bar{display:flex;align-items:stretch;gap:12px;padding:12px 14px;
+  background:rgba(0,8,20,0.8);border:1px solid rgba(255,255,255,0.06);
+  border-radius:10px;margin-bottom:12px;overflow:hidden;position:relative}
+.score-bar::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--g);
+  box-shadow:0 0 10px var(--g)}
+.sb-ring{flex-shrink:0;position:relative;width:64px;height:64px}
+.sb-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.sb-num{font-family:var(--fd);font-size:18px;font-weight:900;line-height:1}
+.sb-grade{font-family:var(--fd);font-size:9px;font-weight:700}
+.sb-main{flex:1}
+.sb-pers{font-family:var(--fd);font-size:12px;font-weight:900;letter-spacing:.05em}
+.sb-desc{font-size:10.5px;color:var(--t2);margin-top:2px}
+.sb-meta{font-size:8.5px;color:var(--t3);margin-top:4px}
+.sb-fp{font-family:var(--fm);font-size:9px;color:var(--c);margin-top:5px;
+  background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.15);
+  padding:3px 8px;border-radius:4px;display:inline-block;letter-spacing:.08em}
+.sb-vitals{display:flex;flex-direction:column;gap:6px;justify-content:center;flex-shrink:0}
+.sv{text-align:right}
+.sv-v{font-family:var(--fd);font-size:16px;font-weight:700;line-height:1}
+.sv-l{font-size:7.5px;color:var(--t2);letter-spacing:.05em}
 
 /* Alerts */
-.alert{display:flex;align-items:flex-start;gap:8px;padding:8px 12px;border-radius:7px;margin-bottom:6px;font-size:11px;line-height:1.5}
-.alert.danger{background:rgba(255,51,68,0.09);border:1px solid rgba(255,51,68,0.2);color:#ff8888}
-.alert.warning{background:rgba(255,187,0,0.08);border:1px solid rgba(255,187,0,0.2);color:#ffcc44}
-.alert.info{background:rgba(0,170,255,0.07);border:1px solid rgba(0,170,255,0.18);color:#66ccff}
+.alert{display:flex;gap:8px;padding:7px 11px;border-radius:6px;margin-bottom:5px;font-size:10.5px;line-height:1.5}
+.alert.danger{background:rgba(255,51,68,0.08);border:1px solid rgba(255,51,68,0.2);color:#ff8888}
+.alert.warning{background:rgba(255,187,0,0.07);border:1px solid rgba(255,187,0,0.18);color:#ffcc44}
+.alert.info{background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.15);color:#66ccff}
 
-/* Stat boxes */
-.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
-.stat-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:10px 12px}
-.stat-label{font-size:9px;color:var(--text2);letter-spacing:.06em;margin-bottom:4px}
-.stat-val{font-family:var(--font-d);font-size:18px;font-weight:700}
-.stat-sub{font-size:9px;color:var(--text2);margin-top:2px;line-height:1.4}
-.green{color:var(--green)}.amber{color:var(--amber)}.blue{color:var(--blue)}.red{color:var(--red)}.purple{color:var(--purple)}
+/* Cards */
+.card{background:rgba(0,8,20,0.8);border:1px solid rgba(255,255,255,0.06);border-radius:9px;overflow:hidden;margin-bottom:10px}
+.ch{display:flex;align-items:center;gap:9px;padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.05);
+  background:linear-gradient(90deg,rgba(255,255,255,0.025),transparent);
+  font-family:var(--fd);font-size:8.5px;font-weight:700;letter-spacing:.1em;color:var(--t2)}
+.ch-ic{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.cb{padding:11px 12px}
 
-/* Pre-flight checks */
-.chk-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
-.chk{display:flex;align-items:center;gap:8px;padding:8px 10px;
-  border-radius:7px;border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.02);transition:.15s}
-.chk.ok{border-color:rgba(0,255,136,0.15);background:rgba(0,255,136,0.04)}
-.chk.warn{border-color:rgba(255,187,0,0.18);background:rgba(255,187,0,0.05)}
-.chk.bad{border-color:rgba(255,51,68,0.2);background:rgba(255,51,68,0.06)}
-.chk-icon{font-size:15px;flex-shrink:0}
-.chk-name{font-size:8.5px;color:var(--text2);letter-spacing:.06em}
-.chk-val{font-family:var(--font-m);font-size:11px;font-weight:600}
-.chk.ok .chk-val{color:var(--green)}.chk.warn .chk-val{color:var(--amber)}.chk.bad .chk-val{color:var(--red)}
+/* Stats */
+.sg2{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:10px}
+.sg3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
+.sbox{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.05);border-radius:7px;padding:9px 11px}
+.sl{font-size:8.5px;color:var(--t2);letter-spacing:.05em;margin-bottom:3px}
+.sv2{font-family:var(--fd);font-size:17px;font-weight:700}
+.ss{font-size:8.5px;color:var(--t2);margin-top:2px;line-height:1.4}
+.gc{color:var(--g)}.ac{color:var(--a)}.bc{color:var(--b)}.rc{color:var(--r)}.pc{color:var(--p)}.cc{color:var(--c)}
+
+/* Checks */
+.chk-g{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}
+.chk{display:flex;align-items:center;gap:7px;padding:7px 9px;
+  border-radius:6px;border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.02)}
+.chk.ok{border-color:rgba(0,255,136,0.14);background:rgba(0,255,136,0.03)}
+.chk.warn{border-color:rgba(255,187,0,0.16);background:rgba(255,187,0,0.04)}
+.chk.bad{border-color:rgba(255,51,68,0.18);background:rgba(255,51,68,0.05)}
+.chk-ic{font-size:14px;flex-shrink:0}
+.chk-n{font-size:8px;color:var(--t2);letter-spacing:.05em}
+.chk-v{font-family:var(--fm);font-size:10.5px;font-weight:600}
+.chk.ok .chk-v{color:var(--g)}.chk.warn .chk-v{color:var(--a)}.chk.bad .chk-v{color:var(--r)}
 
 /* Score bars */
-.sbr{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.sbr-lbl{font-size:9px;color:var(--text2);width:90px;flex-shrink:0}
-.sbr-track{flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
-.sbr-fill{height:100%;border-radius:2px}
-.sbr-pct{font-family:var(--font-m);font-size:9px;width:32px;text-align:right;flex-shrink:0}
+.sbr{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.sbrl{font-size:8.5px;color:var(--t2);width:85px;flex-shrink:0}
+.sbrt{flex:1;height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden}
+.sbrf{height:100%;border-radius:2px}
+.sbrp{font-family:var(--fm);font-size:8.5px;width:30px;text-align:right;flex-shrink:0}
+
+/* Battery Matcher (NEW) */
+.bm-grid{display:grid;gap:5px}
+.bm-row{display:flex;align-items:center;gap:9px;padding:7px 10px;
+  background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:6px}
+.bm-brand{font-family:var(--fd);font-size:8px;font-weight:700;letter-spacing:.06em;color:var(--t);width:90px;flex-shrink:0}
+.bm-c{font-family:var(--fm);font-size:9px;width:40px;flex-shrink:0}
+.bm-bar{flex:1;height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden}
+.bm-fill{height:100%;border-radius:3px;transition:width .4s}
+.bm-tag{font-family:var(--fd);font-size:7px;padding:2px 6px;border-radius:3px;letter-spacing:.06em;flex-shrink:0}
+.bm-ok{background:rgba(0,255,136,0.1);color:var(--g);border:1px solid rgba(0,255,136,0.2)}
+.bm-warn{background:rgba(255,187,0,0.1);color:var(--a);border:1px solid rgba(255,187,0,0.2)}
+.bm-bad{background:rgba(255,51,68,0.1);color:var(--r);border:1px solid rgba(255,51,68,0.2)}
+
+/* First Flight Protocol (NEW) */
+.ffp{display:flex;flex-direction:column;gap:0}
+.ffp-step{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.ffp-step:last-child{border-bottom:none}
+.ffp-dc{display:flex;flex-direction:column;align-items:center;flex-shrink:0;padding-top:2px}
+.ffp-dot{width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);cursor:pointer;transition:.15s;flex-shrink:0}
+.ffp-dot.done{background:var(--g);border-color:var(--g);box-shadow:0 0 6px rgba(0,255,136,0.4)}
+.ffp-line{flex:1;width:1px;background:rgba(255,255,255,0.07);margin-top:4px}
+.ffp-n{font-family:var(--fd);font-size:7.5px;letter-spacing:.1em;color:var(--t2);margin-bottom:3px}
+.ffp-d{font-size:10.5px;color:var(--t);line-height:1.6}
+.ffp-val{font-family:var(--fm);font-size:9.5px;margin-top:4px;padding:4px 8px;
+  border-radius:4px;background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.1);color:#7affc4;
+  white-space:pre;overflow-x:auto;line-height:1.7}
 
 /* PID */
-.pid-axes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.pid-axis{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:10px 12px}
-.pid-axis-name{font-family:var(--font-d);font-size:8px;letter-spacing:.14em;color:var(--text2);margin-bottom:8px}
-.pid-row{display:flex;align-items:center;gap:6px;margin-bottom:5px}
-.pid-lbl{font-family:var(--font-d);font-size:8px;font-weight:700;width:12px;cursor:pointer;transition:.15s}
-.pid-lbl.p-lbl{color:var(--green)}.pid-lbl.i-lbl{color:var(--blue)}.pid-lbl.d-lbl{color:var(--amber)}
-.pid-track{flex:1;height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden}
-.pid-fill{height:100%;border-radius:2px}
-.pid-fill.green{background:var(--green)}.pid-fill.blue{background:var(--blue)}.pid-fill.amber{background:var(--amber)}
-.pid-val{font-family:var(--font-m);font-size:10px;width:24px;text-align:right}
+.pid3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
+.pax{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.05);border-radius:7px;padding:9px 11px}
+.pax-n{font-family:var(--fd);font-size:7.5px;letter-spacing:.14em;color:var(--t2);margin-bottom:7px}
+.pr2{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.pl{font-family:var(--fd);font-size:7.5px;font-weight:700;width:11px;cursor:pointer;transition:.13s}
+.pl.P{color:var(--g)}.pl.I{color:var(--b)}.pl.D{color:var(--a)}
+.pt{flex:1;height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden}
+.pf{height:100%;border-radius:2px}
+.pf.G{background:var(--g)}.pf.B{background:var(--b)}.pf.A{background:var(--a)}
+.pv{font-family:var(--fm);font-size:9.5px;width:22px;text-align:right}
 
-/* Filter cards */
-.flt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
-.flt-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);
-  border-radius:8px;padding:10px;cursor:pointer;transition:.15s}
-.flt-card:hover{border-color:rgba(255,255,255,0.1)}
-.flt-card.rpm-on{border-color:rgba(0,255,136,0.2);background:rgba(0,255,136,0.04)}
-.flt-lbl{font-size:8.5px;color:var(--text2);margin-bottom:4px}
-.flt-val{font-family:var(--font-d);font-size:14px;font-weight:700}
-.flt-hint{font-size:8px;color:var(--muted);margin-top:3px;line-height:1.4}
-
-/* Tip boxes */
-.tip-box{display:none;padding:10px 12px;background:rgba(0,0,0,0.4);
-  border:1px solid rgba(255,255,255,0.07);border-radius:7px;
-  font-size:10.5px;color:var(--text2);line-height:1.7;margin-bottom:8px}
+/* Tip */
+.tip-box{display:none;padding:9px 11px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.07);
+  border-radius:6px;font-size:10px;color:var(--t2);line-height:1.7;margin-bottom:7px}
 .tip-box.open{display:block}
 
-/* Code blocks */
-.code-box{background:rgba(0,0,0,0.5);border:1px solid rgba(0,255,136,0.1);border-radius:8px;overflow:hidden}
-.code-head{display:flex;align-items:center;justify-content:space-between;
-  padding:7px 12px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(0,255,136,0.04)}
-.code-title{font-family:var(--font-d);font-size:8px;letter-spacing:.1em;color:var(--green)}
-.copy-btn{font-size:9px;color:var(--text2);background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:3px 9px;cursor:pointer;transition:.15s}
-.copy-btn:hover{color:var(--green);border-color:rgba(0,255,136,0.25)}
-pre.cli{font-family:var(--font-m);font-size:10px;color:#7affc4;padding:12px 14px;overflow-x:auto;line-height:1.8;margin:0}
+/* Filter grid */
+.fg3{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:10px}
+.fc{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.05);
+  border-radius:7px;padding:9px 9px;cursor:pointer;transition:.13s}
+.fc:hover{border-color:rgba(255,255,255,0.1)}
+.fc.rpm{border-color:rgba(0,255,136,0.18);background:rgba(0,255,136,0.04)}
+.fl{font-size:8px;color:var(--t2);margin-bottom:3px}
+.fv{font-family:var(--fd);font-size:13px;font-weight:700}
+.fh{font-size:7.5px;color:var(--t3);margin-top:2px;line-height:1.4}
+
+/* CLI */
+.code-box{background:rgba(0,0,0,0.5);border:1px solid rgba(0,255,136,0.1);border-radius:8px;overflow:hidden;margin-top:9px}
+.code-h{display:flex;align-items:center;justify-content:space-between;padding:6px 11px;
+  border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(0,255,136,0.03)}
+.code-t{font-family:var(--fd);font-size:7.5px;letter-spacing:.1em;color:var(--g)}
+.cpbtn{font-size:8.5px;color:var(--t2);background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:3px 8px;cursor:pointer;transition:.13s}
+.cpbtn:hover{color:var(--g);border-color:rgba(0,255,136,0.22)}
+pre.cli{font-family:var(--fm);font-size:9.5px;color:#7affc4;padding:11px 13px;overflow-x:auto;line-height:1.85;margin:0}
 pre::-webkit-scrollbar{height:3px}
-pre::-webkit-scrollbar-thumb{background:rgba(0,255,136,0.2);border-radius:2px}
-
-/* Tuning roadmap */
-.tmap-row{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
-.tmap-row:last-child{border-bottom:none}
-.tmap-dot-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0;padding-top:2px}
-.tmap-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.15)}
-.tmap-dot.done{background:var(--green);border-color:var(--green);box-shadow:0 0 6px rgba(0,255,136,0.4)}
-.tmap-dot.active{background:var(--amber);border-color:var(--amber);box-shadow:0 0 6px rgba(255,187,0,0.4)}
-.tmap-line{flex:1;width:1.5px;background:rgba(255,255,255,0.07);margin-top:4px}
-.tmap-step{font-family:var(--font-d);font-size:8px;letter-spacing:.1em;color:var(--text2);margin-bottom:4px}
-.tmap-detail{font-size:10.5px;color:var(--text);line-height:1.6;margin-bottom:4px}
-.tmap-cli{font-family:var(--font-m);font-size:9.5px;color:#7affc4;
-  background:rgba(0,0,0,0.4);border:1px solid rgba(0,255,136,0.08);
-  border-radius:5px;padding:6px 10px;margin-top:4px;overflow-x:auto;line-height:1.7;white-space:pre}
-
-/* Empty state */
-.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;padding:40px 20px}
-.empty-icon{font-size:56px;margin-bottom:14px;opacity:.7}
-.empty-title{font-family:var(--font-d);font-size:18px;font-weight:700;color:var(--green);margin-bottom:8px}
-.empty-sub{font-size:12px;color:var(--text2);max-width:320px;line-height:1.7;margin-bottom:18px}
-.how-to{background:rgba(0,170,255,0.05);border:1px solid rgba(0,170,255,0.1);border-radius:10px;
-  padding:14px 18px;max-width:320px;text-align:left;font-size:11px;color:var(--text2);line-height:1.9}
-.how-to-title{font-family:var(--font-d);font-size:8px;letter-spacing:.12em;color:var(--blue);display:block;margin-bottom:8px}
+pre::-webkit-scrollbar-thumb{background:rgba(0,255,136,0.18);border-radius:2px}
 
 /* Toast */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:rgba(0,0,0,0.92);border:1px solid rgba(0,255,136,0.25);
-  color:var(--green);font-family:var(--font-d);font-size:9px;letter-spacing:.1em;
-  padding:8px 20px;border-radius:8px;z-index:999;opacity:0;pointer-events:none;
-  transition:opacity .2s,transform .2s;white-space:nowrap}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(16px);
+  background:rgba(0,0,0,0.93);border:1px solid rgba(0,255,136,0.22);
+  color:var(--g);font-family:var(--fd);font-size:8.5px;letter-spacing:.1em;
+  padding:7px 18px;border-radius:7px;z-index:999;opacity:0;pointer-events:none;transition:.2s;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* Floating tools */
-.ftp-btn{position:fixed;bottom:24px;right:20px;z-index:190;display:flex;align-items:center;gap:7px;
-  background:rgba(0,6,16,0.94);border:1.5px solid rgba(0,255,136,0.25);border-radius:10px;
-  padding:10px 14px;cursor:pointer;color:var(--text);font-family:var(--font-d);font-size:8px;
-  letter-spacing:.1em;backdrop-filter:blur(12px);box-shadow:0 4px 24px rgba(0,0,0,0.5);transition:all .2s}
-.ftp-btn:hover{border-color:rgba(0,255,136,0.5);box-shadow:0 4px 24px rgba(0,255,136,0.12)}
-.ftp-count{background:rgba(0,255,136,0.12);color:var(--green);border-radius:10px;padding:1px 6px;font-size:8px}
+/* FTP */
+.ftp{position:fixed;bottom:22px;right:18px;z-index:190;display:flex;align-items:center;gap:6px;
+  background:rgba(0,5,14,0.95);border:1.5px solid rgba(0,255,136,0.2);border-radius:9px;
+  padding:9px 13px;cursor:pointer;color:var(--t);font-family:var(--fd);font-size:7.5px;
+  letter-spacing:.1em;backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(0,0,0,0.5);transition:.2s}
+.ftp:hover{border-color:rgba(0,255,136,0.45);box-shadow:0 4px 20px rgba(0,255,136,0.1)}
+.ftp-c{background:rgba(0,255,136,0.1);color:var(--g);border-radius:9px;padding:1px 6px;font-size:7.5px}
 
-/* ── Responsive ── */
-@media(max-width:960px){
-  .app-shell{grid-template-columns:1fr}
-  .form-panel{position:static;height:auto;border-right:none;border-bottom:1px solid rgba(0,255,136,0.07)}
-  .live-hud{grid-template-columns:repeat(2,1fr)}
-  .tb-nav{display:none}
+/* Responsive */
+@media(max-width:1100px){
+  .shell{grid-template-columns:280px 240px 1fr}
+}
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .col-input,.col-radar{position:static;height:auto;border-right:none;border-bottom:1px solid rgba(0,255,136,0.06)}
+  .radar-wrap{max-width:200px}
+  .mini-metrics{grid-template-columns:repeat(4,1fr)}
 }
 @media(max-width:600px){
-  .stats-grid{grid-template-columns:1fr 1fr}
-  .pid-axes{grid-template-columns:1fr}
-  .flt-grid{grid-template-columns:repeat(2,1fr)}
-  .chk-grid{grid-template-columns:1fr}
-  .score-vitals{display:none}
-  .live-hud{grid-template-columns:repeat(2,1fr)}
+  .sg2{grid-template-columns:1fr 1fr}
+  .pid3{grid-template-columns:1fr}
+  .fg3{grid-template-columns:repeat(2,1fr)}
+  .chk-g{grid-template-columns:1fr}
+  .mini-metrics{grid-template-columns:repeat(2,1fr)}
+  .tb-nav{display:none}
 }
 </style>
 </head>
-
 <body>
-{% set nav_page = "home" %}
-{% include "partials/page_actions.html" %}
-<div class="bg-photo" aria-hidden="true"></div>
+<div class="bg-grid" aria-hidden="true"></div>
 
 <!-- TOP BAR -->
 <nav class="topbar">
   <a href="/landing" class="tb-logo">
     <img src="{{ url_for('static', filename='img/obix-logo.png') }}" alt="OBIXConfig Doctor">
   </a>
-  <div class="tb-divider"></div>
+  <div class="tb-sep"></div>
   <div class="tb-nav">
-    <a class="tb-link active" href="/app">🏠 Analyzer</a>
-    <a class="tb-link" href="/cli_surgeon">🩺 CLI Surgeon</a>
-    <a class="tb-link" href="/blackbox">📊 Blackbox</a>
-    <a class="tb-link" href="/bf-wizard">⚡ Wizard</a>
-    <a class="tb-link" href="/pid-advisor">💊 PID Advisor</a>
-    <a class="tb-link" href="/rpm-filter">🔊 RPM Filter</a>
+    <a class="tb-a on" href="/app">🏠 Analyzer</a>
+    <a class="tb-a" href="/cli_surgeon">🩺 CLI Surgeon</a>
+    <a class="tb-a" href="/blackbox">📊 Blackbox</a>
+    <a class="tb-a" href="/bf-wizard">⚡ Wizard</a>
+    <a class="tb-a" href="/pid-advisor">💊 PID Advisor</a>
+    <a class="tb-a" href="/rpm_filter">🔊 RPM Filter</a>
+    <a class="tb-a" href="/motor-prop">⚙️ Motor×Prop</a>
   </div>
-  <div class="tb-right">
-    <span class="tb-ver">v6.0</span>
-    <button class="tb-theme" onclick="document.body.classList.toggle('light')" title="toggle theme">🌗</button>
+  <div class="tb-r">
+    <span class="tb-ver">v7.0</span>
   </div>
 </nav>
 
-<!-- APP SHELL -->
-<div class="app-shell">
+<div class="shell">
 
-<!-- ════ LEFT: FORM PANEL ════ -->
-<aside class="form-panel">
-  <div class="cw-header">
-    <span class="cw-icon">🔧</span>
-    <div>
-      <div class="cw-title">DRONE PROFILE</div>
-      <div class="cw-sub">3 ขั้นตอน · กด ANALYZE</div>
-    </div>
-    <div class="cw-badge"><span class="dot-pulse"></span>READY</div>
+<!-- ════════════════════════════════
+     COL 1: INPUT FORM
+════════════════════════════════ -->
+<aside class="col-input">
+  <div class="ih">
+    <div class="ready-dot"><span class="rd"></span>READY</div>
+    <div class="ih-title">🛸 MISSION SETUP</div>
+    <div class="ih-sub">กรอกสเปค → วิเคราะห์ทันที</div>
   </div>
 
-  <form method="POST" id="analyzeForm">
+  <form method="POST" id="aForm">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    <input type="hidden" name="size"        id="f_size"   value="{{ request.form.get('size','5.0') }}">
-    <input type="hidden" name="prop_size"   id="f_prop"   value="{{ request.form.get('prop_size','5.0') }}">
-    <input type="hidden" name="pitch"       id="f_pitch"  value="{{ request.form.get('pitch','4.0') }}">
-    <input type="hidden" name="weight"      id="f_weight" value="{{ request.form.get('weight','720') }}">
+    <input type="hidden" name="size"        id="fSz"  value="{{ request.form.get('size','5.0') }}">
+    <input type="hidden" name="prop_size"   id="fPr"  value="{{ request.form.get('prop_size','5.0') }}">
+    <input type="hidden" name="pitch"       id="fPt"  value="{{ request.form.get('pitch','4.0') }}">
+    <input type="hidden" name="weight"      id="fWt"  value="{{ request.form.get('weight','720') }}">
     <input type="hidden" name="motor_count" value="{{ request.form.get('motor_count','4') }}">
     <input type="hidden" name="blades"      value="{{ request.form.get('blades','3') }}">
+    <input type="hidden" name="bf_version"  id="fBfv" value="{{ request.form.get('bf_version','4.4') }}">
 
-    <!-- STEP 1: FRAME SIZE -->
-    <div class="cw-step">
-      <div class="step-label"><span class="step-num">01</span><span class="step-name">FRAME SIZE</span></div>
-      <div class="size-grid">
-        <div class="sz" data-sz="1.5"  data-w="30"   data-prop="1.5" data-pitch="1.2" data-kv="12500" onclick="setSz(this)"><span class="sz-main">1.5"</span><span class="sz-sub">Nano</span></div>
-        <div class="sz" data-sz="2.5"  data-w="80"   data-prop="2.5" data-pitch="2.0" data-kv="4500"  onclick="setSz(this)"><span class="sz-main">2.5"</span><span class="sz-sub">Micro</span></div>
-        <div class="sz" data-sz="3.0"  data-w="120"  data-prop="3.0" data-pitch="2.0" data-kv="3500"  onclick="setSz(this)"><span class="sz-main">3"</span><span class="sz-sub">Whoop</span></div>
-        <div class="sz" data-sz="3.5"  data-w="300"  data-prop="3.5" data-pitch="2.5" data-kv="3500"  onclick="setSz(this)"><span class="sz-main">3.5"</span><span class="sz-sub">Cine</span></div>
-        <div class="sz active" data-sz="5.0" data-w="720" data-prop="5.0" data-pitch="4.0" data-kv="2306" onclick="setSz(this)"><span class="sz-main">5"</span><span class="sz-sub">Freestyle</span></div>
-        <div class="sz" data-sz="6.0"  data-w="850"  data-prop="6.0" data-pitch="4.0" data-kv="1750"  onclick="setSz(this)"><span class="sz-main">6"</span><span class="sz-sub">Heavy</span></div>
-        <div class="sz" data-sz="7.0"  data-w="1100" data-prop="7.0" data-pitch="3.5" data-kv="1200"  onclick="setSz(this)"><span class="sz-main">7"</span><span class="sz-sub">Mid-LR</span></div>
-        <div class="sz" data-sz="10.0" data-w="1800" data-prop="10.0" data-pitch="4.5" data-kv="800"  onclick="setSz(this)"><span class="sz-main">10"</span><span class="sz-sub">LR</span></div>
+    <!-- STEP 1: FRAME -->
+    <div class="blk">
+      <div class="blk-hd">
+        <span class="blk-n">01</span>
+        <span class="blk-t">FRAME SIZE</span>
       </div>
-      <div class="prop-row">
-        <span class="prop-lbl">Prop</span>
-        <span class="prop-val" id="sz_prop_disp">{{ request.form.get('prop_size','5.0') }}"×{{ request.form.get('pitch','4.0') }}p</span>
-        <span class="prop-sep"></span>
-        <span class="prop-lbl">น้ำหนัก</span>
-        <input class="wt-input" type="number" id="f_weight_vis" placeholder="720"
+      <div class="szg">
+        <div class="sz" data-sz="1.5"  data-w="30"   data-p="1.5"  data-pt="1.2"  data-kv="12500" onclick="setSz(this)"><span class="sz-v">1.5"</span><span class="sz-s">Nano</span></div>
+        <div class="sz" data-sz="2.5"  data-w="80"   data-p="2.5"  data-pt="2.0"  data-kv="4500"  onclick="setSz(this)"><span class="sz-v">2.5"</span><span class="sz-s">Micro</span></div>
+        <div class="sz" data-sz="3.0"  data-w="120"  data-p="3.0"  data-pt="2.0"  data-kv="3500"  onclick="setSz(this)"><span class="sz-v">3"</span><span class="sz-s">Whoop</span></div>
+        <div class="sz" data-sz="3.5"  data-w="300"  data-p="3.5"  data-pt="2.5"  data-kv="3500"  onclick="setSz(this)"><span class="sz-v">3.5"</span><span class="sz-s">Cine</span></div>
+        <div class="sz on" data-sz="5.0" data-w="720" data-p="5.0" data-pt="4.0"  data-kv="2306"  onclick="setSz(this)"><span class="sz-v">5"</span><span class="sz-s">Freestyle</span></div>
+        <div class="sz" data-sz="6.0"  data-w="850"  data-p="6.0"  data-pt="4.0"  data-kv="1750"  onclick="setSz(this)"><span class="sz-v">6"</span><span class="sz-s">Heavy</span></div>
+        <div class="sz" data-sz="7.0"  data-w="1100" data-p="7.0"  data-pt="3.5"  data-kv="1200"  onclick="setSz(this)"><span class="sz-v">7"</span><span class="sz-s">Mid-LR</span></div>
+        <div class="sz" data-sz="10.0" data-w="1800" data-p="10.0" data-pt="4.5"  data-kv="800"   onclick="setSz(this)"><span class="sz-v">10"</span><span class="sz-s">LR</span></div>
+      </div>
+      <div class="pr">
+        <span class="pr-l">Prop</span>
+        <span class="pr-v" id="propDisp">5.0"×4.0p</span>
+        <span class="pr-sp"></span>
+        <span class="pr-l">น้ำหนัก</span>
+        <input class="ninput w70" type="number" id="fWtV" placeholder="720"
           value="{{ request.form.get('weight','720') }}"
-          oninput="document.getElementById('f_weight').value=this.value;debCalc()">
-        <span class="wt-unit">g</span>
+          oninput="fWt.value=this.value;dCalc()">
+        <span class="pr-u">g</span>
       </div>
     </div>
-    <div class="cw-sep"></div>
+
+    <!-- BF VERSION (NEW) -->
+    <div class="blk">
+      <div class="blk-hd">
+        <span class="blk-n">+</span>
+        <span class="blk-t">BETAFLIGHT VERSION</span>
+        <span class="blk-hint">ปรับ CLI ให้ตรง version</span>
+      </div>
+      <div class="bfv-row">
+        <div class="bfv" data-v="4.3" onclick="setBfv('4.3',this)">4.3<span class="bfv-sub">Legacy</span></div>
+        <div class="bfv on" data-v="4.4" onclick="setBfv('4.4',this)">4.4<span class="bfv-sub">Stable</span></div>
+        <div class="bfv" data-v="4.5" onclick="setBfv('4.5',this)">4.5<span class="bfv-sub">Latest</span></div>
+      </div>
+    </div>
 
     <!-- STEP 2: BATTERY -->
-    <div class="cw-step" style="padding-top:14px">
-      <div class="step-label"><span class="step-num">02</span><span class="step-name">BATTERY</span></div>
-      {% set _bc = request.form.get('battery','4S') %}
-      <div class="batt-row">
-        <div class="bp bp-3s {% if _bc=='3S' %}active{% endif %}" onclick="setBatt('3S',this)"><span class="bp-s">3S</span><span class="bp-v">11.1V</span></div>
-        <div class="bp bp-4s {% if _bc=='4S' or not request.form.get('battery') %}active{% endif %}" onclick="setBatt('4S',this)"><span class="bp-s">4S</span><span class="bp-v">14.8V</span></div>
-        <div class="bp bp-5s {% if _bc=='5S' %}active{% endif %}" onclick="setBatt('5S',this)"><span class="bp-s">5S</span><span class="bp-v">18.5V</span></div>
-        <div class="bp bp-6s {% if _bc=='6S' %}active{% endif %}" onclick="setBatt('6S',this)"><span class="bp-s">6S</span><span class="bp-v">22.2V</span></div>
-        <div class="bp bp-7s {% if _bc=='7S' %}active{% endif %}" onclick="setBatt('7S',this)"><span class="bp-s">7S</span><span class="bp-v">25.9V</span></div>
-        <div class="bp bp-8s {% if _bc=='8S' %}active{% endif %}" onclick="setBatt('8S',this)"><span class="bp-s">8S</span><span class="bp-v">29.6V</span></div>
+    <div class="blk">
+      <div class="blk-hd">
+        <span class="blk-n">02</span>
+        <span class="blk-t">BATTERY</span>
       </div>
-      <select name="battery" id="battery-select" onchange="liveCalc();syncBattPills(this.value)" style="display:none">
+      {% set _bc = request.form.get('battery','4S') %}
+      <div class="bg6">
+        <div class="bp bp3s {% if _bc=='3S' %}on{% endif %}" onclick="setBatt('3S',this)"><span class="bp-s">3S</span><span class="bp-v">11.1V</span></div>
+        <div class="bp bp4s {% if _bc=='4S' or not request.form.get('battery') %}on{% endif %}" onclick="setBatt('4S',this)"><span class="bp-s">4S</span><span class="bp-v">14.8V</span></div>
+        <div class="bp bp5s {% if _bc=='5S' %}on{% endif %}" onclick="setBatt('5S',this)"><span class="bp-s">5S</span><span class="bp-v">18.5V</span></div>
+        <div class="bp bp6s {% if _bc=='6S' %}on{% endif %}" onclick="setBatt('6S',this)"><span class="bp-s">6S</span><span class="bp-v">22.2V</span></div>
+        <div class="bp bp7s {% if _bc=='7S' %}on{% endif %}" onclick="setBatt('7S',this)"><span class="bp-s">7S</span><span class="bp-v">25.9V</span></div>
+        <div class="bp bp8s {% if _bc=='8S' %}on{% endif %}" onclick="setBatt('8S',this)"><span class="bp-s">8S</span><span class="bp-v">29.6V</span></div>
+      </div>
+      <select name="battery" id="battSel" onchange="dCalc();syncBp(this.value)" style="display:none">
         {% for c in ['1S','2S','3S','4S','5S','6S','7S','8S'] %}
         <option value="{{ c }}" {% if request.form.get('battery','')==c or (not request.form.get('battery') and c=='4S') %}selected{% endif %}>{{ c }}</option>
         {% endfor %}
       </select>
-      <div class="mah-row">
-        <span class="mah-lbl">mAh</span>
-        <input class="mah-input" type="number" name="battery_mAh" id="f_mah" placeholder="1500"
+      <div class="mahr">
+        <span class="mahl">mAh</span>
+        <input class="mahi" type="number" name="battery_mAh" id="fMah" placeholder="1500"
           value="{{ request.form.get('battery_mAh','') }}"
-          oninput="debCalc();updateMahHint()">
-        <span class="mah-hint" id="mah_hint"></span>
+          oninput="dCalc();updateMahHint()">
+        <span class="mahh" id="mahHint"></span>
       </div>
     </div>
-    <div class="cw-sep"></div>
 
-    <!-- STEP 3: FLIGHT STYLE -->
-    <div class="cw-step" style="padding-top:14px">
-      <div class="step-label"><span class="step-num">03</span><span class="step-name">FLIGHT STYLE</span></div>
+    <!-- STEP 3: STYLE -->
+    <div class="blk">
+      <div class="blk-hd">
+        <span class="blk-n">03</span>
+        <span class="blk-t">FLIGHT STYLE</span>
+      </div>
       {% set _st = request.form.get('style','freestyle') %}
-      <div class="style-grid">
-        <div class="sc s-free {% if _st=='freestyle' or not request.form.get('style') %}active{% endif %}" onclick="setStyle('freestyle',this)">
-          <span class="sc-ico">🌀</span><span class="sc-name">FREESTYLE</span><span class="sc-sub">Trick · Snap · Flow</span>
+      <div class="sg">
+        <div class="sc free {% if _st=='freestyle' or not request.form.get('style') %}on{% endif %}" onclick="setStyle('freestyle',this)">
+          <span class="sc-i">🌀</span><span class="sc-n">FREESTYLE</span><span class="sc-s">Trick · Snap · Flow</span>
         </div>
-        <div class="sc s-race {% if _st=='racing' %}active{% endif %}" onclick="setStyle('racing',this)">
-          <span class="sc-ico">🏁</span><span class="sc-name">RACING</span><span class="sc-sub">Speed · Gate · Precision</span>
+        <div class="sc race {% if _st=='racing' %}on{% endif %}" onclick="setStyle('racing',this)">
+          <span class="sc-i">🏁</span><span class="sc-n">RACING</span><span class="sc-s">Gate · Speed</span>
         </div>
-        <div class="sc s-lr {% if _st=='longrange' %}active{% endif %}" onclick="setStyle('longrange',this)">
-          <span class="sc-ico">🛸</span><span class="sc-name">LONG RANGE</span><span class="sc-sub">Distance · Cinematic</span>
+        <div class="sc lr {% if _st=='longrange' %}on{% endif %}" onclick="setStyle('longrange',this)">
+          <span class="sc-i">🛸</span><span class="sc-n">LONG RANGE</span><span class="sc-s">Distance · Cine</span>
         </div>
       </div>
-      <select name="style" id="f_style" onchange="liveCalc();syncStyleCards(this.value)" style="display:none">
+      <select name="style" id="fSt" onchange="dCalc();syncSc(this.value)" style="display:none">
         <option value="freestyle" {% if not request.form.get('style') or request.form.get('style')=='freestyle' %}selected{% endif %}>Freestyle</option>
         <option value="longrange" {% if request.form.get('style')=='longrange' %}selected{% endif %}>Long Range</option>
-        <option value="racing"    {% if request.form.get('style')=='racing'    %}selected{% endif %}>Racing</option>
+        <option value="racing" {% if request.form.get('style')=='racing' %}selected{% endif %}>Racing</option>
       </select>
     </div>
-    <div class="cw-sep"></div>
 
     <!-- ADVANCED -->
-    <details class="cw-adv" {% if request.form.get('motor_kv') or request.form.get('preset') %}open{% endif %}>
-      <summary>
-        <span>⚙️</span>
-        <span>Advanced <span style="color:var(--muted);font-family:var(--font-t);font-size:9px;font-weight:400">(optional)</span></span>
-        <span class="adv-hint">KV · Preset · Prop detail</span>
-      </summary>
-      <div class="adv-body">
-        <div class="adv-field">
-          <label>Motor KV</label>
-          <input class="adv-input" type="number" name="motor_kv" id="f_kv" placeholder="เช่น 2306"
-            value="{{ request.form.get('motor_kv','') }}" oninput="debCalc()">
-          <span class="adv-note">ใส่เพื่อคำนวณ RPM, Tip Speed และ rpm_filter_min_hz ที่แม่นยำ</span>
+    <details class="adv" {% if request.form.get('motor_kv') or request.form.get('preset') %}open{% endif %}>
+      <summary>⚙️ Advanced<span class="adv-h">KV · Preset · Prop</span></summary>
+      <div class="adv-b">
+        <div>
+          <label class="adv-l">Motor KV</label>
+          <input class="ainput" type="number" name="motor_kv" id="fKv" placeholder="เช่น 2306"
+            value="{{ request.form.get('motor_kv','') }}" oninput="dCalc()">
+          <span class="anote">ใส่เพื่อคำนวณ RPM, Tip Speed, rpm_filter_min_hz</span>
         </div>
-        <div class="adv-g2">
-          <div class="adv-field">
-            <label>Prop ขนาด (นิ้ว)</label>
-            <input class="adv-input" type="number" step="0.1" id="f_prop_vis" placeholder="5.0"
+        <div class="ag2">
+          <div>
+            <label class="adv-l">Prop (นิ้ว)</label>
+            <input class="ainput" type="number" step="0.1" id="fPrV" placeholder="5.0"
               value="{{ request.form.get('prop_size','5.0') }}"
-              oninput="document.getElementById('f_prop').value=this.value;debCalc()">
+              oninput="fPr.value=this.value;dCalc()">
           </div>
-          <div class="adv-field">
-            <label>Pitch</label>
-            <input class="adv-input" type="number" step="0.1" id="f_pitch_vis" placeholder="4.0"
+          <div>
+            <label class="adv-l">Pitch</label>
+            <input class="ainput" type="number" step="0.1" id="fPtV" placeholder="4.0"
               value="{{ request.form.get('pitch','4.0') }}"
-              oninput="document.getElementById('f_pitch').value=this.value;debCalc()">
+              oninput="fPt.value=this.value;dCalc()">
           </div>
         </div>
-        <div class="adv-field">
-          <label>Preset Build</label>
-          <select class="adv-select" id="preset-select" name="preset" onchange="onPresetSelect(this.value)">
+        <div>
+          <label class="adv-l">Preset Build</label>
+          <select class="asel" id="presetSel" name="preset" onchange="onPreset(this.value)">
             <option value="">-- เลือก Preset --</option>
             {% for gname, items in preset_groups.items() %}
             <optgroup label="{{ gname }}">
@@ -547,296 +644,434 @@ pre::-webkit-scrollbar-thumb{background:rgba(0,255,136,0.2);border-radius:2px}
       </div>
     </details>
 
-    <!-- ANALYZE BUTTON -->
-    <button type="submit" class="btn-analyze" id="btnAnalyze" onclick="this.disabled=true;this.querySelector('.bta-main').textContent='ANALYZING...';this.querySelector('.bta-sub').textContent='กำลังคำนวณ Physics · PID · Filter'">
-      <span class="bta-icon">🚀</span>
+    <!-- ANALYZE -->
+    <button type="submit" class="bta" id="btnA"
+      onclick="this.disabled=true;this.querySelector('.bta-m').textContent='ANALYZING...';this.querySelector('.bta-s').textContent='กำลังคำนวณ Physics · PID · Filter'">
+      <span class="bta-ic">🚀</span>
       <div>
-        <div class="bta-main">ANALYZE DRONE</div>
-        <div class="bta-sub">Physics · PID · Filter · CLI</div>
+        <div class="bta-m">ANALYZE DRONE</div>
+        <div class="bta-s">Physics · DNA · Thermal · PID · CLI</div>
       </div>
-      <div class="bta-badge"><span class="dot-pulse"></span>v6.0</div>
+      <div class="bta-b"><span class="rd"></span>v7.0</div>
     </button>
   </form>
 </aside>
 
-<!-- ════ RIGHT: STAGE ════ -->
-<div class="stage">
+<!-- ════════════════════════════════
+     COL 2: LIVE RADAR + METRICS
+════════════════════════════════ -->
+<div class="col-radar">
+  <div class="rh">
+    <div class="rh-title">🧬 BUILD DNA — LIVE</div>
+    <div class="rh-sub">อัพเดต real-time ทุกครั้งที่แก้ input</div>
+  </div>
 
-  <!-- Live HUD -->
-  <div class="live-hud">
-    <div class="hud-cell">
-      <div class="hud-lbl">THRUST / WEIGHT</div>
-      <div class="hud-val green" id="h_twr">—</div>
-      <div class="hud-bar"><div class="hud-fill" id="hf_twr" style="width:0%;background:var(--green)"></div></div>
-    </div>
-    <div class="hud-cell">
-      <div class="hud-lbl">TIP SPEED</div>
-      <div class="hud-val amber" id="h_tip">—</div>
-      <div class="hud-bar"><div class="hud-fill" id="hf_tip" style="width:0%;background:var(--amber)"></div></div>
-    </div>
-    <div class="hud-cell">
-      <div class="hud-lbl">MAX RPM</div>
-      <div class="hud-val blue" id="h_rpm">—</div>
-      <div class="hud-bar"><div class="hud-fill" id="hf_rpm" style="width:0%;background:var(--blue)"></div></div>
-    </div>
-    <div class="hud-cell">
-      <div class="hud-lbl">FLIGHT TIME (avg)</div>
-      <div class="hud-val green" id="h_ft">—</div>
-      <div class="hud-bar"><div class="hud-fill" id="hf_ft" style="width:0%;background:var(--green)"></div></div>
+  <!-- SVG Radar -->
+  <div class="radar-wrap">
+    <svg id="dnaRadar" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+      <!-- Radar grid -->
+      <g id="rGrid" stroke="rgba(255,255,255,0.06)" fill="none">
+        <polygon points="110,30 178,65 178,145 110,180 42,145 42,65" stroke-width="1"/>
+        <polygon points="110,55 160,82 160,138 110,165 60,138 60,82" stroke-width="1"/>
+        <polygon points="110,80 142,98 142,122 110,140 78,122 78,98" stroke-width="1"/>
+        <polygon points="110,105 124,113 124,107 110,115 96,107 96,113" stroke-width="1"/>
+      </g>
+      <!-- Axes -->
+      <g stroke="rgba(255,255,255,0.08)" stroke-width="1">
+        <line x1="110" y1="30" x2="110" y2="180"/>
+        <line x1="110" y1="110" x2="178" y2="65"/>
+        <line x1="110" y1="110" x2="178" y2="145"/>
+        <line x1="110" y1="110" x2="110" y2="180"/>
+        <line x1="110" y1="110" x2="42" y2="145"/>
+        <line x1="110" y1="110" x2="42" y2="65"/>
+      </g>
+      <!-- DNA shape (filled by JS) -->
+      <polygon id="dnaShape" points="110,110 110,110 110,110 110,110 110,110 110,110"
+        fill="rgba(0,255,136,0.12)" stroke="#00ff88" stroke-width="1.5"
+        stroke-linejoin="round" style="transition:all .5s ease"/>
+      <!-- Labels -->
+      <text x="110" y="22" text-anchor="middle" font-family="Orbitron" font-size="7" fill="rgba(0,255,136,0.7)" letter-spacing="1">POWER</text>
+      <text x="185" y="62" text-anchor="start" font-family="Orbitron" font-size="7" fill="rgba(0,170,255,0.7)" letter-spacing="1">AGILITY</text>
+      <text x="185" y="152" text-anchor="start" font-family="Orbitron" font-size="7" fill="rgba(255,187,0,0.7)" letter-spacing="1">THERMAL</text>
+      <text x="110" y="196" text-anchor="middle" font-family="Orbitron" font-size="7" fill="rgba(255,51,68,0.7)" letter-spacing="1">ENDURANCE</text>
+      <text x="35" y="152" text-anchor="end" font-family="Orbitron" font-size="7" fill="rgba(176,96,255,0.7)" letter-spacing="1">NOISE</text>
+      <text x="35" y="62" text-anchor="end" font-family="Orbitron" font-size="7" fill="rgba(0,212,255,0.7)" letter-spacing="1">EFFICIENCY</text>
+      <!-- Center dot -->
+      <circle cx="110" cy="110" r="3" fill="rgba(0,255,136,0.4)"/>
+    </svg>
+  </div>
+
+  <!-- Tune Confidence -->
+  <div class="conf-meter">
+    <div class="conf-label">🎯 TUNE CONFIDENCE</div>
+    <div class="conf-bar"><div class="conf-fill" id="confFill" style="width:40%;background:var(--a)"></div></div>
+    <div class="conf-vals">
+      <span class="conf-pct" id="confPct" style="color:var(--a)">40%</span>
+      <span class="conf-txt" id="confTxt">ใส่ KV + mAh เพื่อเพิ่มความแม่นยำ</span>
     </div>
   </div>
 
-  {% if not analysis %}
-  <!-- Empty state -->
-  <div class="empty-state">
-    <div class="empty-icon">🚁</div>
-    <div class="empty-title">Awaiting Mission Data</div>
-    <p class="empty-sub">กรอกสเปคโดรนด้านซ้าย แล้วกด ANALYZE เพื่อรับผลทันที</p>
-    <div class="how-to">
-      <strong class="how-to-title">💡 วิธีใช้ 4 ขั้นตอน</strong>
-      1. เลือก Frame Size + ใส่น้ำหนักโดรน (g)<br>
-      2. เลือก Battery cells + ใส่ความจุ (mAh)<br>
-      3. เลือก Flight Style ที่ตรงกับคุณ<br>
-      4. กด <strong style="color:var(--green)">🚀 ANALYZE DRONE</strong> → รับ PID + Filter + CLI
+  <!-- Live mini metrics -->
+  <div class="mini-metrics">
+    <div class="mm" title="Thrust/Weight Ratio">
+      <div class="mm-lbl">TWR</div>
+      <div class="mm-val gc" id="mTwr">—</div>
+      <div class="mm-bar"><div class="mm-fill" id="mTwrB" style="width:0%;background:var(--g)"></div></div>
+    </div>
+    <div class="mm" title="Prop Tip Speed">
+      <div class="mm-lbl">TIP SPEED</div>
+      <div class="mm-val ac" id="mTip">—</div>
+      <div class="mm-bar"><div class="mm-fill" id="mTipB" style="width:0%;background:var(--a)"></div></div>
+    </div>
+    <div class="mm" title="Max RPM">
+      <div class="mm-lbl">MAX RPM</div>
+      <div class="mm-val bc" id="mRpm">—</div>
+      <div class="mm-bar"><div class="mm-fill" id="mRpmB" style="width:0%;background:var(--b)"></div></div>
+    </div>
+    <div class="mm" title="Flight Time">
+      <div class="mm-lbl">FLIGHT TIME</div>
+      <div class="mm-val gc" id="mFt">—</div>
+      <div class="mm-bar"><div class="mm-fill" id="mFtB" style="width:0%;background:var(--g)"></div></div>
     </div>
   </div>
 
-  {% else %}
-  {# ── PRE-COMPUTE ── #}
-  {% set adv   = analysis.advanced or {} %}
-  {% set _twr  = adv.thrust_ratio | default(0) | float %}
-  {% set _tip  = adv.tip_speed_mps | default(analysis.tip_speed_mps) | default(0) | float %}
-  {% set _rpm  = adv.rpm_estimated | default(analysis.rpm_estimated) | default(0) | int %}
-  {% set _hov  = adv.hover_throttle_pct | default(0) | float %}
-  {% set _cb   = adv.c_burst | default(0) | float %}
-  {% set _cells= adv.cells | default(4) | int %}
-  {% set _vnom = adv.pack_voltage_nominal | default(_cells * 3.7) | float %}
-  {% set _ft   = adv.est_flight_time_min | default(analysis.battery_est) | default(0) | float %}
-  {% set _mah  = analysis.battery_mAh | default(0) | int %}
-  {% set _wt   = analysis.weight | default(750) | float %}
-  {% set _kv   = analysis.motor_kv | default(0) | int %}
-  {% set _sz   = analysis.size | default(5) | float %}
-  {% set _sy   = analysis.style | default('freestyle') %}
-  {% set _cls  = analysis.detected_class | default('freestyle') %}
-  {% set _eff  = adv.efficiency_class | default('nominal') %}
-  {% set _mh   = adv.motor_health | default('') %}
-  {% set _esc_a= analysis.esc_recommended_a | default(adv.esc_recommended_a) | default(0) | int %}
-  {% if _rpm > 0 %}
-    {% set _rfmin = [80, (_rpm * 0.22 * 7 / 60) | int] | max %}
-    {% set _rfmin = [_rfmin, 600] | min %}
-  {% else %}
-    {% set _rfmin = 100 %}
-  {% endif %}
-  {# Build Score #}
-  {% set s_twr  = [100,[0,(_twr-1.0)/4.0*100]|max]|min|int if _twr>0 else 30 %}
-  {% set s_ft   = [100,[0,_ft/12*100]|max]|min|int if _ft>0 else 30 %}
-  {% set _noise = analysis.prop_result.effect.noise|default(3)|float if analysis.prop_result else 3 %}
-  {% set s_noise= [[100-_noise/6*100,0]|max,100]|min|int %}
-  {% set s_tip  = [100,[0,(1-(_tip-150)/150)*100]|max]|min|int if _tip>150 else (85 if _tip>0 else 70) %}
-  {% set s_motor= 85 if '✅' in _mh else (55 if '⚡' in _mh else (30 if _mh else 65)) %}
-  {% set s_eff  = 85 if _eff=='efficient' else (65 if _eff=='nominal' else 40) %}
-  {% set _score = (s_twr*0.25+s_ft*0.20+s_noise*0.15+s_tip*0.20+s_motor*0.10+s_eff*0.10)|int %}
-  {% set _grade = 'S' if _score>=92 else ('A+' if _score>=85 else ('A' if _score>=78 else ('B+' if _score>=70 else ('B' if _score>=60 else ('C' if _score>=45 else 'D'))))) %}
-  {% set _gc    = '#00ff88' if _score>=78 else ('#ffbb00' if _score>=55 else '#ff3344') %}
-  {# Personality #}
-  {% if _twr>=7.0 %}{% set _pn='MONSTER POWER' %}{% set _pe='⚡' %}{% set _pc='#ff3344' %}{% set _pd='กำลังล้นเหลือ · aggressive pro' %}
-  {% elif _sy=='racing' and _twr>=4.0 %}{% set _pn='RACE MACHINE' %}{% set _pe='🏁' %}{% set _pc='#ff8800' %}{% set _pd='gate racing · speed run' %}
-  {% elif _sy=='freestyle' and _twr>=4.0 %}{% set _pn='PUNCHY FREESTYLE' %}{% set _pe='🚀' %}{% set _pc='#00ff88' %}{% set _pd='flip/roll คมกริบ · headroom ล้นเหลือ' %}
-  {% elif _sy=='freestyle' and _twr>=2.8 %}{% set _pn='SMOOTH FREESTYLE' %}{% set _pe='🌀' %}{% set _pc='#00aaff' %}{% set _pd='สมดุล · freestyle ทั่วไป' %}
-  {% elif _sy=='longrange' and _ft>=18 %}{% set _pn='ENDURANCE EXPLORER' %}{% set _pe='🛸' %}{% set _pc='#b060ff' %}{% set _pd='long range · mapping · ถ่ายภาพ' %}
-  {% elif _sy=='longrange' %}{% set _pn='EFFICIENT CRUISER' %}{% set _pe='🌐' %}{% set _pc='#00d4ff' %}{% set _pd='FPV ระยะไกล · exploration' %}
-  {% elif _sz<=3.0 %}{% set _pn='MICRO RIPPER' %}{% set _pe='🐝' %}{% set _pc='#ffbb00' %}{% set _pd='indoor · proximity · เล็กแต่ดุ' %}
-  {% else %}{% set _pn='BALANCED BUILDER' %}{% set _pe='⚖️' %}{% set _pc='#34d399' %}{% set _pd='all-rounder · versatile' %}
-  {% endif %}
-
-  <!-- Alerts -->
-  {% set _warns = analysis.warnings | default([]) %}
-  {% set _rules = analysis.rules | default([]) %}
-  {% if _warns or _rules %}
-  <div style="margin-bottom:12px">
-    {% for w in _warns %}<div class="alert {{ w.level }}">{% if w.level=='danger' %}❌{% elif w.level=='warning' %}⚠️{% else %}ℹ️{% endif %} {{ w.msg }}</div>{% endfor %}
-    {% for r in _rules %}{% if r.level in ['danger','warning'] %}<div class="alert {{ r.level }}">{% if r.level=='danger' %}❌{% else %}⚠️{% endif %} {{ r.msg }}{% if r.suggestion %} → {{ r.suggestion }}{% endif %}</div>{% endif %}{% endfor %}
-  </div>
-  {% endif %}
-
-  <!-- Score header -->
-  <div class="score-header">
-    <div class="score-ring">
-      <svg width="74" height="74" viewBox="0 0 80 80">
-        <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="7"/>
-        <circle cx="40" cy="40" r="32" fill="none" stroke="{{ _gc }}" stroke-width="7"
-          stroke-linecap="round"
-          stroke-dasharray="{{ (201.1*_score/100)|round(1) }} 201.1"
-          transform="rotate(-90 40 40)"
-          style="filter:drop-shadow(0 0 5px {{ _gc }}88)"/>
-      </svg>
-      <div class="score-center">
-        <span class="score-num" style="color:{{ _gc }}">{{ _score }}</span>
-        <span class="score-grade" style="color:{{ _gc }}">{{ _grade }}</span>
-      </div>
+  <!-- Propwash Risk Index (NEW) -->
+  <div class="pri-box">
+    <div class="pri-head">
+      <span class="pri-title">⚠️ PROPWASH RISK INDEX</span>
+      <span class="pri-badge" id="priBadge" style="background:rgba(0,255,136,0.1);color:var(--g);border:1px solid rgba(0,255,136,0.2)">LOW</span>
     </div>
-    <div>
-      <div style="font-size:22px;margin-bottom:4px">{{ _pe }}</div>
-      <div class="score-pers-name" style="color:{{ _pc }}">{{ _pn }}</div>
-      <div class="score-pers-sub">{{ _pd }}</div>
-      <div style="font-size:9px;color:var(--text2);margin-top:4px">{{ _sz }}" · {{ _cells }}S · {{ _wt|int }}g · {{ _sy|capitalize }}</div>
+    <div class="pri-bar" style="position:relative">
+      <div class="pri-needle" id="priNeedle"></div>
     </div>
-    <div class="score-vitals">
-      <div class="sv"><div class="sv-val {% if _twr>=3.5 %}green{% elif _twr>=2.0 %}amber{% else %}red{% endif %}">{{ _twr|round(2) }}</div><div class="sv-lbl">TWR</div></div>
-      <div class="sv"><div class="sv-val blue">{{ _ft|int }}m</div><div class="sv-lbl">FLIGHT</div></div>
-      {% if _tip>0 %}<div class="sv"><div class="sv-val {% if _tip>290 %}red{% elif _tip>265 %}amber{% else %}green{% endif %}">{{ _tip|int }}</div><div class="sv-lbl">m/s</div></div>{% endif %}
-      {% if _hov>0 %}<div class="sv"><div class="sv-val amber">{{ _hov|int }}%</div><div class="sv-lbl">HOVER</div></div>{% endif %}
-    </div>
+    <div class="pri-hint" id="priHint">บิน hover เพื่อตรวจ baseline ก่อน</div>
   </div>
 
-  <!-- Result tabs -->
-  <div class="res-tabs">
-    <button class="rtab active" onclick="switchTab('overview',this)">📊 OVERVIEW</button>
-    <button class="rtab" onclick="switchTab('tune',this)">🎯 PID + FILTER</button>
-    <button class="rtab" onclick="switchTab('cli',this)">⌨️ CLI DEPLOY</button>
-    <button class="rtab" onclick="switchTab('physics',this)">⚡ PHYSICS</button>
+  <!-- Throttle Thermal Risk (NEW) -->
+  <div class="therm-box">
+    <div class="therm-title">🌡️ MOTOR THERMAL RISK</div>
+    <div class="therm-bands">
+      <div class="tb2 cool">
+        <div class="tb2-lbl">IDLE 15%</div>
+        <div class="tb2-val" id="thIdle">—°C</div>
+        <div class="tb2-risk" id="thIdleR">—</div>
+      </div>
+      <div class="tb2 warm">
+        <div class="tb2-lbl">CRUISE 50%</div>
+        <div class="tb2-val" id="thCruise">—°C</div>
+        <div class="tb2-risk" id="thCruiseR">—</div>
+      </div>
+      <div class="tb2 hot">
+        <div class="tb2-lbl">WOT 100%</div>
+        <div class="tb2-val" id="thWot">—°C</div>
+        <div class="tb2-risk" id="thWotR">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     COL 3: RESULTS
+════════════════════════════════ -->
+<div class="col-res">
+
+{% if not analysis %}
+<!-- EMPTY STATE -->
+<div class="empty">
+  <div class="empty-ic">🛸</div>
+  <div class="empty-t">MISSION COMPUTER READY</div>
+  <p class="empty-s">กรอกสเปคโดรนด้านซ้าย · ดู Build DNA real-time ตรงกลาง · กด Analyze รับผลเต็มรูปแบบ</p>
+  <div class="howto">
+    <strong>💡 QUICK START</strong>
+    1. เลือก Frame Size + ใส่น้ำหนัก<br>
+    2. เลือก Betaflight Version ที่ใช้<br>
+    3. เลือก Battery + ความจุ mAh<br>
+    4. เลือก Flight Style<br>
+    5. กด 🚀 <strong style="color:var(--g)">ANALYZE DRONE</strong>
+  </div>
+</div>
+
+{% else %}
+{# ════ PRE-COMPUTE ALL VARS ════ #}
+{% set adv   = analysis.advanced or {} %}
+{% set _twr  = adv.thrust_ratio | default(0) | float %}
+{% set _tip  = adv.tip_speed_mps | default(analysis.tip_speed_mps) | default(0) | float %}
+{% set _rpm  = adv.rpm_estimated | default(analysis.rpm_estimated) | default(0) | int %}
+{% set _hov  = adv.hover_throttle_pct | default(0) | float %}
+{% set _cb   = adv.c_burst | default(0) | float %}
+{% set _cells= adv.cells | default(4) | int %}
+{% set _vnom = adv.pack_voltage_nominal | default(_cells*3.7) | float %}
+{% set _ft   = adv.est_flight_time_min | default(analysis.battery_est) | default(0) | float %}
+{% set _mah  = analysis.battery_mAh | default(0) | int %}
+{% set _wt   = analysis.weight | default(750) | float %}
+{% set _kv   = analysis.motor_kv | default(0) | int %}
+{% set _sz   = analysis.size | default(5) | float %}
+{% set _sy   = analysis.style | default('freestyle') %}
+{% set _cls  = analysis.detected_class | default('freestyle') %}
+{% set _eff  = adv.efficiency_class | default('nominal') %}
+{% set _mh   = adv.motor_health | default('') %}
+{% set _esc  = analysis.esc_recommended_a | default(adv.esc_recommended_a) | default(0) | int %}
+{% if _rpm > 0 %}{% set _rfmin = [[80,(_rpm*0.22*7/60)|int]|max,600]|min %}
+{% else %}{% set _rfmin = 100 %}{% endif %}
+{# Score components #}
+{% set s_twr  = [100,[0,(_twr-1)/4*100]|max]|min|int if _twr>0 else 30 %}
+{% set s_ft   = [100,[0,_ft/12*100]|max]|min|int if _ft>0 else 30 %}
+{% set _ns    = analysis.prop_result.effect.noise|default(3)|float if analysis.prop_result else 3 %}
+{% set s_noise= [[100-_ns/6*100,0]|max,100]|min|int %}
+{% set s_tip  = [100,[0,(1-(_tip-150)/150)*100]|max]|min|int if _tip>150 else (85 if _tip>0 else 70) %}
+{% set s_mtr  = 85 if _mh and 'OK' in _mh else (55 if _mh and 'WARN' in _mh else (30 if _mh else 65)) %}
+{% set s_eff  = 85 if _eff=='efficient' else (65 if _eff=='nominal' else 40) %}
+{% set _score = (s_twr*0.25+s_ft*0.2+s_noise*0.15+s_tip*0.2+s_mtr*0.1+s_eff*0.1)|int %}
+{% set _grade = 'S' if _score>=92 else ('A+' if _score>=85 else ('A' if _score>=78 else ('B+' if _score>=70 else ('B' if _score>=60 else ('C' if _score>=45 else 'D'))))) %}
+{% set _gc    = '#00ff88' if _score>=78 else ('#ffbb00' if _score>=55 else '#ff3344') %}
+{# Personality #}
+{% if _twr>=7 %}{% set _pn='⚡ MONSTER POWER' %}{% set _pc='#ff3344' %}{% set _pd='กำลังล้นเหลือ · aggressive pro build' %}
+{% elif _sy=='racing' and _twr>=4 %}{% set _pn='🏁 RACE MACHINE' %}{% set _pc='#ff8800' %}{% set _pd='gate racing · speed run · snap response' %}
+{% elif _sy=='freestyle' and _twr>=4 %}{% set _pn='🚀 PUNCHY FREESTYLE' %}{% set _pc='#00ff88' %}{% set _pd='flip/roll คมกริบ · headroom เหลือล้น' %}
+{% elif _sy=='freestyle' and _twr>=2.8 %}{% set _pn='🌀 SMOOTH FREESTYLE' %}{% set _pc='#00aaff' %}{% set _pd='สมดุล · freestyle ทั่วไป · พร้อมบิน' %}
+{% elif _sy=='longrange' and _ft>=18 %}{% set _pn='🛸 ENDURANCE EXPLORER' %}{% set _pc='#b060ff' %}{% set _pd='long range · mapping · aerial photography' %}
+{% elif _sy=='longrange' %}{% set _pn='🌐 EFFICIENT CRUISER' %}{% set _pc='#00d4ff' %}{% set _pd='FPV ระยะไกล · exploration build' %}
+{% elif _sz<=3 %}{% set _pn='🐝 MICRO RIPPER' %}{% set _pc='#ffbb00' %}{% set _pd='indoor · proximity · เล็กแต่ดุ' %}
+{% else %}{% set _pn='⚖️ BALANCED BUILDER' %}{% set _pc='#34d399' %}{% set _pd='all-rounder · versatile · ปรับได้ทุก style' %}
+{% endif %}
+{# Build Fingerprint #}
+{% set _fp = '%s%s%s%s'|format(_cells,_kv,_wt|int,_sz|int) | md5 | upper if _kv>0 else 'INCOMPLETE' %}
+{# PRi (propwash risk) #}
+{% if _sy=='racing' and _twr>=5 %}{% set _pri=85 %}{% set _priL='HIGH' %}{% set _priC='#ff3344' %}
+{% elif _sy=='freestyle' and _twr>=4 %}{% set _pri=55 %}{% set _priL='MEDIUM' %}{% set _priC='#ffbb00' %}
+{% elif _twr>=3 %}{% set _pri=35 %}{% set _priL='LOW-MED' %}{% set _priC='#ffbb00' %}
+{% else %}{% set _pri=18 %}{% set _priL='LOW' %}{% set _priC='#00ff88' %}
+{% endif %}
+{# Thermal estimate #}
+{% set _hw = adv.hover_power_w | default(0) | float %}
+{% set _pw = adv.max_power_total_w | default(0) | float %}
+{% set _t_idle   = (25 + _pw * 0.15 / 4 * 0.10) | int if _pw>0 else 0 %}
+{% set _t_cruise = (30 + _pw * 0.5  / 4 * 0.18) | int if _pw>0 else 0 %}
+{% set _t_wot    = (35 + _pw        / 4 * 0.28) | int if _pw>0 else 0 %}
+{# BF version #}
+{% set _bfv = request.form.get('bf_version','4.4') %}
+{# Warnings #}
+{% set _warns = analysis.warnings | default([]) %}
+{% set _rules = analysis.rules | default([]) %}
+
+{# Alerts #}
+{% if _warns or _rules %}
+<div style="margin-bottom:10px">
+  {% for w in _warns %}<div class="alert {{ w.level }}">{% if w.level=='danger' %}❌{% elif w.level=='warning' %}⚠️{% else %}ℹ️{% endif %} {{ w.msg }}</div>{% endfor %}
+  {% for r in _rules %}{% if r.level in ['danger','warning'] %}<div class="alert {{ r.level }}">{% if r.level=='danger' %}❌{% else %}⚠️{% endif %} {{ r.msg }}{% if r.suggestion %} → {{ r.suggestion }}{% endif %}</div>{% endif %}{% endfor %}
+</div>
+{% endif %}
+
+<!-- Score + Personality bar -->
+<div class="score-bar" style="--accent:{{ _gc }}">
+  <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:{{ _gc }};box-shadow:0 0 10px {{ _gc }}"></div>
+  <div class="sb-ring" style="margin-left:8px">
+    <svg width="64" height="64" viewBox="0 0 70 70">
+      <circle cx="35" cy="35" r="28" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="6"/>
+      <circle cx="35" cy="35" r="28" fill="none" stroke="{{ _gc }}" stroke-width="6"
+        stroke-linecap="round"
+        stroke-dasharray="{{ (175.9*_score/100)|round(1) }} 175.9"
+        transform="rotate(-90 35 35)"
+        style="filter:drop-shadow(0 0 4px {{ _gc }}88)"/>
+    </svg>
+    <div class="sb-center">
+      <span class="sb-num" style="color:{{ _gc }}">{{ _score }}</span>
+      <span class="sb-grade" style="color:{{ _gc }}">{{ _grade }}</span>
+    </div>
+  </div>
+  <div class="sb-main" style="padding-left:4px">
+    <div class="sb-pers" style="color:{{ _pc }}">{{ _pn }}</div>
+    <div class="sb-desc">{{ _pd }}</div>
+    <div class="sb-meta">{{ _sz }}" · {{ _cells }}S · {{ _wt|int }}g · {{ _sy|capitalize }} · BF{{ _bfv }}</div>
+    {% if _kv>0 %}
+    <div class="sb-fp" title="Build Fingerprint — share กับเพื่อน FPV">
+      🔑 FP-{{ _cells }}S{{ _kv }}KV-{{ _sz }}"
+    </div>
+    {% endif %}
+  </div>
+  <div class="sb-vitals">
+    <div class="sv"><div class="sv-v {% if _twr>=3.5 %}gc{% elif _twr>=2.0 %}ac{% else %}rc{% endif %}">{{ _twr|round(2) }}</div><div class="sv-l">TWR</div></div>
+    <div class="sv"><div class="sv-v bc">{{ _ft|int }}m</div><div class="sv-l">FLIGHT</div></div>
+    {% if _tip>0 %}<div class="sv"><div class="sv-v {% if _tip>290 %}rc{% elif _tip>265 %}ac{% else %}gc{% endif %}">{{ _tip|int }}</div><div class="sv-l">m/s</div></div>{% endif %}
+  </div>
+</div>
+
+<!-- RESULT TABS -->
+<div class="rtabs">
+  <button class="rt on" onclick="sw('overview',this)">📊 OVERVIEW</button>
+  <button class="rt" onclick="sw('safety',this)">🛡️ SAFETY CHECK</button>
+  <button class="rt" onclick="sw('tune',this)">🎯 PID + FILTER</button>
+  <button class="rt" onclick="sw('batt',this)">🔋 BATTERY MATCH</button>
+  <button class="rt" onclick="sw('ffp',this)">📋 FIRST FLIGHT</button>
+  <button class="rt" onclick="sw('cli',this)">⌨️ CLI DEPLOY</button>
+</div>
+
+<!-- ── TAB: OVERVIEW ── -->
+<div class="rp on" id="pane-overview">
+  <div class="sg2">
+    <div class="sbox">
+      <div class="sl">THRUST / WEIGHT</div>
+      <div class="sv2 {% if _twr>=3.5 %}gc{% elif _twr>=2.0 %}ac{% else %}rc{% endif %}">{{ _twr|round(2) }}:1</div>
+      <div class="ss">{% if _twr>=5 %}กำลังล้นเหลือ · racing{% elif _twr>=3.5 %}ดีมาก · freestyle สมบูรณ์{% elif _twr>=2.5 %}โอเค · freestyle ทั่วไป{% elif _twr>=2.0 %}พอใช้ · เพิ่ม cell{% else %}ไม่เพียงพอ{% endif %}</div>
+    </div>
+    <div class="sbox">
+      <div class="sl">FLIGHT TIME</div>
+      <div class="sv2 {% if _ft>=8 %}gc{% elif _ft>=4 %}ac{% else %}rc{% endif %}">{{ _ft|round(1) }} min</div>
+      <div class="ss">{% if _mah>0 %}{{ _mah }}mAh · {{ _cells }}S · {% endif %}{% if _ft>=8 %}Long{% elif _ft>=4 %}Normal{% elif _ft>0 %}Short{% else %}ใส่ mAh{% endif %}</div>
+    </div>
+    {% if _tip>0 %}
+    <div class="sbox">
+      <div class="sl">TIP SPEED</div>
+      <div class="sv2 {% if _tip>290 %}rc{% elif _tip>265 %}ac{% else %}gc{% endif %}">{{ _tip|int }} m/s</div>
+      <div class="ss">limit 290 m/s · {% if _tip>290 %}⛔ DANGER{% elif _tip>265 %}⚠️ CLOSE{% else %}✅ SAFE{% endif %}</div>
+    </div>
+    {% endif %}
+    {% if _rpm>0 %}
+    <div class="sbox">
+      <div class="sl">MAX RPM (loaded)</div>
+      <div class="sv2 bc">{{ (_rpm/1000)|round(1) }}k</div>
+      <div class="ss">{{ _kv }}KV · {{ _cells }}S · 80% eff</div>
+    </div>
+    {% endif %}
+    {% if _hov>0 %}
+    <div class="sbox">
+      <div class="sl">HOVER THROTTLE</div>
+      <div class="sv2 {% if _hov<=45 %}gc{% elif _hov<=60 %}ac{% else %}rc{% endif %}">{{ _hov|int }}%</div>
+      <div class="ss">{% if _hov<30 %}กำลังล้นมาก{% elif _hov<=45 %}ดี 30–45%{% elif _hov<=60 %}กำลังน้อย{% else %}กำลังไม่พอ{% endif %}</div>
+    </div>
+    {% endif %}
+    {% if _esc>0 %}
+    <div class="sbox">
+      <div class="sl">ESC แนะนำ</div>
+      <div class="sv2 ac">{{ _esc }}A+</div>
+      <div class="ss">peak × 1.5 safety · ซื้อ ≥ {{ _esc }}A</div>
+    </div>
+    {% endif %}
+    {% if _cb>0 %}
+    <div class="sbox">
+      <div class="sl">C-BURST DEMAND</div>
+      <div class="sv2 {% if _cb>80 %}rc{% elif _cb>50 %}ac{% else %}gc{% endif %}">{{ _cb|round(1) }}C</div>
+      <div class="ss">{% if _cb>80 %}ต้อง LiPo คุณภาพสูง{% elif _cb>50 %}ต้องการ LiPo ดี{% else %}แบตทั่วไปรับได้{% endif %}</div>
+    </div>
+    {% endif %}
   </div>
 
-  <!-- TAB: OVERVIEW -->
-  <div class="res-pane active" id="pane-overview">
-    <div class="stats-grid">
-      <div class="stat-box">
-        <div class="stat-label">THRUST / WEIGHT RATIO</div>
-        <div class="stat-val {% if _twr>=3.5 %}green{% elif _twr>=2.0 %}amber{% else %}red{% endif %}">{{ _twr|round(2) }}:1</div>
-        <div class="stat-sub">{% if _twr>=5.0 %}กำลังล้นเหลือ · racing{% elif _twr>=3.5 %}ดีมาก · freestyle สมบูรณ์{% elif _twr>=2.5 %}โอเค · freestyle ทั่วไป{% elif _twr>=2.0 %}พอใช้ · เพิ่ม cell หรือลด weight{% else %}ไม่เพียงพอ · ต้องปรับ{% endif %}</div>
+  <!-- Score breakdown -->
+  <div class="card">
+    <div class="ch"><div class="ch-ic" style="background:rgba(255,187,0,0.1)">🧠</div> BUILD SCORE {{ _score }}/100 · {{ _grade }}</div>
+    <div class="cb">
+      {% for lbl,val in [('TWR Power',s_twr),('Flight Time',s_ft),('Low Noise',s_noise),('Tip Safety',s_tip),('Motor Health',s_mtr),('Efficiency',s_eff)] %}
+      <div class="sbr">
+        <span class="sbrl">{{ lbl }}</span>
+        <div class="sbrt"><div class="sbrf" style="width:{{ val }}%;background:{% if val>=70 %}var(--g){% elif val>=45 %}var(--a){% else %}var(--r){% endif %}"></div></div>
+        <span class="sbrp {% if val>=70 %}gc{% elif val>=45 %}ac{% else %}rc{% endif %}">{{ val }}%</span>
       </div>
-      <div class="stat-box">
-        <div class="stat-label">FLIGHT TIME (estimate)</div>
-        <div class="stat-val {% if _ft>=8 %}green{% elif _ft>=4 %}amber{% else %}red{% endif %}">{{ _ft|round(1) }} min</div>
-        <div class="stat-sub">{% if _mah>0 %}{{ _mah }}mAh · {{ _cells }}S · {% endif %}{% if _ft>=8 %}Long flight{% elif _ft>=4 %}Normal{% elif _ft>0 %}Short{% else %}ใส่ mAh เพื่อคำนวณ{% endif %}</div>
-      </div>
-      {% if _tip>0 %}
-      <div class="stat-box">
-        <div class="stat-label">PROP TIP SPEED</div>
-        <div class="stat-val {% if _tip>290 %}red{% elif _tip>265 %}amber{% else %}green{% endif %}">{{ _tip|int }} m/s</div>
-        <div class="stat-sub">ขีดจำกัด 290 m/s · {% if _tip>290 %}⛔ DANGER — ลด KV หรือ prop{% elif _tip>265 %}⚠️ WARNING — ใกล้ขีดจำกัด{% else %}✅ SAFE — subsonic{% endif %}</div>
-      </div>
-      {% endif %}
-      {% if _rpm>0 %}
-      <div class="stat-box">
-        <div class="stat-label">MAX RPM (loaded)</div>
-        <div class="stat-val blue">{{ (_rpm/1000)|round(1) }}k</div>
-        <div class="stat-sub">{{ _kv }}KV · {{ _cells }}S · 80% efficiency</div>
-      </div>
-      {% endif %}
-      {% if _hov>0 %}
-      <div class="stat-box">
-        <div class="stat-label">HOVER THROTTLE</div>
-        <div class="stat-val {% if _hov<=45 %}green{% elif _hov<=60 %}amber{% else %}red{% endif %}">{{ _hov|int }}%</div>
-        <div class="stat-sub">{% if _hov<30 %}กำลังล้นมาก{% elif _hov<=45 %}ดี · สมดุล 30-45%{% elif _hov<=60 %}กำลังน้อย{% else %}กำลังไม่พอ{% endif %}</div>
-      </div>
-      {% endif %}
-      {% if _esc_a>0 %}
-      <div class="stat-box">
-        <div class="stat-label">ESC แนะนำ (per motor)</div>
-        <div class="stat-val amber">{{ _esc_a }}A+</div>
-        <div class="stat-sub">peak × 1.5 safety · ซื้อ ESC ≥ {{ _esc_a }}A</div>
-      </div>
-      {% endif %}
-      {% if _cb>0 %}
-      <div class="stat-box">
-        <div class="stat-label">C-BURST DEMAND</div>
-        <div class="stat-val {% if _cb>80 %}red{% elif _cb>50 %}amber{% else %}green{% endif %}">{{ _cb|round(1) }}C</div>
-        <div class="stat-sub">{% if _cb>80 %}⚠️ ต้องใช้ LiPo คุณภาพสูง{% elif _cb>50 %}ต้องการ LiPo ดี{% else %}แบตทั่วไปรับได้{% endif %}</div>
-      </div>
-      {% endif %}
+      {% endfor %}
     </div>
+  </div>
+</div>
 
-    <!-- Pre-flight checks -->
-    <div class="card">
-      <div class="card-head"><div class="card-ico" style="background:rgba(0,255,136,0.1)">✅</div> PRE-FLIGHT SAFETY CHECKS</div>
-      <div class="card-body">
-        <div class="chk-grid">
-          {% if _tip>0 %}
-          <div class="chk {% if _tip>290 %}bad{% elif _tip>265 %}warn{% else %}ok{% endif %}">
-            <span class="chk-icon">⚡</span><div class="chk-body"><div class="chk-name">TIP SPEED</div><div class="chk-val">{{ _tip|int }} m/s</div></div>
+<!-- ── TAB: SAFETY CHECK ── -->
+<div class="rp" id="pane-safety">
+  <div class="card">
+    <div class="ch"><div class="ch-ic" style="background:rgba(0,255,136,0.1)">✅</div> PRE-FLIGHT SAFETY MATRIX</div>
+    <div class="cb">
+      <div class="chk-g">
+        {% if _tip>0 %}
+        <div class="chk {% if _tip>290 %}bad{% elif _tip>265 %}warn{% else %}ok{% endif %}">
+          <span class="chk-ic">⚡</span><div><div class="chk-n">TIP SPEED</div><div class="chk-v">{{ _tip|int }} m/s</div></div>
+        </div>
+        {% endif %}
+        <div class="chk {% if _twr<1.2 %}bad{% elif _twr<2.0 %}warn{% else %}ok{% endif %}">
+          <span class="chk-ic">⚖️</span><div><div class="chk-n">TWR CHECK</div><div class="chk-v">{{ _twr|round(2) }}:1</div></div>
+        </div>
+        {% if _cb>0 %}
+        <div class="chk {% if _cb>80 %}bad{% elif _cb>50 %}warn{% else %}ok{% endif %}">
+          <span class="chk-ic">🔋</span><div><div class="chk-n">C-RATE REQ</div><div class="chk-v">{{ _cb|round(1) }}C</div></div>
+        </div>
+        {% endif %}
+        <div class="chk {% if _ft<2 and _ft>0 %}bad{% elif _ft<4 and _ft>0 %}warn{% elif _ft>0 %}ok{% endif %}">
+          <span class="chk-ic">⏱️</span><div><div class="chk-n">FLIGHT TIME</div><div class="chk-v">{% if _ft>0 %}{{ _ft|round(1) }} min{% else %}ใส่ mAh{% endif %}</div></div>
+        </div>
+        {% if _mh %}<div class="chk {% if '✅' in _mh %}ok{% elif '⚡' in _mh %}warn{% else %}bad{% endif %}">
+          <span class="chk-ic">🌡️</span><div><div class="chk-n">MOTOR LOAD</div><div class="chk-v">{{ _eff|capitalize }}</div></div>
+        </div>{% endif %}
+        {% if _esc>0 %}<div class="chk {% if _esc>80 %}warn{% else %}ok{% endif %}">
+          <span class="chk-ic">🔌</span><div><div class="chk-n">ESC RATING</div><div class="chk-v">≥ {{ _esc }}A</div></div>
+        </div>{% endif %}
+        <div class="chk {% if _tip>290 or _twr<1.5 or _cb>80 %}bad{% elif _tip>265 or _twr<2.0 or _cb>50 %}warn{% else %}ok{% endif %}">
+          <span class="chk-ic">🚦</span><div><div class="chk-n">ARM CLEARANCE</div>
+          <div class="chk-v">{% if _tip>290 or _twr<1.5 or _cb>80 %}NOT READY{% elif _tip>265 or _twr<2.0 or _cb>50 %}CAUTION{% else %}GO FOR LAUNCH{% endif %}</div></div>
+        </div>
+        {% if _rpm>0 %}
+        <div class="chk ok">
+          <span class="chk-ic">🔊</span><div><div class="chk-n">RPM FILTER HZ</div><div class="chk-v">min {{ _rfmin }} Hz</div></div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Propwash Analysis -->
+  <div class="card">
+    <div class="ch"><div class="ch-ic" style="background:rgba(255,187,0,0.1)">🌪️</div> PROPWASH ANALYSIS — PRi {{ _pri }}/100</div>
+    <div class="cb">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <div style="font-family:var(--fd);font-size:42px;font-weight:900;color:{{ _priC }};line-height:1">{{ _pri }}</div>
+        <div>
+          <div style="font-family:var(--fd);font-size:12px;font-weight:700;color:{{ _priC }}">{{ _priL }} PROPWASH RISK</div>
+          <div style="font-size:10.5px;color:var(--t2);margin-top:3px;line-height:1.6">
+            {% if _pri>=70 %}D-term ต้องสูงมาก · RPM filter จำเป็น · ปรับ TPA อย่างระวัง
+            {% elif _pri>=40 %}D-term ปรับละเอียด · RPM filter แนะนำ · ดู Blackbox หลังบิน
+            {% else %}D-term baseline ปกติ · Blackbox เพื่อ fine-tune{% endif %}
           </div>
-          {% else %}
-          <div class="chk"><span class="chk-icon">⚡</span><div class="chk-body"><div class="chk-name">TIP SPEED</div><div class="chk-val" style="color:var(--muted)">ใส่ KV เพื่อคำนวณ</div></div></div>
-          {% endif %}
-          {% if _cb>0 %}
-          <div class="chk {% if _cb>80 %}bad{% elif _cb>50 %}warn{% else %}ok{% endif %}">
-            <span class="chk-icon">🔋</span><div class="chk-body"><div class="chk-name">C-RATE REQ</div><div class="chk-val">{{ _cb|round(1) }}C</div></div>
-          </div>
-          {% endif %}
-          <div class="chk {% if _twr<1.2 %}bad{% elif _twr<2.0 %}warn{% else %}ok{% endif %}">
-            <span class="chk-icon">⚖️</span><div class="chk-body"><div class="chk-name">TWR CHECK</div><div class="chk-val">{{ _twr|round(2) }}:1</div></div>
-          </div>
-          <div class="chk {% if _ft<2 and _ft>0 %}bad{% elif _ft<4 and _ft>0 %}warn{% elif _ft>0 %}ok{% endif %}">
-            <span class="chk-icon">⏱️</span><div class="chk-body"><div class="chk-name">FLIGHT TIME</div><div class="chk-val">{% if _ft>0 %}{{ _ft|round(1) }} min{% else %}ใส่ mAh{% endif %}</div></div>
-          </div>
-          {% if _mh %}<div class="chk {% if '✅' in _mh %}ok{% elif '⚡' in _mh %}warn{% else %}bad{% endif %}">
-            <span class="chk-icon">🌡️</span><div class="chk-body"><div class="chk-name">MOTOR LOAD</div><div class="chk-val">{{ _eff|capitalize }}</div></div>
-          </div>{% endif %}
-          {% if _esc_a>0 %}<div class="chk {% if _esc_a>80 %}warn{% else %}ok{% endif %}">
-            <span class="chk-icon">🔌</span><div class="chk-body"><div class="chk-name">ESC RATING</div><div class="chk-val">{{ _esc_a }}A+</div></div>
-          </div>{% endif %}
         </div>
       </div>
+      <!-- Fix commands -->
+      {% if _pri>=40 %}
+      <div style="font-family:var(--fd);font-size:8px;letter-spacing:.1em;color:var(--t2);margin-bottom:6px">🔧 PROPWASH FIX COMMANDS (BF{{ _bfv }})</div>
+      <div class="code-box" style="margin-top:0">
+        <pre class="cli">{% if _bfv=='4.5' %}set iterm_relax_type     = SETPOINT
+set iterm_relax_cutoff   = 15
+set feedforward_smooth_factor = 65
+set dyn_notch_q          = 300{% elif _bfv=='4.3' %}set iterm_relax_type     = SETPOINT
+set iterm_relax_cutoff   = 12
+set d_roll  = {{ (analysis.pid.roll.d + 4) if analysis else 42 }}
+set d_pitch = {{ (analysis.pid.pitch.d + 4) if analysis else 44 }}{% else %}set iterm_relax_type     = SETPOINT
+set iterm_relax_cutoff   = 15
+set feedforward_smooth_factor = 60
+set d_roll  = {{ (analysis.pid.roll.d + 3) if analysis else 41 }}
+set d_pitch = {{ (analysis.pid.pitch.d + 3) if analysis else 43 }}{% endif %}
+save</pre>
+      </div>
+      {% endif %}
     </div>
+  </div>
+</div>
 
-    <!-- Build Score breakdown -->
-    <div class="card">
-      <div class="card-head"><div class="card-ico" style="background:rgba(255,187,0,0.1)">🧠</div> BUILD SCORE — {{ _score }}/100 ({{ _grade }})</div>
-      <div class="card-body">
-        {% for lbl,val in [('TWR Power',s_twr),('Flight Time',s_ft),('Low Noise',s_noise),('Tip Safety',s_tip),('Motor Health',s_motor),('Efficiency',s_eff)] %}
-        <div class="sbr">
-          <span class="sbr-lbl">{{ lbl }}</span>
-          <div class="sbr-track"><div class="sbr-fill" style="width:{{ val }}%;background:{% if val>=70 %}var(--green){% elif val>=45 %}var(--amber){% else %}var(--red){% endif %}"></div></div>
-          <span class="sbr-pct {% if val>=70 %}green{% elif val>=45 %}amber{% else %}red{% endif %}">{{ val }}%</span>
+<!-- ── TAB: PID + FILTER ── -->
+<div class="rp" id="pane-tune">
+  <div class="card">
+    <div class="ch"><div class="ch-ic" style="background:rgba(0,255,136,0.1)">🎯</div> PID — {{ _cls|capitalize }} × {{ _sy|capitalize }} × BF{{ _bfv }}</div>
+    <div class="cb">
+      <div class="pid3">
+        {% for axis,pdata in [('ROLL',analysis.pid.roll),('PITCH',analysis.pid.pitch),('YAW',analysis.pid.yaw)] %}
+        <div class="pax">
+          <div class="pax-n">{{ axis }}</div>
+          <div class="pr2"><span class="pl P" onclick="toggleTip('t-p')">P</span><div class="pt"><div class="pf G" style="width:{{ [(pdata.p/80*100)|int,100]|min }}%"></div></div><span class="pv gc">{{ pdata.p }}</span></div>
+          <div class="pr2"><span class="pl I" onclick="toggleTip('t-i')">I</span><div class="pt"><div class="pf B" style="width:{{ [(pdata.i/120*100)|int,100]|min }}%"></div></div><span class="pv bc">{{ pdata.i }}</span></div>
+          {% if pdata.d is defined and pdata.d>0 %}
+          <div class="pr2"><span class="pl D" onclick="toggleTip('t-d')">D</span><div class="pt"><div class="pf A" style="width:{{ [(pdata.d/55*100)|int,100]|min }}%"></div></div><span class="pv ac">{{ pdata.d }}</span></div>
+          {% endif %}
         </div>
         {% endfor %}
-        <div style="margin-top:10px;padding:8px 12px;border-radius:7px;text-align:center;font-family:var(--font-d);font-size:9px;letter-spacing:.1em;background:{% if _score>=78 %}rgba(0,255,136,0.08){% elif _score>=55 %}rgba(255,187,0,0.08){% else %}rgba(255,51,68,0.08){% endif %};border:1px solid {% if _score>=78 %}rgba(0,255,136,0.2){% elif _score>=55 %}rgba(255,187,0,0.2){% else %}rgba(255,51,68,0.2){% endif %};color:{% if _score>=78 %}var(--green){% elif _score>=55 %}var(--amber){% else %}var(--red){% endif %}">
-          {% if _score>=92 %}🚀 WORLD CLASS BUILD
-          {% elif _score>=85 %}✅ ยอดเยี่ยม — พร้อมบิน
-          {% elif _score>=78 %}✅ ดีมาก — พร้อมบิน
-          {% elif _score>=55 %}⚡ พอใช้ — แนะนำปรับก่อนบิน
-          {% else %}⚠️ ต้องปรับปรุง — ดูคำเตือนด้านบน{% endif %}
-        </div>
       </div>
-    </div>
-  </div>
-
-  <!-- TAB: PID + FILTER -->
-  <div class="res-pane" id="pane-tune">
-    <div class="card">
-      <div class="card-head"><div class="card-ico" style="background:rgba(0,255,136,0.1)">🎯</div> PID BASELINE — {{ _cls|capitalize }} × {{ _sy|capitalize }}</div>
-      <div class="card-body">
-        <div class="pid-axes">
-          {% for axis,pdata in [('ROLL',analysis.pid.roll),('PITCH',analysis.pid.pitch),('YAW',analysis.pid.yaw)] %}
-          <div class="pid-axis">
-            <div class="pid-axis-name">{{ axis }}</div>
-            <div class="pid-row">
-              <span class="pid-lbl p-lbl" onclick="toggleTip('tip-pp')">P</span>
-              <div class="pid-track"><div class="pid-fill green" style="width:{{ [(pdata.p/80*100)|int,100]|min }}%"></div></div>
-              <span class="pid-val green">{{ pdata.p }}</span>
-            </div>
-            <div class="pid-row">
-              <span class="pid-lbl i-lbl" onclick="toggleTip('tip-pi')">I</span>
-              <div class="pid-track"><div class="pid-fill blue" style="width:{{ [(pdata.i/120*100)|int,100]|min }}%"></div></div>
-              <span class="pid-val blue">{{ pdata.i }}</span>
-            </div>
-            {% if pdata.d is defined and pdata.d>0 %}
-            <div class="pid-row">
-              <span class="pid-lbl d-lbl" onclick="toggleTip('tip-pd')">D</span>
-              <div class="pid-track"><div class="pid-fill amber" style="width:{{ [(pdata.d/55*100)|int,100]|min }}%"></div></div>
-              <span class="pid-val amber">{{ pdata.d }}</span>
-            </div>
-            {% endif %}
-          </div>
-          {% endfor %}
-        </div>
-        <div class="tip-box" id="tip-pp"><strong>P (Proportional)</strong> — ตอบสนองทันทีตาม error · สูงเกิน → oscillate · ต่ำเกิน → sluggish<br><em>Pitch P ควรสูงกว่า Roll P ประมาณ 5–8%</em></div>
-        <div class="tip-box" id="tip-pi"><strong>I (Integral)</strong> — ต้าน drift + ลม · BF4.4+: 80–100 ปกติ<br>สูงเกิน → bounce หลัง flip · ต่ำเกิน → drift ใน wind</div>
-        <div class="tip-box" id="tip-pd"><strong>D (Derivative)</strong> — ลด overshoot + propwash · 5": 28–42 ปกติ<br>สูงเกิน → motor ร้อน · ต่ำเกิน → propwash · <em>ปรับ D ก่อน P เสมอ</em></div>
-        <div class="code-box" style="margin-top:10px">
-          <div class="code-head"><span class="code-title">PID CLI</span><button class="copy-btn" onclick="copyEl('pid-cli');showToast('✓ PID CLI copied!')">📋 Copy</button></div>
-          <pre class="cli" id="pid-cli">set p_roll  = {{ analysis.pid.roll.p }}
+      <div class="tip-box" id="t-p"><strong>P</strong> ตอบสนองทันที · สูงเกิน=oscillate · Pitch P > Roll P ประมาณ 5–8%</div>
+      <div class="tip-box" id="t-i"><strong>I</strong> ต้าน drift + ลม · สูงเกิน=bounce หลัง flip</div>
+      <div class="tip-box" id="t-d"><strong>D</strong> ลด propwash/overshoot · สูงเกิน=motor ร้อน · ปรับ D ก่อน P เสมอ</div>
+      <div class="code-box">
+        <div class="code-h"><span class="code-t">PID CLI — BF{{ _bfv }}</span><button class="cpbtn" onclick="cpEl('pc');toast('✓ PID CLI copied!')">📋 Copy</button></div>
+        <pre class="cli" id="pc">set p_roll  = {{ analysis.pid.roll.p }}
 set i_roll  = {{ analysis.pid.roll.i }}
 set d_roll  = {{ analysis.pid.roll.d }}
 set f_roll  = {{ analysis.pid.roll.f | default(100) }}
@@ -846,31 +1081,36 @@ set d_pitch = {{ analysis.pid.pitch.d }}
 set f_pitch = {{ analysis.pid.pitch.f | default(100) }}
 set p_yaw   = {{ analysis.pid.yaw.p }}
 set i_yaw   = {{ analysis.pid.yaw.i }}
+{% if _bfv=='4.5' %}set iterm_relax_type     = SETPOINT
+set iterm_relax_cutoff   = 15
+set feedforward_smooth_factor = 65{% elif _bfv=='4.3' %}set iterm_relax_type     = SETPOINT
+set iterm_relax_cutoff   = 12{% else %}set iterm_relax_type     = SETPOINT
+set iterm_relax_cutoff   = 15{% endif %}
 save</pre>
-        </div>
       </div>
     </div>
+  </div>
 
-    <div class="card">
-      <div class="card-head"><div class="card-ico" style="background:rgba(0,170,255,0.1)">🔊</div> FILTER SETTINGS</div>
-      <div class="card-body">
-        <div class="flt-grid">
-          <div class="flt-card" onclick="toggleTip('tip-fg')"><div class="flt-lbl">Gyro LPF1</div><div class="flt-val blue">{{ analysis.filter.gyro_lpf1 or '—' }} Hz</div><div class="flt-hint">กรอง broadband · ต่ำ=นิ่ม · สูง=ไว</div></div>
-          <div class="flt-card" onclick="toggleTip('tip-fd')"><div class="flt-lbl">DTerm LPF1</div><div class="flt-val amber">{{ analysis.filter.dterm_lpf1 or '—' }} Hz</div><div class="flt-hint">ลด D-term noise → motor เย็น</div></div>
-          <div class="flt-card" onclick="toggleTip('tip-fn')"><div class="flt-lbl">Dyn Notch</div><div class="flt-val green">{{ analysis.filter.dyn_notch or 1 }} ตัว</div><div class="flt-hint">track resonance real-time</div></div>
-          <div class="flt-card {% if analysis.filter.rpm_filter %}rpm-on{% endif %}" onclick="toggleTip('tip-fr')"><div class="flt-lbl">RPM Filter</div><div class="flt-val {% if analysis.filter.rpm_filter %}green{% else %}red{% endif %}">{{ 'ON' if analysis.filter.rpm_filter else 'OFF' }}</div><div class="flt-hint">ต้อง BLHeli32/AM32 + Bidir DSHOT</div></div>
-          <div class="flt-card" onclick="toggleTip('tip-fa')"><div class="flt-lbl">Anti-Gravity</div><div class="flt-val purple">{{ analysis.filter.anti_gravity or 5 }}</div><div class="flt-hint">boost I ตอน throttle เปลี่ยนเร็ว</div></div>
-          {% if _rpm>0 %}<div class="flt-card rpm-on" onclick="toggleTip('tip-fm')"><div class="flt-lbl">rpm_filter_min_hz</div><div class="flt-val green">{{ _rfmin }} Hz</div><div class="flt-hint">{{ (_rpm/1000)|round(1) }}k RPM × 7 poles ÷ 60 × 0.22</div></div>{% endif %}
-        </div>
-        <div class="tip-box" id="tip-fg"><strong>Gyro LPF1</strong> · Nano/Whoop:250–300 · 5" Freestyle:200–250 · LR:120–150 Hz<br>เปิด RPM filter → ลด Gyro LPF1 ได้ → latency น้อยลง, motor เย็นลง</div>
-        <div class="tip-box" id="tip-fd"><strong>DTerm LPF1</strong> · ตั้ง ~50-60% ของ Gyro LPF1 · 5":≈110 Hz · LR:≈90 Hz<br>Motor ร้อนหลังบิน → ลด DTerm LPF1 ลง 10–20 Hz ก่อน</div>
-        <div class="tip-box" id="tip-fn"><strong>Dynamic Notch</strong> · 1 notch=LR นิ่ง · 2–3 notch=freestyle/racing สั่น<br>ดู Blackbox spectrogram → ปรับ min/max Hz ตาม peak จริง</div>
-        <div class="tip-box" id="tip-fr"><strong>RPM Filter</strong> · ต้องการ BLHeli32 หรือ AM32 + Bidirectional DSHOT<br>ผล: noise ลดมาก · motor เย็น · สามารถเพิ่ม P/D ได้อีก</div>
-        <div class="tip-box" id="tip-fa"><strong>Anti-Gravity</strong> · 3–5=LR/freestyle · 5–7=freestyle throttle pump บ่อย<br>Nose dip/rise ตอน throttle chop → เพิ่มค่า Anti-Gravity</div>
-        <div class="tip-box" id="tip-fm"><strong>rpm_filter_min_hz</strong> · สูตร: RPM × 7 poles ÷ 60 × 0.22 (ที่ ~22% throttle)<br>ค่าต่ำเกิน = กรอง low freq ที่ไม่ใช่ motor noise</div>
-        <div class="code-box" style="margin-top:10px">
-          <div class="code-head"><span class="code-title">Filter CLI</span><button class="copy-btn" onclick="copyEl('flt-cli');showToast('✓ Filter CLI copied!')">📋 Copy</button></div>
-          <pre class="cli" id="flt-cli">set gyro_lpf1_static_hz   = {{ analysis.filter.gyro_lpf1 or 0 }}
+  <div class="card">
+    <div class="ch"><div class="ch-ic" style="background:rgba(0,170,255,0.1)">🔊</div> FILTER — BF{{ _bfv }}</div>
+    <div class="cb">
+      <div class="fg3">
+        <div class="fc" onclick="toggleTip('t-fg')"><div class="fl">Gyro LPF1</div><div class="fv bc">{{ analysis.filter.gyro_lpf1 or '—' }} Hz</div><div class="fh">broadband filter</div></div>
+        <div class="fc" onclick="toggleTip('t-fd')"><div class="fl">DTerm LPF1</div><div class="fv ac">{{ analysis.filter.dterm_lpf1 or '—' }} Hz</div><div class="fh">motor temp control</div></div>
+        <div class="fc" onclick="toggleTip('t-fn')"><div class="fl">Dyn Notch</div><div class="fv gc">{{ analysis.filter.dyn_notch or 1 }} ตัว</div><div class="fh">resonance tracker</div></div>
+        <div class="fc {% if analysis.filter.rpm_filter %}rpm{% endif %}" onclick="toggleTip('t-fr')"><div class="fl">RPM Filter</div><div class="fv {% if analysis.filter.rpm_filter %}gc{% else %}rc{% endif %}">{{ 'ON' if analysis.filter.rpm_filter else 'OFF' }}</div><div class="fh">BLHeli32/AM32</div></div>
+        <div class="fc" onclick="toggleTip('t-fa')"><div class="fl">Anti-Gravity</div><div class="fv pc">{{ analysis.filter.anti_gravity or 5 }}</div><div class="fh">throttle I boost</div></div>
+        {% if _rpm>0 %}<div class="fc rpm" onclick="toggleTip('t-fm')"><div class="fl">rpm_min_hz</div><div class="fv gc">{{ _rfmin }} Hz</div><div class="fh">{{ (_rpm/1000)|round(1) }}k RPM calc</div></div>{% endif %}
+      </div>
+      <div class="tip-box" id="t-fg">Gyro LPF1 · Nano/Whoop:250–300 · 5"Freestyle:200–250 · LR:120–150 Hz<br>เปิด RPM filter → ลด Gyro LPF1 ได้ → latency น้อยลง</div>
+      <div class="tip-box" id="t-fd">DTerm LPF1 · ≈50–60% ของ Gyro · 5":≈110 Hz · Motor ร้อน → ลด 10–20 Hz</div>
+      <div class="tip-box" id="t-fn">Dyn Notch · 1=LR นิ่ง · 2–3=freestyle/racing · ดู Blackbox spectrogram</div>
+      <div class="tip-box" id="t-fr">RPM Filter · ต้อง BLHeli32/AM32 + dshot_bidir=ON · ลด noise ได้มากที่สุด</div>
+      <div class="tip-box" id="t-fa">Anti-Gravity · 3–5=LR · 5–7=freestyle pump · Nose dip/rise → เพิ่มค่าขึ้น</div>
+      <div class="tip-box" id="t-fm">rpm_filter_min_hz · สูตร: RPM × 7 ÷ 60 × 0.22 · poles=14 default</div>
+      <div class="code-box">
+        <div class="code-h"><span class="code-t">Filter CLI — BF{{ _bfv }}</span><button class="cpbtn" onclick="cpEl('fc2');toast('✓ Filter CLI copied!')">📋 Copy</button></div>
+        <pre class="cli" id="fc2">set gyro_lpf1_static_hz   = {{ analysis.filter.gyro_lpf1 or 0 }}
 set gyro_lpf1_type        = {{ 'PT2' if _sy=='racing' else 'PT1' }}
 set gyro_lpf2_static_hz   = {{ analysis.filter.gyro_lpf2 or 0 }}
 set dterm_lpf1_static_hz  = {{ analysis.filter.dterm_lpf1 or 0 }}
@@ -879,7 +1119,7 @@ set dterm_lpf2_static_hz  = {{ analysis.filter.dterm_lpf2 or 0 }}
 set dyn_notch_count       = {{ analysis.filter.dyn_notch or 1 }}
 set dyn_notch_min_hz      = {{ analysis.filter.dyn_notch_min or 80 }}
 set dyn_notch_max_hz      = {{ analysis.filter.dyn_notch_max or 400 }}
-set dyn_notch_q           = 250
+set dyn_notch_q           = {{ '300' if _bfv=='4.5' else '250' }}
 set motor_pwm_protocol    = DSHOT600
 set dshot_bidir           = {{ 'ON' if analysis.filter.rpm_filter else 'OFF' }}
 set motor_poles           = 14
@@ -889,52 +1129,149 @@ set rpm_filter_min_hz     = {{ _rfmin }}
 set anti_gravity_gain     = {{ analysis.filter.anti_gravity or 5 }}
 set anti_gravity_mode     = SMOOTH
 save</pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tuning Roadmap -->
-    <div class="card">
-      <div class="card-head"><div class="card-ico" style="background:rgba(176,96,255,0.1)">🗺️</div> TUNING ROADMAP — ลำดับที่ถูกต้อง</div>
-      <div class="card-body">
-        <div class="tmap-row"><div class="tmap-dot-col"><div class="tmap-dot done"></div><div class="tmap-line"></div></div><div><div class="tmap-step">STEP 01 — PRE-FLIGHT</div><div class="tmap-detail">Flash firmware → Paste CLI → ตรวจ motor direction → arm test → Motor test ใน Configurator</div></div></div>
-        <div class="tmap-row"><div class="tmap-dot-col"><div class="tmap-dot active"></div><div class="tmap-line"></div></div><div><div class="tmap-step">STEP 02 — BASELINE FLIGHT</div><div class="tmap-detail">บิน hover 1 pack · สังเกต hover throttle จริง ≈ {{ _hov|int }}% (คำนวณ: {{ _hov|int }}%) · ตรวจ motor temp (ควร &lt;60°C)</div></div></div>
-        <div class="tmap-row"><div class="tmap-dot-col"><div class="tmap-dot"></div><div class="tmap-line"></div></div><div><div class="tmap-step">STEP 03 — D TERM ก่อน (motor ร้อน + propwash)</div><div class="tmap-detail">Motor ร้อน → ลด D ทีละ 3 · Propwash หลัง flip → เพิ่ม D ทีละ 3</div><pre class="tmap-cli">set d_roll  = {{ analysis.pid.roll.d }}  ← เริ่มที่นี่
-set d_pitch = {{ analysis.pid.pitch.d }}</pre></div></div>
-        <div class="tmap-row"><div class="tmap-dot-col"><div class="tmap-dot"></div><div class="tmap-line"></div></div><div><div class="tmap-step">STEP 04 — P TERM (ตอบสนอง)</div><div class="tmap-detail">Motor หึ่งตอน throttle ขึ้น-ลง → ลด P ทีละ 3 · Pitch P &gt; Roll P เสมอ</div><pre class="tmap-cli">set p_roll  = {{ analysis.pid.roll.p }}
-set p_pitch = {{ analysis.pid.pitch.p }}</pre></div></div>
-        <div class="tmap-row"><div class="tmap-dot-col"><div class="tmap-dot"></div><div class="tmap-line"></div></div><div><div class="tmap-step">STEP 05 — FILTER (latency + motor temp)</div><div class="tmap-detail">Motor เย็นดี → เพิ่ม Gyro LPF1 ขึ้น 10 Hz ทีละครั้ง</div><pre class="tmap-cli">set gyro_lpf1_static_hz = {{ analysis.filter.gyro_lpf1 or 0 }}
-set rpm_filter_min_hz   = {{ _rfmin }}</pre></div></div>
-        <div class="tmap-row"><div class="tmap-dot-col"><div class="tmap-dot"></div></div><div><div class="tmap-step">STEP 06 — FINE TUNE (TPA + FF + Rates)</div><div class="tmap-detail">TPA ลด P ที่ throttle สูง · FF ลด latency · Rates ปรับ stick feel</div><pre class="tmap-cli">set tpa_rate          = {{ '55' if _sy=='racing' else '65' }}
-set tpa_breakpoint    = 1300
-set feedforward_roll  = {{ '120' if _sy=='racing' else '100' }}
-set feedforward_pitch = {{ '120' if _sy=='racing' else '100' }}</pre></div></div>
-        <div style="margin-top:12px;padding:9px 12px;background:rgba(0,255,136,0.04);border:1px solid rgba(0,255,136,0.12);border-radius:7px;font-size:10.5px;color:var(--text2);line-height:1.7">
-          💡 <strong style="color:var(--green)">กฎทอง:</strong> ปรับ<strong>ทีละอย่าง</strong> · บินทดสอบ 1 pack · บันทึก Blackbox ทุกครั้ง · ถ้าแย่ลง → undo ทันที
-        </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- TAB: CLI DEPLOY -->
-  <div class="res-pane" id="pane-cli">
-    <div class="card">
-      <div class="card-head"><div class="card-ico" style="background:rgba(0,255,136,0.1)">⌨️</div> FULL CLI — Copy → Paste ใน Betaflight CLI → Enter → save</div>
-      <div class="card-body">
-        <div style="background:rgba(0,170,255,0.05);border:1px solid rgba(0,170,255,0.12);border-radius:7px;padding:10px 12px;margin-bottom:12px;font-size:10.5px;color:var(--text2);line-height:1.7">
-          📌 Betaflight Configurator → CLI tab → paste → Enter → พิมพ์ <code style="color:var(--green);font-family:var(--font-m)">save</code> → Enter
+<!-- ── TAB: BATTERY MATCHER ── -->
+<div class="rp" id="pane-batt">
+  <div class="card">
+    <div class="ch"><div class="ch-ic" style="background:rgba(255,187,0,0.1)">🔋</div> BATTERY MATCHER — ต้องการ {{ _cb|round(1) }}C burst · {{ _cells }}S</div>
+    <div class="cb">
+      <div style="background:rgba(0,170,255,0.05);border:1px solid rgba(0,170,255,0.1);border-radius:7px;padding:9px 11px;margin-bottom:12px;font-size:10.5px;color:var(--t2);line-height:1.7">
+        📌 C-rate ที่ต้องการ: <strong style="color:var(--a)">{{ _cb|round(1) }}C</strong>
+        {% if _mah>0 %} · ความจุ: <strong style="color:var(--g)">{{ _mah }}mAh</strong>{% endif %}
+        · Peak current: <strong style="color:var(--r)">{{ (adv.peak_current_a or 0)|int }}A total</strong>
+      </div>
+      <div class="bm-grid">
+        {% set battList = [
+          ('Tattu R-Line','120C',120,'bm-ok'),
+          ('CNHL Black','100C',100,'bm-ok'),
+          ('GOLDBAT',  '75C', 75, 'bm-warn' if _cb>75 else 'bm-ok'),
+          ('Ovonic',   '80C', 80, 'bm-warn' if _cb>80 else 'bm-ok'),
+          ('Generic 45C','45C',45,'bm-bad' if _cb>45 else 'bm-warn'),
+          ('Hobby King','65C',65,'bm-warn' if _cb>65 else 'bm-ok')
+        ] %}
+        {% for brand,cRating,cVal,cls in battList %}
+        <div class="bm-row">
+          <span class="bm-brand">{{ brand }}</span>
+          <span class="bm-c {% if cVal>=_cb %}gc{% elif cVal>=_cb*0.7 %}ac{% else %}rc{% endif %}">{{ cRating }}</span>
+          <div class="bm-bar"><div class="bm-fill" style="width:{{ [100,(cVal/_cb*100)|int if _cb>0 else 80]|min }}%;background:{% if cVal>=_cb %}var(--g){% elif cVal>=_cb*0.7 %}var(--a){% else %}var(--r){% endif %}"></div></div>
+          <span class="bm-tag {{ cls }}">{% if cVal>=_cb %}✅ OK{% elif cVal>=_cb*0.7 %}⚠️ EDGE{% else %}❌ WEAK{% endif %}</span>
         </div>
-        <div class="code-box">
-          <div class="code-head"><span class="code-title">FULL CLI — {{ _sy|upper }}</span><button class="copy-btn" onclick="copyEl('full-cli');showToast('✓ Full CLI copied!')">📋 Copy All</button></div>
-          <pre class="cli" id="full-cli"># ════════════════════════════════════════════
-# OBIXConfig Doctor v6 — Generated CLI
-# Frame  : {{ analysis.size or '5' }}" · {{ _cls|capitalize }}
-# Battery: {{ _cells }}S {{ _vnom|round(1) }}V · KV{{ _kv or '—' }} · {{ _mah or '—' }}mAh
-# Style  : {{ _sy|capitalize }}
-# TWR    : {{ _twr|round(2) }}:1 · Flight: ~{{ _ft|round(1) }}min
-# ════════════════════════════════════════════
+        {% endfor %}
+      </div>
+      <div style="margin-top:10px;font-size:9.5px;color:var(--t3);line-height:1.7">
+        💡 C-rate จริงของแบตมักต่ำกว่า spec 20–30% · แนะนำเลือก C-rate ที่ 1.3× ของที่ต้องการ<br>
+        {% if _cells>=6 %}⚠️ {{ _cells }}S ระวัง voltage sag สูง — ใช้แบตคุณภาพดีเท่านั้น{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
 
-# ── PID ─────────────────────────────────────
+<!-- ── TAB: FIRST FLIGHT PROTOCOL ── -->
+<div class="rp" id="pane-ffp">
+  <div class="card">
+    <div class="ch"><div class="ch-ic" style="background:rgba(0,212,255,0.1)">📋</div> FIRST FLIGHT PROTOCOL — สำหรับ {{ _sy|capitalize }} {{ _sz }}" {{ _cells }}S</div>
+    <div class="cb">
+      <div style="font-size:9.5px;color:var(--t3);margin-bottom:10px">คลิก ⭕ เมื่อทำเสร็จแต่ละขั้น — ระบบจำสถานะไว้ให้</div>
+      <div class="ffp">
+        <div class="ffp-step">
+          <div class="ffp-dc"><div class="ffp-dot" onclick="this.classList.toggle('done')" title="คลิกเมื่อทำเสร็จ"></div><div class="ffp-line"></div></div>
+          <div><div class="ffp-n">STEP 01 — FIRMWARE & SETUP</div>
+          <div class="ffp-d">Flash BF{{ _bfv }} · ตั้ง motor direction · ตรวจ props direction (props in/out) · ตั้ง DSHOT{{ '600' if _cells>=5 else '300' }}</div></div>
+        </div>
+        <div class="ffp-step">
+          <div class="ffp-dc"><div class="ffp-dot" onclick="this.classList.toggle('done')"></div><div class="ffp-line"></div></div>
+          <div><div class="ffp-n">STEP 02 — PASTE CLI BASELINE</div>
+          <div class="ffp-d">Paste Filter CLI ก่อน → PID ทีหลัง → save → reboot</div>
+          <div class="ffp-val">set motor_pwm_protocol = DSHOT600
+set dshot_bidir = {{ 'ON' if analysis.filter.rpm_filter else 'OFF' }}
+set motor_poles = 14
+save</div></div>
+        </div>
+        <div class="ffp-step">
+          <div class="ffp-dc"><div class="ffp-dot" onclick="this.classList.toggle('done')"></div><div class="ffp-line"></div></div>
+          <div><div class="ffp-n">STEP 03 — BENCH TEST (no props)</div>
+          <div class="ffp-d">Arm ที่ bench · ดู Motor tab ใน Configurator · ตรวจ motor temp ≤ 45°C หลัง 30 วินาที</div></div>
+        </div>
+        <div class="ffp-step">
+          <div class="ffp-dc"><div class="ffp-dot" onclick="this.classList.toggle('done')"></div><div class="ffp-line"></div></div>
+          <div><div class="ffp-n">STEP 04 — HOVER TEST (1 pack)</div>
+          <div class="ffp-d">บิน hover ~2 เมตร · สังเกต throttle ที่ hover ควร ≈ <strong style="color:var(--a)">{{ _hov|int }}%</strong> · ตรวจ motor temp หลัง land (เป้าหมาย &lt;60°C)</div></div>
+        </div>
+        <div class="ffp-step">
+          <div class="ffp-dc"><div class="ffp-dot" onclick="this.classList.toggle('done')"></div><div class="ffp-line"></div></div>
+          <div><div class="ffp-n">STEP 05 — D TERM TUNE</div>
+          <div class="ffp-d">Motor ร้อน → ลด D ทีละ 3 · Propwash → เพิ่ม D ทีละ 3</div>
+          <div class="ffp-val">set d_roll  = {{ analysis.pid.roll.d }}  ← baseline
+set d_pitch = {{ analysis.pid.pitch.d }}</div></div>
+        </div>
+        <div class="ffp-step">
+          <div class="ffp-dc"><div class="ffp-dot" onclick="this.classList.toggle('done')"></div><div class="ffp-line"></div></div>
+          <div><div class="ffp-n">STEP 06 — P TERM TUNE</div>
+          <div class="ffp-d">Motor หึ่งตอน throttle ขึ้น-ลง → ลด P ทีละ 3 · Pitch P > Roll P เสมอ</div>
+          <div class="ffp-val">set p_roll  = {{ analysis.pid.roll.p }}
+set p_pitch = {{ analysis.pid.pitch.p }}</div></div>
+        </div>
+        <div class="ffp-step">
+          <div class="ffp-dc"><div class="ffp-dot" onclick="this.classList.toggle('done')"></div><div class="ffp-line"></div></div>
+          <div><div class="ffp-n">STEP 07 — STYLE TUNING</div>
+          {% if _sy=='racing' %}
+          <div class="ffp-d">Racing: TPA ลด P ที่ throttle สูง · rates ให้ snap · FF เพิ่ม response</div>
+          <div class="ffp-val">set tpa_rate       = 55
+set tpa_breakpoint = 1300
+set feedforward_roll  = 120
+set feedforward_pitch = 120</div>
+          {% elif _sy=='longrange' %}
+          <div class="ffp-d">LR: ลด rates ให้นิ่ม · Anti-Gravity ต่ำ · ตรวจ GPS failsafe</div>
+          <div class="ffp-val">set tpa_rate       = 70
+set anti_gravity_gain = 3
+set feedforward_roll  = 75
+set feedforward_pitch = 75</div>
+          {% else %}
+          <div class="ffp-d">Freestyle: TPA กลาง · FF สำหรับ snap response · Anti-Gravity สำหรับ pump</div>
+          <div class="ffp-val">set tpa_rate       = 65
+set tpa_breakpoint = 1300
+set anti_gravity_gain = 5
+set feedforward_roll  = 100
+set feedforward_pitch = 100</div>
+          {% endif %}
+          </div>
+        </div>
+        <div class="ffp-step">
+          <div class="ffp-dc"><div class="ffp-dot" onclick="this.classList.toggle('done')"></div></div>
+          <div><div class="ffp-n">STEP 08 — BLACKBOX VERIFY</div>
+          <div class="ffp-d">บันทึก Blackbox 1 pack · Upload ที่ <a href="/blackbox" style="color:var(--b)">OBIXConfig Blackbox Analyzer</a> · ดู P/D oscillation + noise floor</div></div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding:8px 11px;background:rgba(0,255,136,0.04);border:1px solid rgba(0,255,136,0.1);border-radius:6px;font-size:10.5px;color:var(--t2);line-height:1.7">
+        💡 <strong style="color:var(--g)">กฎทอง:</strong> ปรับ<strong>ทีละอย่าง</strong> · บินทดสอบ 1 pack · Blackbox ทุกครั้ง · ถ้าแย่ลง → undo ทันที
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TAB: CLI DEPLOY ── -->
+<div class="rp" id="pane-cli">
+  <div class="card">
+    <div class="ch"><div class="ch-ic" style="background:rgba(0,255,136,0.1)">⌨️</div> FULL CLI — BF{{ _bfv }} · Copy → Paste → save</div>
+    <div class="cb">
+      <div style="background:rgba(0,170,255,0.05);border:1px solid rgba(0,170,255,0.1);border-radius:6px;padding:8px 11px;margin-bottom:10px;font-size:10.5px;color:var(--t2)">
+        📌 Betaflight → CLI tab → paste → Enter → <code style="color:var(--g);font-family:var(--fm)">save</code> → Enter
+      </div>
+      <div class="code-box">
+        <div class="code-h"><span class="code-t">FULL CLI — {{ _sy|upper }} · BF{{ _bfv }}</span><button class="cpbtn" onclick="cpEl('fullcli');toast('✓ Full CLI copied!')">📋 Copy All</button></div>
+        <pre class="cli" id="fullcli"># ══════════════════════════════════════════════
+# OBIXConfig Mission Computer v7 — Generated
+# Build  : {{ _sz }}" {{ _cls|capitalize }} · {{ _cells }}S {{ _vnom|round(1) }}V
+# KV     : {{ _kv or '—' }} · Weight: {{ _wt|int }}g · {{ _sy|capitalize }}
+# TWR    : {{ _twr|round(2) }}:1 · Flight: ~{{ _ft|round(1) }}min
+# BF Ver : {{ _bfv }} · PRi: {{ _pri }}/100
+# ══════════════════════════════════════════════
+
+# ── PID ──────────────────────────────────────
 set p_roll  = {{ analysis.pid.roll.p }}
 set i_roll  = {{ analysis.pid.roll.i }}
 set d_roll  = {{ analysis.pid.roll.d }}
@@ -945,8 +1282,14 @@ set d_pitch = {{ analysis.pid.pitch.d }}
 set f_pitch = {{ analysis.pid.pitch.f | default(100) }}
 set p_yaw   = {{ analysis.pid.yaw.p }}
 set i_yaw   = {{ analysis.pid.yaw.i }}
+{% if _bfv=='4.5' %}set iterm_relax_type          = SETPOINT
+set iterm_relax_cutoff        = 15
+set feedforward_smooth_factor = 65{% elif _bfv=='4.3' %}set iterm_relax_type     = SETPOINT
+set iterm_relax_cutoff   = 12{% else %}set iterm_relax_type          = SETPOINT
+set iterm_relax_cutoff        = 15
+set feedforward_smooth_factor = 60{% endif %}
 
-# ── FILTER ──────────────────────────────────
+# ── FILTER ───────────────────────────────────
 set gyro_lpf1_static_hz   = {{ analysis.filter.gyro_lpf1 or 0 }}
 set gyro_lpf1_type        = {{ 'PT2' if _sy=='racing' else 'PT1' }}
 set gyro_lpf2_static_hz   = {{ analysis.filter.gyro_lpf2 or 0 }}
@@ -956,9 +1299,9 @@ set dterm_lpf2_static_hz  = {{ analysis.filter.dterm_lpf2 or 0 }}
 set dyn_notch_count       = {{ analysis.filter.dyn_notch or 1 }}
 set dyn_notch_min_hz      = {{ analysis.filter.dyn_notch_min or 80 }}
 set dyn_notch_max_hz      = {{ analysis.filter.dyn_notch_max or 400 }}
-set dyn_notch_q           = 250
+set dyn_notch_q           = {{ '300' if _bfv=='4.5' else '250' }}
 
-# ── RPM FILTER ──────────────────────────────
+# ── RPM FILTER ───────────────────────────────
 set motor_pwm_protocol    = DSHOT600
 set dshot_bidir           = {{ 'ON' if analysis.filter.rpm_filter else 'OFF' }}
 set motor_poles           = 14
@@ -966,81 +1309,37 @@ set rpm_filter_harmonics  = 3
 set rpm_filter_q          = 500
 set rpm_filter_min_hz     = {{ _rfmin }}
 
-# ── MISC ────────────────────────────────────
+# ── MISC ─────────────────────────────────────
 set anti_gravity_gain     = {{ analysis.filter.anti_gravity or 5 }}
 set anti_gravity_mode     = SMOOTH
-set tpa_rate              = {{ '55' if _sy=='racing' else '65' }}
+set tpa_rate              = {{ '55' if _sy=='racing' else ('70' if _sy=='longrange' else '65') }}
 set tpa_breakpoint        = 1300
-set feedforward_roll      = {{ '120' if _sy=='racing' else '100' }}
-set feedforward_pitch     = {{ '120' if _sy=='racing' else '100' }}
+set feedforward_roll      = {{ '120' if _sy=='racing' else ('75' if _sy=='longrange' else '100') }}
+set feedforward_pitch     = {{ '120' if _sy=='racing' else ('75' if _sy=='longrange' else '100') }}
 
 save</pre>
-        </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- TAB: PHYSICS -->
-  <div class="res-pane" id="pane-physics">
-    <div class="stats-grid">
-      <div class="stat-box"><div class="stat-label">TWR</div><div class="stat-val {% if _twr>=3.5 %}green{% elif _twr>=2.0 %}amber{% else %}red{% endif %}">{{ _twr|round(2) }}:1</div><div class="stat-sub">Thrust_total ÷ Weight</div></div>
-      {% if _tip>0 %}<div class="stat-box"><div class="stat-label">TIP SPEED</div><div class="stat-val {% if _tip>290 %}red{% elif _tip>265 %}amber{% else %}green{% endif %}">{{ _tip|int }} m/s</div><div class="stat-sub">π × prop_dia × RPM ÷ 60 · limit 290 m/s</div></div>{% endif %}
-      {% if _rpm>0 %}<div class="stat-box"><div class="stat-label">MAX RPM (loaded)</div><div class="stat-val blue">{{ (_rpm/1000)|round(1) }}k</div><div class="stat-sub">{{ _kv }}KV × {{ _cells }}S × 3.85V × 80% eff</div></div>{% endif %}
-      {% if _hov>0 %}<div class="stat-box"><div class="stat-label">HOVER THROTTLE</div><div class="stat-val amber">{{ _hov|int }}%</div><div class="stat-sub">√(1/TWR) × 100 · ค่าดี = 30–45%</div></div>{% endif %}
-      {% if _cb>0 %}<div class="stat-box"><div class="stat-label">C-BURST DEMAND</div><div class="stat-val {% if _cb>80 %}red{% elif _cb>50 %}amber{% else %}green{% endif %}">{{ _cb|round(1) }}C</div><div class="stat-sub">peak_current ÷ (mAh ÷ 1000)</div></div>{% endif %}
-      {% if _esc_a>0 %}<div class="stat-box"><div class="stat-label">ESC (per motor)</div><div class="stat-val amber">{{ _esc_a }}A</div><div class="stat-sub">peak/motor × 1.5 safety factor</div></div>{% endif %}
-      {% if _ft>0 %}<div class="stat-box"><div class="stat-label">FLIGHT TIME</div><div class="stat-val green">{{ _ft|round(1) }} min</div><div class="stat-sub">usable Wh ÷ avg power × 60 · {{ _mah or '—' }}mAh</div></div>{% endif %}
-      {% if adv.hover_power_w %}<div class="stat-box"><div class="stat-label">HOVER POWER</div><div class="stat-val blue">{{ adv.hover_power_w|int }}W</div><div class="stat-sub">กำลังขณะ hover ปกติ</div></div>{% endif %}
-      {% if adv.max_power_total_w %}<div class="stat-box"><div class="stat-label">PEAK POWER (WOT)</div><div class="stat-val red">{{ adv.max_power_total_w|int }}W</div><div class="stat-sub">4 motors ที่ full throttle</div></div>{% endif %}
-    </div>
-    {% if analysis.prop_result %}
-    <div class="card">
-      <div class="card-head"><div class="card-ico" style="background:rgba(0,212,255,0.1)">🌀</div> PROPELLER ANALYSIS</div>
-      <div class="card-body">
-        <div class="stats-grid">
-          <div class="stat-box"><div class="stat-label">MOTOR LOAD</div><div class="stat-val amber">{{ analysis.prop_result.effect.motor_load }}/10</div></div>
-          <div class="stat-box"><div class="stat-label">NOISE LEVEL</div><div class="stat-val {% if analysis.prop_result.effect.noise<3 %}green{% elif analysis.prop_result.effect.noise<5 %}amber{% else %}red{% endif %}">{{ analysis.prop_result.effect.noise }}/6</div></div>
-          {% if analysis.prop_result.effect.grip %}<div class="stat-box"><div class="stat-label">GRIP</div><div class="stat-val green">{{ analysis.prop_result.effect.grip }}</div></div>{% endif %}
-          {% if analysis.prop_result.effect.efficiency %}<div class="stat-box"><div class="stat-label">EFFICIENCY</div><div class="stat-val blue">{{ analysis.prop_result.effect.efficiency }}</div></div>{% endif %}
-          {% if analysis.prop_result.effect.pitch_speed_kmh %}<div class="stat-box"><div class="stat-label">PITCH SPEED</div><div class="stat-val purple">{{ analysis.prop_result.effect.pitch_speed_kmh|int }} km/h</div><div class="stat-sub">ความเร็ว theoretical สูงสุด</div></div>{% endif %}
-        </div>
-      </div>
-    </div>
-    {% endif %}
-  </div>
+{% endif %}{# /if analysis #}
 
-  {% endif %}{# /if analysis #}
+</div>{# /col-res #}
+</div>{# /shell #}
 
-</div><!-- /stage -->
-</div><!-- /app-shell -->
-
-<div class="toast" id="toast"></div>
-
-<button class="ftp-btn" onclick="window.location='/landing'" title="เครื่องมือทั้งหมด">
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <circle cx="3.5" cy="3.5" r="1.8" fill="currentColor"/>
-    <circle cx="12.5" cy="3.5" r="1.8" fill="currentColor"/>
-    <circle cx="3.5" cy="12.5" r="1.8" fill="currentColor"/>
-    <circle cx="12.5" cy="12.5" r="1.8" fill="currentColor"/>
-    <circle cx="8" cy="8" r="1.8" fill="currentColor" opacity=".5"/>
-  </svg>
-  TOOLS <span class="ftp-count">22</span>
+<div class="toast" id="toastEl"></div>
+<button class="ftp" onclick="window.location='/landing'">
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="3" cy="3" r="1.6" fill="currentColor"/><circle cx="11" cy="3" r="1.6" fill="currentColor"/><circle cx="3" cy="11" r="1.6" fill="currentColor"/><circle cx="11" cy="11" r="1.6" fill="currentColor"/><circle cx="7" cy="7" r="1.6" fill="currentColor" opacity=".4"/></svg>
+  TOOLS <span class="ftp-c">22</span>
 </button>
 
+<!-- OBIX data bridge -->
 <script>
-window.OBIX = {
-  analysis: {{ 'true' if analysis else 'false' }},
-  pid: {
-    pRoll:{{ analysis.pid.roll.p if analysis else 48 }},iRoll:{{ analysis.pid.roll.i if analysis else 90 }},dRoll:{{ analysis.pid.roll.d if analysis else 38 }},
-    pPitch:{{ analysis.pid.pitch.p if analysis else 52 }},iPitch:{{ analysis.pid.pitch.i if analysis else 90 }},dPitch:{{ analysis.pid.pitch.d if analysis else 40 }},
-    pYaw:{{ analysis.pid.yaw.p if analysis else 40 }},iYaw:{{ analysis.pid.yaw.i if analysis else 90 }}
-  },
-  filter:{
-    gLpf1:{{ analysis.filter.gyro_lpf1 or 200 if analysis else 200 }},
-    dLpf1:{{ analysis.filter.dterm_lpf1 or 110 if analysis else 110 }},
-    notch:{{ analysis.filter.dyn_notch or 2 if analysis else 2 }},
-    ag:{{ analysis.filter.anti_gravity or 5 if analysis else 5 }}
-  },
+window.OBIX={
+  analysis:{{ 'true' if analysis else 'false' }},
+  pid:{pRoll:{{ analysis.pid.roll.p if analysis else 48 }},iRoll:{{ analysis.pid.roll.i if analysis else 90 }},dRoll:{{ analysis.pid.roll.d if analysis else 38 }},pPitch:{{ analysis.pid.pitch.p if analysis else 52 }},iPitch:{{ analysis.pid.pitch.i if analysis else 90 }},dPitch:{{ analysis.pid.pitch.d if analysis else 40 }},pYaw:{{ analysis.pid.yaw.p if analysis else 40 }},iYaw:{{ analysis.pid.yaw.i if analysis else 90 }}},
+  filter:{gLpf1:{{ analysis.filter.gyro_lpf1 or 200 if analysis else 200 }},dLpf1:{{ analysis.filter.dterm_lpf1 or 110 if analysis else 110 }},notch:{{ analysis.filter.dyn_notch or 2 if analysis else 2 }},ag:{{ analysis.filter.anti_gravity or 5 if analysis else 5 }}},
   propRadar:{% if analysis and analysis.prop_result %}{motorLoad:{{ analysis.prop_result.effect.motor_load }},noise:{{ analysis.prop_result.effect.noise }}}{% else %}null{% endif %}
 };
 </script>
@@ -1048,145 +1347,230 @@ window.OBIX = {
 <script>
 (function(){
 'use strict';
-function g(id){return document.getElementById(id)}
-function sv(id,v){var e=g(id);if(e)e.textContent=v}
-
+var g=function(id){return document.getElementById(id)};
 var _PT=[[1.5,70],[2.5,190],[3,280],[3.5,380],[4,520],[5,850],[6,1200],[7,1600],[8,2050],[10,3200]];
 var _PP=[[1.5,15],[2.5,55],[3,80],[3.5,120],[4,180],[5,300],[6,440],[7,620],[8,800],[10,1200]];
-var _PW=[[1.5,0.65],[2.5,0.42],[3,0.34],[3.5,0.28],[4,0.24],[5,0.20],[6,0.17],[7,0.15],[8,0.14],[10,0.12]];
+var _PW=[[1.5,.65],[2.5,.42],[3,.34],[3.5,.28],[4,.24],[5,.20],[6,.17],[7,.15],[8,.14],[10,.12]];
 var _SF={freestyle:1.55,longrange:1.25,racing:2.1};
 function lerp(t,x){for(var i=0;i<t.length-1;i++){if(x>=t[i][0]&&x<=t[i+1][0]){var r=(x-t[i][0])/(t[i+1][0]-t[i][0]);return t[i][1]+(t[i+1][1]-t[i][1])*r}}return x<t[0][0]?t[0][1]:t[t.length-1][1]}
 
+/* ── Main calc ── */
 window.liveCalc=function(){
-  var size=parseFloat((g('f_size')||{}).value)||5.0;
-  var wt=parseFloat((g('f_weight')||{}).value)||720;
-  var prop=parseFloat((g('f_prop')||{}).value)||5.0;
-  var sel=g('battery-select');
-  var cells=sel?parseInt((sel.value||'4S').replace(/[Ss]/,''))||4:4;
-  var mah=parseFloat((g('f_mah')||{}).value)||0;
-  var kv=parseFloat((g('f_kv')||{}).value)||0;
-  var style=(g('f_style')||{}).value||'freestyle';
-  var maxRPM=kv>0?kv*cells*3.85*0.80:0;
-  var tip=kv>0?(Math.PI*prop*0.0254*maxRPM)/60:0;
-  var tt,cs;
-  if(kv>0){var ce=1.0+(cells-4)*0.055;var em=Math.max(0.40,0.55-(prop-5.0)*0.015);var mp=Math.min(lerp(_PP,prop)*(1+(cells-4)/4.0*0.22),1000);var gw=4.7*(0.9+prop*0.02)*ce;tt=gw*em*mp*4}
-  else{cs=cells<=4?(0.55+cells*0.1125):(1.0+(cells-4)*0.18);tt=lerp(_PT,prop)*cs*4}
-  var twr=wt>0?Math.min(tt/wt,12.0):0;
+  var sz=parseFloat((g('fSz')||{}).value)||5;
+  var wt=parseFloat((g('fWt')||{}).value)||720;
+  var prop=parseFloat((g('fPr')||{}).value)||5;
+  var sel=g('battSel'); var cells=sel?parseInt((sel.value||'4S').replace(/[Ss]/,''))||4:4;
+  var mah=parseFloat((g('fMah')||{}).value)||0;
+  var kv=parseFloat((g('fKv')||{}).value)||0;
+  var style=(g('fSt')||{}).value||'freestyle';
+
+  /* Physics */
+  var maxRPM=kv>0?kv*cells*3.85*.8:0;
+  var tip=kv>0?(Math.PI*prop*.0254*maxRPM)/60:0;
+  var tt, cs;
+  if(kv>0){var ce=1+(cells-4)*.055;var em=Math.max(.40,.55-(prop-5)*.015);var mp=Math.min(lerp(_PP,prop)*(1+(cells-4)/4*.22),1000);tt=4.7*(0.9+prop*.02)*ce*em*mp*4}
+  else{cs=cells<=4?(.55+cells*.1125):(1+(cells-4)*.18);tt=lerp(_PT,prop)*cs*4}
+  var twr=wt>0?Math.min(tt/wt,12):0;
   var packV=cells*3.7;var wg=lerp(_PW,prop);var hw=wg*wt;var sf=_SF[style]||1.55;var aw=hw*sf;
-  var uwh=mah>0?(mah/1000)*packV*0.85:0;var ft=(aw>1&&mah>0)?Math.min(30,Math.round((uwh/aw)*60*10)/10):0;
+  var uwh=mah>0?(mah/1000)*packV*.85:0;var ft=aw>1&&mah>0?Math.min(30,Math.round((uwh/aw)*60*10)/10):0;
 
-  var tc=twr>=3.5?'green':twr>=2.0?'amber':twr>0?'red':'';
-  var te=g('h_twr');if(te){te.textContent=twr>0?twr.toFixed(2)+':1':'—';te.className='hud-val '+(tc||'blue')}
-  var hf=g('hf_twr');if(hf){hf.style.width=Math.min(100,twr/6*100)+'%';hf.style.background=tc=='green'?'var(--green)':tc=='amber'?'var(--amber)':'var(--red)'}
+  /* Update mini metrics */
+  function setMm(id,barId,val,disp,max,col){
+    var e=g(id);if(e){e.textContent=disp;e.className='mm-val '+col}
+    var b=g(barId);if(b){b.style.width=Math.min(100,val/max*100)+'%';
+      b.style.background=col=='gc'?'var(--g)':col=='ac'?'var(--a)':col=='bc'?'var(--b)':'var(--r)'}
+  }
+  var twrC=twr>=3.5?'gc':twr>=2?'ac':twr>0?'rc':'gc';
+  setMm('mTwr','mTwrB',twr,twr>0?twr.toFixed(2)+':1':'—',6,twrC);
+  var tipC=tip>290?'rc':tip>265?'ac':tip>0?'gc':'ac';
+  setMm('mTip','mTipB',tip,tip>0?Math.round(tip)+' m/s':'—',350,tipC);
+  setMm('mRpm','mRpmB',maxRPM,maxRPM>0?Math.round(maxRPM/1000*10)/10+'k RPM':'—',80000,'bc');
+  var ftC=ft>6?'gc':ft>3?'ac':ft>0?'rc':'gc';
+  setMm('mFt','mFtB',ft,ft>0?ft.toFixed(1)+' min':'—',15,ftC);
 
-  var tic=tip>290?'red':tip>265?'amber':tip>0?'green':'';
-  var tie=g('h_tip');if(tie){tie.textContent=tip>0?Math.round(tip)+' m/s':'—';tie.className='hud-val '+(tic||'amber')}
-  var hft=g('hf_tip');if(hft){hft.style.width=Math.min(100,tip/350*100)+'%';hft.style.background=tic=='red'?'var(--red)':tic=='amber'?'var(--amber)':'var(--green)'}
+  /* Confidence meter */
+  var conf=30;
+  if(kv>0)conf+=25;if(mah>0)conf+=20;if(wt>0&&wt!=720)conf+=15;if(style!='freestyle')conf+=10;
+  conf=Math.min(99,conf);
+  var cf=g('confFill');if(cf){cf.style.width=conf+'%';cf.style.background=conf>=75?'var(--g)':conf>=50?'var(--a)':'var(--r)'}
+  var cp=g('confPct');if(cp){cp.textContent=conf+'%';cp.style.color=conf>=75?'var(--g)':conf>=50?'var(--a)':'var(--r)'}
+  var ct=g('confTxt');if(ct)ct.textContent=conf>=75?'ข้อมูลครบถ้วน — ผลแม่นยำสูง':conf>=50?'ดี — ใส่ KV เพิ่มความแม่นยำ':'ใส่ KV + mAh เพื่อเพิ่มความแม่นยำ';
 
-  var re=g('h_rpm');if(re)re.textContent=maxRPM>0?Math.round(maxRPM/1000*10)/10+'k RPM':'—';
-  var hfr=g('hf_rpm');if(hfr)hfr.style.width=Math.min(100,maxRPM/80000*100)+'%';
+  /* Propwash Risk Index */
+  var pri=20;
+  if(twr>=5)pri+=50;else if(twr>=3.5)pri+=30;else if(twr>=2.5)pri+=15;
+  if(style=='racing')pri+=20;else if(style=='freestyle')pri+=10;
+  pri=Math.min(95,pri);
+  var pb=g('priBadge');if(pb){
+    var priL=pri>=70?'HIGH':pri>=40?'MEDIUM':'LOW';
+    var priC=pri>=70?'rgba(255,51,68,0.1)':pri>=40?'rgba(255,187,0,0.1)':'rgba(0,255,136,0.1)';
+    var priBC=pri>=70?'var(--r)':pri>=40?'var(--a)':'var(--g)';
+    pb.textContent=priL;pb.style.background=priC;pb.style.color=priBC;pb.style.border='1px solid '+priBC;
+  }
+  var pn=g('priNeedle');if(pn)pn.style.marginLeft='calc('+pri+'% - 2px)';
+  var ph=g('priHint');if(ph){
+    if(pri>=70)ph.textContent='HIGH — เพิ่ม D-term + เปิด RPM filter เพื่อลด propwash';
+    else if(pri>=40)ph.textContent='MEDIUM — ปรับ D-term ละเอียด + ดู Blackbox ยืนยัน';
+    else ph.textContent='LOW — Baseline D-term ปกติ บินได้เลย';
+  }
 
-  var fc=ft>6?'green':ft>3?'amber':ft>0?'red':'';
-  var fe=g('h_ft');if(fe){fe.textContent=ft>0?ft.toFixed(1)+' min':'—';fe.className='hud-val '+(fc||'blue')}
-  var hff=g('hf_ft');if(hff){hff.style.width=Math.min(100,ft/15*100)+'%';hff.style.background=fc=='green'?'var(--green)':fc=='amber'?'var(--amber)':'var(--red)'}
+  /* Build DNA Radar */
+  var dna={
+    power:   Math.min(100,twr/6*100),
+    agility: style=='racing'?85:style=='freestyle'?70:40,
+    thermal: Math.max(0,100-(twr/6*100)*.8),
+    endurance: ft>0?Math.min(100,ft/15*100):30,
+    noise:   kv>0?Math.max(0,100-(tip/350*100)):65,
+    efficiency: style=='longrange'?85:(style=='freestyle'?65:50)
+  };
+  updateRadar(dna);
+
+  /* Thermal estimate */
+  var peakPerMotor=tt/4;
+  var tI=Math.round(25+peakPerMotor*.15*.08);
+  var tC=Math.round(30+peakPerMotor*.5*.14);
+  var tW=Math.round(35+peakPerMotor*.24);
+  function setTherm(id,rId,temp,warn){
+    var e=g(id);if(e)e.textContent=temp+'°C';
+    var r=g(rId);if(r)r.textContent=warn;
+  }
+  if(peakPerMotor>0){
+    setTherm('thIdle','thIdleR',tI,tI<40?'✅ Cool':tI<55?'⚠️ Warm':'🔴 Hot');
+    setTherm('thCruise','thCruiseR',tC,tC<45?'✅ OK':tC<60?'⚠️ Warm':'🔴 Hot');
+    setTherm('thWot','thWotR',tW,tW<55?'✅ Safe':tW<75?'⚠️ Caution':'🔴 OVERHEAT RISK');
+  }
+
+  /* mAh hint */
+  updateMahHint();
+};
+
+/* Radar update */
+function updateRadar(d){
+  var shape=g('dnaShape');if(!shape)return;
+  var cx=110,cy=110;
+  var axes=[
+    {angle:-90,key:'power'},
+    {angle:-30,key:'agility'},
+    {angle:30,key:'thermal'},
+    {angle:90,key:'endurance'},
+    {angle:150,key:'noise'},
+    {angle:210,key:'efficiency'}
+  ];
+  var maxR=80;
+  var pts=axes.map(function(ax){
+    var v=(d[ax.key]||0)/100;
+    var rad=ax.angle*Math.PI/180;
+    var r=v*maxR;
+    return (cx+r*Math.cos(rad)).toFixed(1)+','+(cy+r*Math.sin(rad)).toFixed(1);
+  }).join(' ');
+  shape.setAttribute('points',pts);
+  var avg=Object.values(d).reduce(function(a,b){return a+b},0)/6;
+  var col=avg>=65?'rgba(0,255,136,.13)':avg>=40?'rgba(255,187,0,.10)':'rgba(255,51,68,.10)';
+  var sc=avg>=65?'#00ff88':avg>=40?'#ffbb00':'#ff3344';
+  shape.setAttribute('fill',col);shape.setAttribute('stroke',sc);
+}
+
+window.updateMahHint=function(){
+  var mE=g('fMah'),bE=g('battSel'),h=g('mahHint');if(!mE||!bE||!h)return;
+  var mah=parseInt(mE.value)||0;if(!mah){h.textContent='';return}
+  var cells=parseInt((bE.value||'4S').replace(/[Ss]/,''))||4;
+  var wt=parseFloat((g('fWt')||{}).value)||720;
+  var prop=parseFloat((g('fPr')||{}).value)||5;
+  var style=(g('fSt')||{}).value||'freestyle';
+  var wh=(mah/1000)*cells*3.7*.85;
+  var aw=lerp(_PW,prop)*wt*(_SF[style]||1.55);
+  var ft=aw>1?Math.round((wh/aw)*60*10)/10:0;
+  h.textContent=ft>0?'≈ '+ft+' min':'';
 };
 
 var _ct=null;
-window.debCalc=function(){clearTimeout(_ct);_ct=setTimeout(function(){if(window.liveCalc)window.liveCalc()},150)};
-window.debouncedCalc=window.debCalc;
+window.dCalc=function(){clearTimeout(_ct);_ct=setTimeout(function(){window.liveCalc&&window.liveCalc()},150)};
+window.debouncedCalc=window.dCalc;
 
-window.updateMahHint=function(){
-  var mahEl=g('f_mah'),battEl=g('battery-select'),hint=g('mah_hint');
-  if(!mahEl||!battEl||!hint)return;
-  var mah=parseInt(mahEl.value)||0;
-  if(!mah){hint.textContent='';return}
-  var cells=parseInt((battEl.value||'4S').replace(/[Ss]/,''))||4;
-  var wt=parseFloat((g('f_weight')||{}).value)||720;
-  var prop=parseFloat((g('f_prop')||{}).value)||5.0;
-  var style=(g('f_style')||{}).value||'freestyle';
-  var packV=cells*3.7;var wh=(mah/1000)*packV*0.85;
-  var wg=lerp(_PW,prop);var aw=wg*wt*(_SF[style]||1.55);
-  var ft=aw>1?Math.round((wh/aw)*60*10)/10:0;
-  hint.textContent=ft>0?'≈ '+ft+' min':'';
-};
-
+/* Chip/pill setters */
 window.setSz=function(chip){
-  document.querySelectorAll('.sz').forEach(function(c){c.classList.remove('active')});
-  chip.classList.add('active');
-  var sz=chip.dataset.sz||'5.0',w=chip.dataset.w||'720',p=chip.dataset.prop||'5.0',pt=chip.dataset.pitch||'4.0',kv=chip.dataset.kv||'';
-  function s(id,v){var e=g(id);if(e)e.value=v}
-  s('f_size',sz);s('f_prop',p);s('f_pitch',pt);s('f_weight',w);s('f_prop_vis',p);s('f_pitch_vis',pt);s('f_weight_vis',w);
-  var kve=g('f_kv');if(kv&&kve&&!kve.value)kve.value=kv;
-  var d=g('sz_prop_disp');if(d)d.textContent=p+'"×'+pt+'p';
-  updateMahHint();liveCalc();
+  document.querySelectorAll('.sz').forEach(function(c){c.classList.remove('on')});
+  chip.classList.add('on');
+  var sz=chip.dataset.sz,w=chip.dataset.w,p=chip.dataset.p,pt=chip.dataset.pt,kv=chip.dataset.kv;
+  function sv(id,v){var e=g(id);if(e)e.value=v}
+  sv('fSz',sz);sv('fPr',p);sv('fPt',pt);sv('fWt',w);sv('fPrV',p);sv('fPtV',pt);sv('fWtV',w);
+  var kve=g('fKv');if(kv&&kve&&!kve.value)kve.value=kv;
+  var d=g('propDisp');if(d)d.textContent=p+'"×'+pt+'p';
+  window.dCalc&&window.dCalc();
 };
 window.setSizeChip=window.setSz;
 
 window.setBatt=function(s,btn){
-  document.querySelectorAll('.bp').forEach(function(b){b.classList.remove('active')});
-  if(btn)btn.classList.add('active');
-  var sel=g('battery-select');if(sel)sel.value=s;
-  updateMahHint();liveCalc();
+  document.querySelectorAll('.bp').forEach(function(b){b.classList.remove('on')});
+  if(btn)btn.classList.add('on');
+  var sel=g('battSel');if(sel)sel.value=s;
+  window.dCalc&&window.dCalc();
 };
-window.syncBattPills=function(s){
-  document.querySelectorAll('.bp').forEach(function(b){b.classList.remove('active')});
-  var m=document.querySelector('.bp.bp-'+s.toLowerCase());if(m)m.classList.add('active');
+window.syncBp=function(s){
+  document.querySelectorAll('.bp').forEach(function(b){b.classList.remove('on')});
+  var m=document.querySelector('.bp.bp'+s.toLowerCase());if(m)m.classList.add('on');
 };
 
 window.setStyle=function(style,card){
-  document.querySelectorAll('.sc').forEach(function(c){c.classList.remove('active')});
-  if(card)card.classList.add('active');
-  var sel=g('f_style');if(sel)sel.value=style;
-  updateMahHint();liveCalc();
+  document.querySelectorAll('.sc').forEach(function(c){c.classList.remove('on')});
+  if(card)card.classList.add('on');
+  var sel=g('fSt');if(sel)sel.value=style;
+  window.dCalc&&window.dCalc();
 };
-window.syncStyleCards=function(style){
-  document.querySelectorAll('.sc').forEach(function(c){c.classList.remove('active')});
-  var m=document.querySelector('.sc.'+(style=='freestyle'?'s-free':style=='racing'?'s-race':'s-lr'));if(m)m.classList.add('active');
-};
-
-window.switchTab=function(name,btn){
-  document.querySelectorAll('.res-pane').forEach(function(p){p.classList.remove('active')});
-  document.querySelectorAll('.rtab').forEach(function(b){b.classList.remove('active')});
-  var p=g('pane-'+name);if(p)p.classList.add('active');if(btn)btn.classList.add('active');
+window.syncSc=function(style){
+  document.querySelectorAll('.sc').forEach(function(c){c.classList.remove('on')});
+  var m=document.querySelector('.sc.'+(style=='freestyle'?'free':style=='racing'?'race':'lr'));if(m)m.classList.add('on');
 };
 
+window.setBfv=function(v,btn){
+  document.querySelectorAll('.bfv').forEach(function(b){b.classList.remove('on')});
+  if(btn)btn.classList.add('on');
+  var e=g('fBfv');if(e)e.value=v;
+};
+
+/* Tabs */
+window.sw=function(name,btn){
+  document.querySelectorAll('.rp').forEach(function(p){p.classList.remove('on')});
+  document.querySelectorAll('.rt').forEach(function(b){b.classList.remove('on')});
+  var p=g('pane-'+name);if(p)p.classList.add('on');if(btn)btn.classList.add('on');
+};
+
+/* Tips */
 window.toggleTip=function(id){var b=g(id);if(b)b.classList.toggle('open')};
 
-window.copyEl=function(id){
-  var el=g(id);if(!el)return;
-  var t=el.textContent||el.innerText;
-  navigator.clipboard?navigator.clipboard.writeText(t).catch(function(){_fbCopy(t)}):_fbCopy(t);
+/* Copy */
+window.cpEl=function(id){
+  var el=g(id);if(!el)return;var t=el.textContent||el.innerText;
+  navigator.clipboard?navigator.clipboard.writeText(t).catch(function(){_fb(t)}):_fb(t);
 };
-function _fbCopy(t){var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(ta)}
+function _fb(t){var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(ta)}
 
-window.showToast=function(msg){
-  var t=g('toast');if(!t)return;
-  t.textContent=msg||'✓ Copied!';t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show')},2200);
+window.toast=function(msg){
+  var el=g('toastEl');if(!el)return;
+  el.textContent=msg;el.classList.add('show');
+  setTimeout(function(){el.classList.remove('show')},2200);
 };
 
-window.onPresetSelect=window.onPresetSelect||function(){};
+window.onPreset=window.onPreset||function(){};
 
-var _dt=null;window.debouncedCalc=function(){clearTimeout(_dt);_dt=setTimeout(function(){if(window.liveCalc)window.liveCalc()},150)};
-
+/* Init */
 document.addEventListener('DOMContentLoaded',function(){
-  var bs=g('battery-select');if(bs)syncBattPills(bs.value||'4S');
-  var fs=(g('f_size')||{}).value||'5.0';
+  var bs=g('battSel');if(bs)window.syncBp(bs.value||'4S');
+  var fs=(g('fSz')||{}).value||'5.0';
   document.querySelectorAll('.sz').forEach(function(c){
-    c.classList.remove('active');
-    if(Math.abs(parseFloat(c.dataset.sz)-parseFloat(fs))<0.01)c.classList.add('active');
+    c.classList.remove('on');
+    if(Math.abs(parseFloat(c.dataset.sz)-parseFloat(fs))<.01)c.classList.add('on');
   });
-  updateMahHint();liveCalc();
-  var form=g('analyzeForm');
-  if(form)form.querySelectorAll('input[type="number"]').forEach(function(i){i.addEventListener('input',debCalc,{passive:true})});
+  window.liveCalc&&window.liveCalc();
+  var form=g('aForm');
+  if(form)form.querySelectorAll('input[type="number"]').forEach(function(i){i.addEventListener('input',window.dCalc,{passive:true})});
   if(window.OBIX&&window.OBIX.analysis&&window.innerWidth<960){
-    var st=document.querySelector('.stage');
-    if(st)setTimeout(function(){st.scrollIntoView({behavior:'smooth',block:'start'})},300);
+    var cr=document.querySelector('.col-res');
+    if(cr)setTimeout(function(){cr.scrollIntoView({behavior:'smooth',block:'start'})},300);
   }
 },false);
 })();
 </script>
 <script src="{{ url_for('static', filename='js/index-app.js') }}"></script>
-{% include "partials/footer_nav.html" %}
 </body>
 </html>
