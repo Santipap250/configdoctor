@@ -640,6 +640,8 @@ def analyze_dump(text: str) -> Dict[str, Any]:
         "params": {...}
       }
     """
+    if not isinstance(text, str):
+        text = "" if text is None else str(text)
     params = parse_dump(text)
     rules = basic_checks(params)
     fixes = suggest_cli_fixes(rules, params)
