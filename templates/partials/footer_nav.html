@@ -1,0 +1,63 @@
+{# templates/partials/footer_nav.html — universal footer navigation. No dependencies, include before </body> on any page. #}
+<style>
+.pf-foot{font-family:'Sarabun',sans-serif;background:rgba(4,6,10,0.95);border-top:1px solid rgba(255,255,255,0.07);
+  padding:34px 20px 18px;margin-top:30px;color:rgba(200,215,255,0.6);}
+.pf-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:24px;}
+.pf-col{min-width:0;}
+.pf-brand{font-family:'Orbitron',sans-serif;font-weight:800;font-size:15px;color:#10c47a;letter-spacing:.03em;margin-bottom:8px;}
+.pf-tag{font-size:12.5px;line-height:1.6;color:rgba(200,215,255,0.5);margin-bottom:10px;}
+.pf-social{font-size:12.5px;color:rgba(200,215,255,0.6);text-decoration:none;}
+.pf-social:hover{color:#10c47a;}
+.pf-h{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(200,215,255,0.4);margin-bottom:10px;}
+.pf-col a{display:block;font-size:13px;color:rgba(220,230,255,0.75);text-decoration:none;padding:4px 0;transition:.15s;}
+.pf-col a:hover{color:#10c47a;}
+.pf-bottom{max-width:1180px;margin:22px auto 0;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:12px;color:rgba(200,215,255,0.4);}
+.pf-bottom a{color:rgba(200,215,255,0.55);text-decoration:none;}
+.pf-bottom a:hover{color:#10c47a;}
+@media(max-width:760px){
+  .pf-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:480px){
+  .pf-grid{grid-template-columns:1fr;gap:18px;}
+}
+</style>
+<footer class="pf-foot">
+  <div class="pf-grid">
+    <div class="pf-col">
+      <div class="pf-brand">OBIXCONFIG DOCTOR</div>
+      <p class="pf-tag">เครื่องมือวิเคราะห์ &amp; จูนนิ่งโดรน FPV ฟรี สำหรับนักบินไทย 🇹🇭</p>
+      <a class="pf-social" href="https://www.facebook.com/" target="_blank" rel="noopener">📘 Facebook</a>
+    </div>
+    <div class="pf-col">
+      <div class="pf-h">เครื่องมือหลัก</div>
+      <a href="/app">Drone Analyzer</a>
+      <a href="/pid-advisor">PID Advisor</a>
+      <a href="/rpm-filter">RPM Filter</a>
+      <a href="/motor-prop">Motor×Prop</a>
+      <a href="/bf-wizard">BF Wizard</a>
+    </div>
+    <div class="pf-col">
+      <div class="pf-h">Hardware &amp; Analysis</div>
+      <a href="/battery-health">Battery Health</a>
+      <a href="/motor-thermal">Motor Thermal</a>
+      <a href="/blackbox">Blackbox</a>
+      <a href="/esc-checker">ESC Checker</a>
+      <a href="/loop-analyzer">Loop Analyzer</a>
+    </div>
+    <div class="pf-col">
+      <div class="pf-h">อื่นๆ</div>
+      <a href="/fpv">FPV Knowledge Hub</a>
+      <a href="/downloads">Downloads</a>
+      <a href="/about">About</a>
+      <a href="/team">Team</a>
+      <a href="/changelog">Changelog</a>
+    </div>
+  </div>
+  <div class="pf-bottom">
+    <a href="/landing">🏠 Home</a><span>·</span>
+    <a href="/app">📊 Dashboard</a><span>·</span>
+    <a href="/downloads">Downloads</a><span>·</span>
+    <span>© OBIXConfig Doctor — Made in 🇹🇭</span>
+  </div>
+</footer>

@@ -1,0 +1,73 @@
+{#
+  templates/partials/page_actions.html — OBIXConfig Doctor
+  ──────────────────────────────────────────────────────────────────────
+  Universal breadcrumb + Home / Back / Dashboard action bar.
+  Self-contained on purpose: it only reads `nav_page` (already set on
+  every page for partials/nav.html), so it works correctly whether or
+  not partials/nav.html is also included on the page. Drop it in once
+  per page, anywhere after <body>:
+
+      {% set nav_page = "battery_health" %}
+      {% include "partials/page_actions.html" %}
+
+  It never assumes browser history exists (falls back to /landing).
+  ──────────────────────────────────────────────────────────────────────
+#}
+{% set _pa_group_map = {
+  'home':'tune','pid_advisor':'tune','quick_tune':'tune','rpm_filter':'tune','rates':'tune','bf_wizard':'tune',
+  'motor_prop':'hw','esc_checker':'hw','battery_health':'hw','motor_thermal':'hw','loop_analyzer':'hw',
+  'blackbox':'analysis','cli_surgeon':'analysis','comparator':'analysis','build_card':'analysis','tuning_log':'analysis','osd':'analysis',
+  'vtx':'video','vtx_range':'video','vtx_smartaudio':'video'
+} %}
+{% set _pa_group_labels = {'tune':'PID &amp; Tuning','hw':'Hardware','analysis':'Analysis &amp; Logs','video':'VTX &amp; Signal','explore':'Explore'} %}
+{% set _pa_titles = {
+  'home':'Drone Analyzer','pid_advisor':'PID Advisor','quick_tune':'Quick Tune','rpm_filter':'RPM Filter','bf_wizard':'BF Wizard',
+  'motor_prop':'Motor×Prop','esc_checker':'ESC Checker','battery_health':'Battery Health','motor_thermal':'Motor Thermal','loop_analyzer':'Loop Analyzer',
+  'blackbox':'Blackbox','cli_surgeon':'CLI Surgeon','comparator':'CLI Comparator','build_card':'Build Card','tuning_log':'Tuning Log','osd':'OSD Designer',
+  'vtx':'VTX Bands','vtx_range':'VTX Range','vtx_smartaudio':'VTX SmartAudio','rates':'Rates Visualizer',
+  'fpv_trainer':'FPV Simulator','flight_quiz':'Flight Quiz','leaderboard':'Leaderboard','military_uas':'Military UAS','fpv':'FPV Knowledge Hub',
+  'downloads':'Downloads','about':'About','team':'Team','changelog':'Changelog','landing':'Home'
+} %}
+{% set _pa_group  = _pa_group_map.get(nav_page, 'explore') %}
+{% set _pa_current = _pa_titles.get(nav_page, 'หน้านี้') %}
+<style>
+.pa-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;
+  padding:9px 16px;background:rgba(6,9,14,0.85);border-bottom:1px solid rgba(255,255,255,0.06);
+  font-family:'Sarabun',sans-serif;position:relative;z-index:60;}
+.pa-crumb{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:rgba(200,215,255,0.55);min-width:0;}
+.pa-crumb a{color:rgba(200,215,255,0.7);text-decoration:none;transition:.15s;}
+.pa-crumb a:hover{color:#10c47a;}
+.pa-sep{opacity:.4;}
+.pa-cat{color:rgba(200,215,255,0.45);}
+.pa-current{color:#10c47a;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pa-actions{display:flex;gap:6px;flex-shrink:0;}
+.pa-btn{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;letter-spacing:.02em;
+  padding:6px 12px;border-radius:7px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);
+  color:rgba(220,230,255,0.8);text-decoration:none;cursor:pointer;transition:.15s;font-family:inherit;}
+.pa-btn:hover{border-color:rgba(16,196,122,0.4);color:#10c47a;background:rgba(16,196,122,0.06);}
+.pa-btn.pa-primary{border-color:rgba(16,196,122,0.35);background:rgba(16,196,122,0.08);color:#10c47a;}
+.pa-btn.pa-disabled{opacity:.4;pointer-events:none;}
+@media(max-width:640px){
+  .pa-bar{padding:8px 12px;}
+  .pa-crumb{font-size:11.5px;}
+  .pa-btn span.pa-label{display:none;}
+  .pa-btn{padding:6px 9px;}
+}
+</style>
+<div class="pa-bar" role="navigation" aria-label="Breadcrumb and page actions">
+  <nav class="pa-crumb" aria-label="Breadcrumb">
+    <a href="/landing">🏠 Home</a>
+    {% if nav_page == 'home' %}
+      <span class="pa-sep">/</span><span class="pa-current" aria-current="page">📊 Dashboard</span>
+    {% elif nav_page == 'landing' %}
+    {% else %}
+      <span class="pa-sep">/</span><span class="pa-cat">{{ _pa_group_labels[_pa_group] }}</span>
+      <span class="pa-sep">/</span><span class="pa-current" aria-current="page">{{ _pa_current }}</span>
+    {% endif %}
+  </nav>
+  <div class="pa-actions">
+    <button type="button" class="pa-btn" onclick="if(window.history.length>1){history.back()}else{location.href='/landing'}">↩ <span class="pa-label">Back</span></button>
+    <a class="pa-btn {% if nav_page=='landing' %}pa-disabled{% endif %}" href="/landing">🏠 <span class="pa-label">Home</span></a>
+    <a class="pa-btn pa-primary {% if nav_page=='home' %}pa-disabled{% endif %}" href="/app">📊 <span class="pa-label">Dashboard</span></a>
+  </div>
+</div>
