@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 {% set nav_page = "vtx" %}
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 
 <style>
 /* ══════════════════════════════════════════════════════
@@ -1740,5 +1741,6 @@ function exportFreqCSV(){
   document.getElementById('pwrSelect').addEventListener('change', updateAll);
 })();
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

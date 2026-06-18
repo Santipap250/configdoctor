@@ -458,6 +458,7 @@ body { font-family: var(--font-th); background: var(--bg); color: var(--text);
 <body>
 
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 
 <div class="page-wrap">
 
@@ -1018,5 +1019,6 @@ function openFirstRec() {
   if (first) first.classList.add('open');
 }
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

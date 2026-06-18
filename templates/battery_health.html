@@ -146,6 +146,7 @@ select option{background:#111820}
 </head>
 <body>
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 
 <div class="page-wrap">
 
@@ -408,5 +409,6 @@ function analyzeBattery() {
   document.getElementById('hintPanel').style.display = 'none';
 }
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

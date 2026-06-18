@@ -380,6 +380,8 @@ pre::-webkit-scrollbar-thumb{background:rgba(0,255,136,0.2);border-radius:2px}
 </head>
 
 <body>
+{% set nav_page = "home" %}
+{% include "partials/page_actions.html" %}
 <div class="bg-photo" aria-hidden="true"></div>
 
 <!-- TOP BAR -->
@@ -1183,5 +1185,6 @@ document.addEventListener('DOMContentLoaded',function(){
 })();
 </script>
 <script src="{{ url_for('static', filename='js/index-app.js') }}"></script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

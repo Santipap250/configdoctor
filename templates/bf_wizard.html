@@ -413,6 +413,7 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
 }
 </style>
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 </head>
 <body>
 <div class="scan-line"></div>
@@ -1590,5 +1591,6 @@ applyPID();syncPIDUI();syncFilterUI();rCLI();allSliders();
 ev('v_size',(parseInt($('s_size').value)/10).toFixed(1)+'"');
 ev('v_kv',$('s_kv').value+' KV');
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

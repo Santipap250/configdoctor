@@ -95,6 +95,7 @@
 </head>
 <body>
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 
 <div class="page-wrap" style="padding-top:70px">
 
@@ -224,5 +225,6 @@ function toggleCard(card){
 // Open latest by default
 document.querySelectorAll('.latest-card').forEach(function(c){ c.classList.add('expanded'); });
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

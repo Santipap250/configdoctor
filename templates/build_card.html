@@ -11,6 +11,7 @@
 <link rel="icon" href="{{ url_for('static',filename='favicon.ico') }}">
 {% set nav_page = "build_card" %}
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -473,5 +474,6 @@ if (document.fonts && document.fonts.ready) {
   window.addEventListener('load', drawCard);
 }
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

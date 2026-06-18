@@ -324,6 +324,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </head>
 <body>
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 
 <div class="page">
 
@@ -1100,5 +1101,6 @@ initCanvas();
 const fBtn=document.querySelector('.ppill.pp-f');
 applyPreset('Freestyle',fBtn);
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

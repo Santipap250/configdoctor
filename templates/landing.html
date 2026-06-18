@@ -2276,6 +2276,8 @@ footer {
 </style>
 </head>
 <body>
+{% set nav_page = "landing" %}
+{% include "partials/page_actions.html" %}
 
 <!-- ════════════════════════════════════════
      BOOT OVERLAY — FIX: HTML was previously missing from body.
@@ -5320,5 +5322,6 @@ window.switchMode = function(mode) {
   }
 })();
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

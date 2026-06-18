@@ -105,6 +105,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </head>
 <body>
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 <div class="page">
 <div class="hero">
   <div>
@@ -409,5 +410,6 @@ checkCountryWarn();
 setTimeout(updateSpectrum,100);
 window.addEventListener('resize',updateSpectrum);
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

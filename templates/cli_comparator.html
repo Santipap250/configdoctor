@@ -630,6 +630,7 @@ body::after {
 
 <div class="scan-line"></div>
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 
 <div class="cmp-page">
 
@@ -2048,5 +2049,6 @@ function closeLearn(){ $('learnModal').style.display='none'; document.body.style
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeLearn(); closeParam() } });
 
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

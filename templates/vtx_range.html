@@ -128,6 +128,7 @@ input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.2)}
 </head>
 <body>
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 <div class="page">
 
 <!-- Hero -->
@@ -531,5 +532,6 @@ buildAntennaGrid('antRxGrid','antRx');
 buildEnv();
 render();
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

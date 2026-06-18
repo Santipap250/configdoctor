@@ -15,6 +15,7 @@
 
 {% set nav_page = "flight_quiz" %}
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 
 <style>
 /* ══════════════════════════════════════════════
@@ -1286,5 +1287,6 @@ function retakeQuiz() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

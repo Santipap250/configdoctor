@@ -229,6 +229,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 </head>
 <body>
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 
 <div class="wrap">
 
@@ -942,5 +943,6 @@ function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; 
 /* Init */
 (function(){ liveCheck(); })();
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

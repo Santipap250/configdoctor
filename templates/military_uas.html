@@ -372,6 +372,8 @@ body::after{
 </style>
 </head>
 <body>
+{% set nav_page = "military_uas" %}
+{% include "partials/page_actions.html" %}
 <div class="hex-bg"></div>
 
 <!-- TOP BAR -->
@@ -1358,5 +1360,6 @@ function copyReport(){
 // ─── INIT ─────────────────────────────────────────────────
 window.addEventListener('load', runAll);
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

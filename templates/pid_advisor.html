@@ -719,6 +719,7 @@
 </head>
 <body>
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 
 <!-- Stats strip -->
 <div class="stats-strip">
@@ -1448,5 +1449,6 @@ function onPidChange() {
   if(currentSymptom) renderResult(currentSymptom);
 }
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

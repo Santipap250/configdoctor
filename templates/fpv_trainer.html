@@ -171,6 +171,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 </head>
 <body>
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 <div id="gw">
   <canvas id="three-cv"></canvas>
   <canvas id="fx-cv"></canvas>
@@ -1290,5 +1291,6 @@ function loop(ts){
 // ── Boot ───────────────────────────────────────────────────────────
 initThree(); initMobile(); requestAnimationFrame(loop);
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

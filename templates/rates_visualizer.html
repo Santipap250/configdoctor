@@ -249,6 +249,7 @@ canvas#rv{width:100%;display:block;cursor:crosshair;}
 </head>
 <body>
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 
 <div class="wrap" style="padding-top:76px;">
 
@@ -920,5 +921,6 @@ let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(draw
 /* ── Init ── */
 window.addEventListener('load',()=>setTimeout(()=>{loadSl('roll');update();},60));
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>

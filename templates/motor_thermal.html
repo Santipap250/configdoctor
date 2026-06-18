@@ -92,6 +92,7 @@ select option{background:#1a2030}
 <body>
 
 {% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 
 <div class="page-wrap">
 
@@ -420,5 +421,6 @@ function analyzeThermal() {
   document.getElementById('hintPanel').style.display = 'none';
 }
 </script>
+{% include "partials/footer_nav.html" %}
 </body>
 </html>
