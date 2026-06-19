@@ -443,6 +443,63 @@ pre::-webkit-scrollbar-thumb{background:rgba(0,255,136,0.18);border-radius:2px}
 .ftp:hover{border-color:rgba(0,255,136,0.45);box-shadow:0 4px 20px rgba(0,255,136,0.1)}
 .ftp-c{background:rgba(0,255,136,0.1);color:var(--g);border-radius:9px;padding:1px 6px;font-size:7.5px}
 
+/* ════ SYMPTOM DIAGNOSIS CARDS ════ */
+.symp-list{display:flex;flex-direction:column;gap:8px}
+.symp{
+  display:flex;align-items:flex-start;gap:11px;
+  padding:12px 14px;border-radius:9px;
+  border:1px solid rgba(255,255,255,.05);
+  background:rgba(0,8,20,.7);position:relative;overflow:hidden;
+  transition:border-color .15s;
+}
+.symp::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0 2px 2px 0}
+.symp:hover{border-color:rgba(255,255,255,.12)}
+.symp.s-ok{border-color:rgba(0,255,136,.12);background:rgba(0,255,136,.03)}
+.symp.s-ok::before{background:var(--g);box-shadow:0 0 8px var(--g)}
+.symp.s-warn{border-color:rgba(255,187,0,.15);background:rgba(255,187,0,.03)}
+.symp.s-warn::before{background:var(--a);box-shadow:0 0 8px var(--a)}
+.symp.s-crit{border-color:rgba(255,51,68,.18);background:rgba(255,51,68,.05)}
+.symp.s-crit::before{background:var(--r);box-shadow:0 0 8px var(--r)}
+.symp.s-info{border-color:rgba(0,170,255,.12);background:rgba(0,170,255,.03)}
+.symp.s-info::before{background:var(--b);box-shadow:0 0 8px var(--b)}
+.symp-ico{font-size:22px;flex-shrink:0;line-height:1;margin-top:1px}
+.symp-body{flex:1;min-width:0}
+.symp-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:4px}
+.symp-title{font-family:var(--fd);font-size:9.5px;font-weight:700;letter-spacing:.07em}
+.symp.s-ok    .symp-title{color:var(--g)}
+.symp.s-warn  .symp-title{color:var(--a)}
+.symp.s-crit  .symp-title{color:var(--r)}
+.symp.s-info  .symp-title{color:var(--b)}
+.symp-badge{
+  font-family:var(--fd);font-size:6.5px;letter-spacing:.12em;
+  padding:2px 7px;border-radius:3px;flex-shrink:0;
+}
+.sb-ok  {background:rgba(0,255,136,.1);color:var(--g);border:1px solid rgba(0,255,136,.2)}
+.sb-warn{background:rgba(255,187,0,.1);color:var(--a);border:1px solid rgba(255,187,0,.2)}
+.sb-crit{background:rgba(255,51,68,.1);color:var(--r);border:1px solid rgba(255,51,68,.2)}
+.sb-info{background:rgba(0,170,255,.1);color:var(--b);border:1px solid rgba(0,170,255,.2)}
+.symp-val{font-family:var(--fm);font-size:11px;font-weight:600;color:var(--t);margin-bottom:3px}
+.symp-desc{font-size:10px;color:var(--t2);line-height:1.65;margin-bottom:4px}
+.symp-fix{
+  display:inline-flex;align-items:flex-start;gap:5px;
+  font-size:9.5px;color:var(--c);line-height:1.6;
+  background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.12);
+  border-radius:5px;padding:5px 9px;margin-top:2px;width:100%;
+}
+.symp-fix-ico{flex-shrink:0;font-size:11px;margin-top:1px}
+/* Arm status banner */
+.arm-banner{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;border-radius:8px;margin-bottom:12px;
+  font-family:var(--fd);font-size:9px;letter-spacing:.1em;
+}
+.arm-go{background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.22);color:var(--g)}
+.arm-warn{background:rgba(255,187,0,.07);border:1px solid rgba(255,187,0,.2);color:var(--a)}
+.arm-crit{background:rgba(255,51,68,.08);border:1px solid rgba(255,51,68,.22);color:var(--r)}
+.arm-status{display:flex;align-items:center;gap:7px}
+.arm-dot{width:7px;height:7px;border-radius:50%;animation:pd 2s ease-in-out infinite}
+.arm-meta{font-family:var(--ft);font-size:9.5px;opacity:.65;letter-spacing:0}
+
 /* Responsive */
 @media(max-width:1100px){
   .shell{grid-template-columns:280px 240px 1fr}
@@ -898,8 +955,8 @@ pre::-webkit-scrollbar-thumb{background:rgba(0,255,136,0.18);border-radius:2px}
 
 <!-- RESULT TABS -->
 <div class="rtabs">
-  <button class="rt on" onclick="sw('overview',this)">📊 OVERVIEW</button>
-  <button class="rt" onclick="sw('safety',this)">🛡️ SAFETY CHECK</button>
+  <button class="rt on" onclick="sw('safety',this)">🩺 DIAGNOSIS</button>
+  <button class="rt" onclick="sw('overview',this)">📊 OVERVIEW</button>
   <button class="rt" onclick="sw('tune',this)">🎯 PID + FILTER</button>
   <button class="rt" onclick="sw('batt',this)">🔋 BATTERY MATCH</button>
   <button class="rt" onclick="sw('ffp',this)">📋 FIRST FLIGHT</button>
@@ -907,7 +964,7 @@ pre::-webkit-scrollbar-thumb{background:rgba(0,255,136,0.18);border-radius:2px}
 </div>
 
 <!-- ── TAB: OVERVIEW ── -->
-<div class="rp on" id="pane-overview">
+<div class="rp" id="pane-overview">
   <div class="sg2">
     <div class="sbox">
       <div class="sl">THRUST / WEIGHT</div>
@@ -971,83 +1028,417 @@ pre::-webkit-scrollbar-thumb{background:rgba(0,255,136,0.18);border-radius:2px}
   </div>
 </div>
 
-<!-- ── TAB: SAFETY CHECK ── -->
-<div class="rp" id="pane-safety">
-  <div class="card">
-    <div class="ch"><div class="ch-ic" style="background:rgba(0,255,136,0.1)">✅</div> PRE-FLIGHT SAFETY MATRIX</div>
-    <div class="cb">
-      <div class="chk-g">
-        {% if _tip>0 %}
-        <div class="chk {% if _tip>290 %}bad{% elif _tip>265 %}warn{% else %}ok{% endif %}">
-          <span class="chk-ic">⚡</span><div><div class="chk-n">TIP SPEED</div><div class="chk-v">{{ _tip|int }} m/s</div></div>
-        </div>
-        {% endif %}
-        <div class="chk {% if _twr<1.2 %}bad{% elif _twr<2.0 %}warn{% else %}ok{% endif %}">
-          <span class="chk-ic">⚖️</span><div><div class="chk-n">TWR CHECK</div><div class="chk-v">{{ _twr|round(2) }}:1</div></div>
-        </div>
-        {% if _cb>0 %}
-        <div class="chk {% if _cb>80 %}bad{% elif _cb>50 %}warn{% else %}ok{% endif %}">
-          <span class="chk-ic">🔋</span><div><div class="chk-n">C-RATE REQ</div><div class="chk-v">{{ _cb|round(1) }}C</div></div>
-        </div>
-        {% endif %}
-        <div class="chk {% if _ft<2 and _ft>0 %}bad{% elif _ft<4 and _ft>0 %}warn{% elif _ft>0 %}ok{% endif %}">
-          <span class="chk-ic">⏱️</span><div><div class="chk-n">FLIGHT TIME</div><div class="chk-v">{% if _ft>0 %}{{ _ft|round(1) }} min{% else %}ใส่ mAh{% endif %}</div></div>
-        </div>
-        {% if _mh %}<div class="chk {% if '✅' in _mh %}ok{% elif '⚡' in _mh %}warn{% else %}bad{% endif %}">
-          <span class="chk-ic">🌡️</span><div><div class="chk-n">MOTOR LOAD</div><div class="chk-v">{{ _eff|capitalize }}</div></div>
-        </div>{% endif %}
-        {% if _esc>0 %}<div class="chk {% if _esc>80 %}warn{% else %}ok{% endif %}">
-          <span class="chk-ic">🔌</span><div><div class="chk-n">ESC RATING</div><div class="chk-v">≥ {{ _esc }}A</div></div>
-        </div>{% endif %}
-        <div class="chk {% if _tip>290 or _twr<1.5 or _cb>80 %}bad{% elif _tip>265 or _twr<2.0 or _cb>50 %}warn{% else %}ok{% endif %}">
-          <span class="chk-ic">🚦</span><div><div class="chk-n">ARM CLEARANCE</div>
-          <div class="chk-v">{% if _tip>290 or _twr<1.5 or _cb>80 %}NOT READY{% elif _tip>265 or _twr<2.0 or _cb>50 %}CAUTION{% else %}GO FOR LAUNCH{% endif %}</div></div>
-        </div>
-        {% if _rpm>0 %}
-        <div class="chk ok">
-          <span class="chk-ic">🔊</span><div><div class="chk-n">RPM FILTER HZ</div><div class="chk-v">min {{ _rfmin }} Hz</div></div>
-        </div>
-        {% endif %}
-      </div>
+<!-- ── TAB: DIAGNOSIS (symptom-first) ── -->
+<div class="rp on" id="pane-safety">
+
+{# ═══ COMPUTE ARM STATUS ═══ #}
+{% if _twr<1.5 or (_tip>290 and _tip>0) or _cb>80 %}
+  {% set _arm='crit' %}{% set _arm_lbl='⛔ NOT READY — แก้ปัญหาวิกฤตก่อนบิน' %}
+{% elif _twr<2.0 or (_tip>265 and _tip>0) or _cb>60 or (_ft>0 and _ft<2) %}
+  {% set _arm='warn' %}{% set _arm_lbl='⚠️ CAUTION — บินได้แต่ควรแก้ปัญหาก่อน' %}
+{% else %}
+  {% set _arm='go' %}{% set _arm_lbl='✅ GO FOR LAUNCH — ลำพร้อมบิน!' %}
+{% endif %}
+
+{# ARM BANNER #}
+<div class="arm-banner arm-{{ _arm }}">
+  <div class="arm-status">
+    <div class="arm-dot" style="background:{% if _arm=='go' %}var(--g){% elif _arm=='warn' %}var(--a){% else %}var(--r){% endif %}"></div>
+    {{ _arm_lbl }}
+  </div>
+  <div class="arm-meta">{{ _sz }}" · {{ _cells }}S · {{ _wt|int }}g · BF{{ _bfv }}</div>
+</div>
+
+{# ═══ SYMPTOM CARDS ═══ #}
+<div class="card" style="margin-bottom:10px">
+  <div class="ch">
+    <div class="ch-ic" style="background:rgba(0,212,255,.1)">🩺</div>
+    DIAGNOSIS — {{ _pn }} &nbsp;·&nbsp; Score {{ _score }}/100
+  </div>
+  <div class="cb">
+  <div class="symp-list">
+
+  {# ─── 1. TWR ─── #}
+  {% if _twr<1.5 %}
+  <div class="symp s-crit">
+    <span class="symp-ico">⚡</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">กำลังขับวิกฤต — โดรนบินลำบาก</span><span class="symp-badge sb-crit">CRITICAL</span></div>
+      <div class="symp-val">TWR {{ _twr|round(2) }}:1 &nbsp;(ขีดต่ำสุด 1.5:1)</div>
+      <div class="symp-desc">โดรนอาจบินขึ้นไม่ได้ หรือ hover throttle จะสูงมากจน แบตหมดไวมาก เสี่ยงตกหากหมุนตัวเร็ว</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>เพิ่มจำนวน S แบต (เช่น 4S→5S) หรือ เปลี่ยนมอเตอร์ KV สูงขึ้น หรือ ลดน้ำหนักลำลง 150g+</div>
     </div>
   </div>
+  {% elif _twr<2.0 %}
+  <div class="symp s-warn">
+    <span class="symp-ico">⚖️</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">กำลังขับน้อย — แบตหมดเร็ว</span><span class="symp-badge sb-warn">WARNING</span></div>
+      <div class="symp-val">TWR {{ _twr|round(2) }}:1 &nbsp;(แนะนำ ≥ 2.0)</div>
+      <div class="symp-desc">hover throttle สูงเกิน 55% · ลำตอบสนองช้า · เวลาบินสั้นกว่าที่ควร</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>ลดน้ำหนักลำ หรือ เพิ่ม S แบต · ตรวจสอบว่าน้ำหนักที่ใส่ถูกต้องหรือไม่</div>
+    </div>
+  </div>
+  {% elif _sy=='freestyle' and _twr<2.8 %}
+  <div class="symp s-warn">
+    <span class="symp-ico">🌀</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">กำลังน้อยสำหรับ Freestyle</span><span class="symp-badge sb-warn">NOTE</span></div>
+      <div class="symp-val">TWR {{ _twr|round(2) }}:1 &nbsp;(Freestyle แนะนำ ≥ 3.0)</div>
+      <div class="symp-desc">Trick และ flip/roll จะรู้สึก sluggish · headroom น้อย · ลำจะไม่ "snap" พอ</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>เพิ่ม S แบต หรือ ลดน้ำหนักลำลง 50–100g เพื่อเพิ่ม agility</div>
+    </div>
+  </div>
+  {% elif _sy=='racing' and _twr<4.0 %}
+  <div class="symp s-warn">
+    <span class="symp-ico">🏁</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">กำลังน้อยสำหรับ Racing</span><span class="symp-badge sb-warn">NOTE</span></div>
+      <div class="symp-val">TWR {{ _twr|round(2) }}:1 &nbsp;(Racing แนะนำ ≥ 4.0)</div>
+      <div class="symp-desc">Acceleration จะด้อยกว่าคู่แข่ง · top speed ต่ำกว่าศักยภาพ</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>มอเตอร์ KV สูงขึ้น หรือ แบตคุณภาพดีลด voltage sag</div>
+    </div>
+  </div>
+  {% elif _twr>=7.0 %}
+  <div class="symp s-info">
+    <span class="symp-ico">🚀</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">กำลังมากเกิน (Overkill Build)</span><span class="symp-badge sb-info">INFO</span></div>
+      <div class="symp-val">TWR {{ _twr|round(2) }}:1 — สูงมาก</div>
+      <div class="symp-desc">แบตถูก stress สูง · D-term ต้องสูงมากเพื่อควบคุม oscillation · มอเตอร์ร้อนง่าย</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>ลด KV หรือ pitch ใบพัดลง เพื่อ balance กำลัง ·  เพิ่ม D-term ก่อน P</div>
+    </div>
+  </div>
+  {% else %}
+  <div class="symp s-ok">
+    <span class="symp-ico">✅</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">กำลังขับ — ดีเหมาะสม</span><span class="symp-badge sb-ok">OK</span></div>
+      <div class="symp-val">TWR {{ _twr|round(2) }}:1 — เหมาะสำหรับ {{ _sy|capitalize }}</div>
+      <div class="symp-desc">headroom เพียงพอ · hover throttle อยู่ในช่วงดี · ลำตอบสนองได้ดี</div>
+    </div>
+  </div>
+  {% endif %}
 
-  <!-- Propwash Analysis -->
-  <div class="card">
-    <div class="ch"><div class="ch-ic" style="background:rgba(255,187,0,0.1)">🌪️</div> PROPWASH ANALYSIS — PRi {{ _pri }}/100</div>
-    <div class="cb">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-        <div style="font-family:var(--fd);font-size:42px;font-weight:900;color:{{ _priC }};line-height:1">{{ _pri }}</div>
-        <div>
-          <div style="font-family:var(--fd);font-size:12px;font-weight:700;color:{{ _priC }}">{{ _priL }} PROPWASH RISK</div>
-          <div style="font-size:10.5px;color:var(--t2);margin-top:3px;line-height:1.6">
-            {% if _pri>=70 %}D-term ต้องสูงมาก · RPM filter จำเป็น · ปรับ TPA อย่างระวัง
-            {% elif _pri>=40 %}D-term ปรับละเอียด · RPM filter แนะนำ · ดู Blackbox หลังบิน
-            {% else %}D-term baseline ปกติ · Blackbox เพื่อ fine-tune{% endif %}
-          </div>
-        </div>
+  {# ─── 2. TIP SPEED ─── #}
+  {% if _tip>0 %}
+  {% if _tip>290 %}
+  <div class="symp s-crit">
+    <span class="symp-ico">💨</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">Tip Speed เกินขีดจำกัด — Compressibility</span><span class="symp-badge sb-crit">CRITICAL</span></div>
+      <div class="symp-val">{{ _tip|int }} m/s &nbsp;(ขีดจำกัด 290 m/s)</div>
+      <div class="symp-desc">ใบพัดเข้าสู่ compressibility zone · efficiency ลดฮวบ · เสียงดัง + vibration สูง · power consumption พุ่ง</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>ลด KV มอเตอร์ลง 10–15% หรือ เปลี่ยน prop pitch ต่ำลง 0.5–1.0" (เช่น 4.5p→4.0p)</div>
+    </div>
+  </div>
+  {% elif _tip>265 %}
+  <div class="symp s-warn">
+    <span class="symp-ico">💨</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">Tip Speed ใกล้ขีดจำกัด</span><span class="symp-badge sb-warn">WARNING</span></div>
+      <div class="symp-val">{{ _tip|int }} m/s &nbsp;(ขีดจำกัด 290 m/s · เหลือ {{ (290-_tip)|int }} m/s)</div>
+      <div class="symp-desc">ใบพัดเริ่มส่งเสียงดัง · efficiency เริ่มลด · vibration จะสูงขึ้นที่ full throttle</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>อยู่ในเกณฑ์ยังบินได้ แต่ถ้า motor ร้อน → ลด pitch ลง 0.5"</div>
+    </div>
+  </div>
+  {% else %}
+  <div class="symp s-ok">
+    <span class="symp-ico">✅</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">Tip Speed — ปลอดภัย</span><span class="symp-badge sb-ok">OK</span></div>
+      <div class="symp-val">{{ _tip|int }} m/s &nbsp;(ขีดจำกัด 290 m/s)</div>
+      <div class="symp-desc">ใบพัดทำงานในโซน efficiency สูง · noise และ vibration ต่ำ</div>
+    </div>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {# ─── 3. HOVER THROTTLE ─── #}
+  {% if _hov>0 %}
+  {% if _hov>65 %}
+  <div class="symp s-crit">
+    <span class="symp-ico">🎮</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">Hover Throttle สูงวิกฤต — แบตร้อน</span><span class="symp-badge sb-crit">CRITICAL</span></div>
+      <div class="symp-val">Hover ที่ {{ _hov|int }}% throttle &nbsp;(เกณฑ์ดี: 30–45%)</div>
+      <div class="symp-desc">มอเตอร์และแบตทำงานหนักขณะ hover · ความร้อนสะสมเร็ว · เวลาบินสั้นมาก · เสี่ยง voltage sag</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>เพิ่มกำลัง: เพิ่ม S แบต หรือ KV มอเตอร์ หรือ ลดน้ำหนักลงอย่างน้อย 200g</div>
+    </div>
+  </div>
+  {% elif _hov>50 %}
+  <div class="symp s-warn">
+    <span class="symp-ico">🎮</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">Hover Throttle ค่อนข้างสูง</span><span class="symp-badge sb-warn">WARNING</span></div>
+      <div class="symp-val">Hover ที่ {{ _hov|int }}% throttle &nbsp;(เกณฑ์ดี: 30–45%)</div>
+      <div class="symp-desc">แบตหมดเร็วกว่าปกติ · headroom throttle น้อย · motor temp สูงขึ้น</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>ลองลดน้ำหนัก 50–100g (ถอด GoPro หรือ prop guard ออก)</div>
+    </div>
+  </div>
+  {% elif _hov<25 %}
+  <div class="symp s-info">
+    <span class="symp-ico">🎮</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">Hover Throttle ต่ำมาก — ลำ Punchy</span><span class="symp-badge sb-info">INFO</span></div>
+      <div class="symp-val">Hover ที่ {{ _hov|int }}% throttle</div>
+      <div class="symp-desc">กำลังสูงมาก · ต้องการ D-term สูงขึ้นป้องกัน oscillation · propwash อาจชัด</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>เพิ่ม D-term ก่อนบิน · ดู Blackbox หลังบินแพ็คแรก · ปรับ TPA breakpoint</div>
+    </div>
+  </div>
+  {% else %}
+  <div class="symp s-ok">
+    <span class="symp-ico">✅</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">Hover Throttle — ในเกณฑ์ดี</span><span class="symp-badge sb-ok">OK</span></div>
+      <div class="symp-val">Hover ที่ {{ _hov|int }}% throttle &nbsp;(เกณฑ์ดี: 30–45%)</div>
+      <div class="symp-desc">balance ระหว่างกำลัง–efficiency ดี · headroom throttle เหลือพอ</div>
+    </div>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {# ─── 4. FLIGHT TIME ─── #}
+  {% if _mah>0 %}
+  {% if _ft<2 %}
+  <div class="symp s-crit">
+    <span class="symp-ico">⏱️</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">เวลาบินสั้นวิกฤต — ไม่คุ้มต่อการบิน</span><span class="symp-badge sb-crit">CRITICAL</span></div>
+      <div class="symp-val">ประมาณ {{ _ft|round(1) }} นาที &nbsp;(ควรได้ ≥ 3 นาที)</div>
+      <div class="symp-desc">แบตมีความจุไม่พอกับน้ำหนักลำ · บินได้ไม่กี่แพ็คก็ต้องชาร์จ · ไม่เหมาะบินฝึก</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>เพิ่ม mAh แบต 30–50% หรือ ลดน้ำหนักลำลง · ตรวจสอบว่าน้ำหนักที่ใส่ถูกต้อง</div>
+    </div>
+  </div>
+  {% elif _ft<4 %}
+  <div class="symp s-warn">
+    <span class="symp-ico">⏱️</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">เวลาบินค่อนข้างสั้น</span><span class="symp-badge sb-warn">WARNING</span></div>
+      <div class="symp-val">ประมาณ {{ _ft|round(1) }} นาที &nbsp;(แนะนำ ≥ 4 นาที)</div>
+      <div class="symp-desc">สำหรับ Freestyle/Racing เป็นที่ยอมรับได้ แต่ถ้า LR จะสั้นไป</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>{% if _sy=='longrange' %}สำหรับ Long Range ควรเพิ่มแบตให้ได้ ≥ 10 นาที{% else %}สำหรับ {{ _sy }} ยังโอเค แต่ถ้าต้องการบินนานขึ้น ลดน้ำหนักลำ{% endif %}</div>
+    </div>
+  </div>
+  {% elif _sy=='longrange' and _ft<10 %}
+  <div class="symp s-warn">
+    <span class="symp-ico">⏱️</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">เวลาบินสั้นสำหรับ Long Range</span><span class="symp-badge sb-warn">NOTE</span></div>
+      <div class="symp-val">ประมาณ {{ _ft|round(1) }} นาที &nbsp;(LR ควรได้ ≥ 10 นาที)</div>
+      <div class="symp-desc">ยังไม่เหมาะสำหรับ long range mission ที่ต้องบินไกล</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>เพิ่มความจุแบต หรือ เปลี่ยนใบพัด pitch ต่ำลงเพื่อ efficiency สูงขึ้น</div>
+    </div>
+  </div>
+  {% else %}
+  <div class="symp s-ok">
+    <span class="symp-ico">✅</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">เวลาบิน — ดี</span><span class="symp-badge sb-ok">OK</span></div>
+      <div class="symp-val">ประมาณ {{ _ft|round(1) }} นาที — เหมาะสำหรับ {{ _sy|capitalize }}</div>
+      <div class="symp-desc">ความจุแบตเหมาะสมกับน้ำหนักและสไตล์การบิน</div>
+    </div>
+  </div>
+  {% endif %}
+  {% else %}
+  <div class="symp s-info">
+    <span class="symp-ico">⏱️</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">เวลาบิน — ยังไม่คำนวณ</span><span class="symp-badge sb-info">INFO</span></div>
+      <div class="symp-val">ใส่ mAh ความจุแบตเพื่อคำนวณ</div>
+      <div class="symp-desc">กรอก mAh ในช่อง Advanced เพื่อให้ระบบประเมินเวลาบินโดยประมาณ</div>
+    </div>
+  </div>
+  {% endif %}
+
+  {# ─── 5. MOTOR THERMAL ─── #}
+  {% if _pw>0 %}
+  {% set _t_wot_calc = (35 + _pw/4*0.28)|int %}
+  {% if _t_wot_calc>85 %}
+  <div class="symp s-crit">
+    <span class="symp-ico">🌡️</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">ความเสี่ยงมอเตอร์ร้อนสูง</span><span class="symp-badge sb-crit">CRITICAL</span></div>
+      <div class="symp-val">อุณหภูมิ WOT ≈ {{ _t_wot_calc }}°C &nbsp;(เกณฑ์ปลอดภัย &lt;75°C)</div>
+      <div class="symp-desc">WOT (wide open throttle) จะทำให้มอเตอร์ร้อนมาก · winding อาจเสียหาย · ขดลวดไหม้ได้</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>ลด pitch ใบพัด · ลด KV · หลีกเลี่ยง full throttle นานเกิน 10 วินาที · ตรวจอุณหภูมิหลังแต่ละแพ็ค</div>
+    </div>
+  </div>
+  {% elif _t_wot_calc>65 %}
+  <div class="symp s-warn">
+    <span class="symp-ico">🌡️</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">มอเตอร์อาจอุ่น — ระวัง</span><span class="symp-badge sb-warn">WARNING</span></div>
+      <div class="symp-val">อุณหภูมิ WOT ≈ {{ _t_wot_calc }}°C &nbsp;(เกณฑ์ปลอดภัย &lt;75°C)</div>
+      <div class="symp-desc">การบิน aggressive นานๆ อาจทำให้มอเตอร์ร้อนถึง limit · ควรเช็คหลังบิน</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>เช็ค motor temp หลัง 1 แพ็ค · ถ้าร้อนเกิน 60°C หลัง land → ลด D-term + pitch</div>
+    </div>
+  </div>
+  {% else %}
+  <div class="symp s-ok">
+    <span class="symp-ico">✅</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">Thermal Risk — ปลอดภัย</span><span class="symp-badge sb-ok">OK</span></div>
+      <div class="symp-val">อุณหภูมิ WOT ≈ {{ _t_wot_calc }}°C — ต่ำกว่าเกณฑ์</div>
+      <div class="symp-desc">Power density เหมาะสม · มอเตอร์ไม่ควรร้อนเกินในการบินปกติ</div>
+    </div>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {# ─── 6. C-RATE DEMAND ─── #}
+  {% if _cb>0 %}
+  {% if _cb>80 %}
+  <div class="symp s-crit">
+    <span class="symp-ico">🔋</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">C-Rate Demand สูงวิกฤต — แบตเสี่ยงร้อน</span><span class="symp-badge sb-crit">CRITICAL</span></div>
+      <div class="symp-val">ต้องการ {{ _cb|round(1) }}C burst &nbsp;(แบตทั่วไปทำได้ 45–80C จริง)</div>
+      <div class="symp-desc">แบตทั่วไปจะ sag หนักมาก · voltage drop → ลำตก → แบตบวม → เสี่ยงระเบิด</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>ใช้เฉพาะแบต premium เช่น Tattu R-Line / CNHL Black · หรือ ลด KV + prop load ลง</div>
+    </div>
+  </div>
+  {% elif _cb>55 %}
+  <div class="symp s-warn">
+    <span class="symp-ico">🔋</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">C-Rate Demand ค่อนข้างสูง</span><span class="symp-badge sb-warn">WARNING</span></div>
+      <div class="symp-val">ต้องการ {{ _cb|round(1) }}C burst</div>
+      <div class="symp-desc">แบตถูก stress สูง · ไม่แนะนำใช้แบตราคาถูก C ต่ำ</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>เลือกแบตที่ spec C-rate ≥ {{ (_cb*1.3)|int }}C (เผื่อ 30% safety margin)</div>
+    </div>
+  </div>
+  {% else %}
+  <div class="symp s-ok">
+    <span class="symp-ico">✅</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">C-Rate Demand — ปกติ</span><span class="symp-badge sb-ok">OK</span></div>
+      <div class="symp-val">ต้องการ {{ _cb|round(1) }}C burst — แบตทั่วไปรับได้</div>
+      <div class="symp-desc">แบต LiPo คุณภาพปานกลางรับโหลดได้สบาย</div>
+    </div>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {# ─── 7. PROPWASH RISK ─── #}
+  {% if _pri>=70 %}
+  <div class="symp s-crit">
+    <span class="symp-ico">🌪️</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">Propwash Risk สูง — ลำจะสั่นหลัง Punch</span><span class="symp-badge sb-crit">HIGH RISK</span></div>
+      <div class="symp-val">PRi {{ _pri }}/100 — {{ _priL }}</div>
+      <div class="symp-desc">หลัง punch throttle → ลดกะทันหัน จะเห็นลำสั่นชัด · ยิ่งบิน aggressive ยิ่งชัด</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>เพิ่ม D-term +3–5 · เปิด RPM filter (dshot_bidir=ON) · ดู Blackbox และปรับ iterm_relax_cutoff</div>
+    </div>
+  </div>
+  {% elif _pri>=40 %}
+  <div class="symp s-warn">
+    <span class="symp-ico">🌪️</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">Propwash Risk ปานกลาง</span><span class="symp-badge sb-warn">MEDIUM</span></div>
+      <div class="symp-val">PRi {{ _pri }}/100 — {{ _priL }}</div>
+      <div class="symp-desc">อาจเห็น propwash เล็กน้อยใน aggressive maneuver · D-term ปรับละเอียด</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>ปรับ D-term ตาม Blackbox · RPM filter ช่วยได้มาก · ใส่ BF{{ _bfv }} iterm_relax</div>
+    </div>
+  </div>
+  {% else %}
+  <div class="symp s-ok">
+    <span class="symp-ico">✅</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">Propwash Risk — ต่ำ</span><span class="symp-badge sb-ok">LOW</span></div>
+      <div class="symp-val">PRi {{ _pri }}/100 — baseline D-term ใช้ได้</div>
+      <div class="symp-desc">สไตล์การบินและ power setup ไม่น่ามีปัญหา propwash มาก</div>
+    </div>
+  </div>
+  {% endif %}
+
+  {# ─── 8. ESC ─── #}
+  {% if _esc>0 %}
+  <div class="symp {% if _esc>80 %}s-info{% else %}s-ok{% endif %}">
+    <span class="symp-ico">🔌</span>
+    <div class="symp-body">
+      <div class="symp-head">
+        <span class="symp-title">ESC Rating — {% if _esc>80 %}High Power Build{% else %}ปกติ{% endif %}</span>
+        <span class="symp-badge {% if _esc>80 %}sb-info{% else %}sb-ok{% endif %}">{% if _esc>80 %}INFO{% else %}OK{% endif %}</span>
       </div>
-      <!-- Fix commands -->
-      {% if _pri>=40 %}
-      <div style="font-family:var(--fd);font-size:8px;letter-spacing:.1em;color:var(--t2);margin-bottom:6px">🔧 PROPWASH FIX COMMANDS (BF{{ _bfv }})</div>
-      <div class="code-box" style="margin-top:0">
-        <pre class="cli">{% if _bfv=='4.5' %}set iterm_relax_type     = SETPOINT
-set iterm_relax_cutoff   = 15
+      <div class="symp-val">ต้องการ ESC ≥ {{ _esc }}A (ต่อมอเตอร์)</div>
+      <div class="symp-desc">{% if _esc>80 %}High performance build · ต้องใช้ ESC คุณภาพสูงเท่านั้น · ตรวจ heat sink{% else %}ESC ขนาดมาตรฐานทั่วไปรองรับได้{% endif %}</div>
+      {% if _esc>80 %}<div class="symp-fix"><span class="symp-fix-ico">💡</span>เลือก ESC ≥ {{ (_esc*1.25)|int }}A continuous rating · แนะนำ 4-in-1 ESC ที่มี heatsink</div>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# ─── 9. RPM FILTER SETTING ─── #}
+  {% if _rpm>0 %}
+  <div class="symp s-info">
+    <span class="symp-ico">🔊</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">RPM Filter Min Hz — ค่าที่แนะนำ</span><span class="symp-badge sb-info">SETTING</span></div>
+      <div class="symp-val">rpm_filter_min_hz = {{ _rfmin }} Hz &nbsp;(จาก {{ (_rpm/1000)|round(1) }}k RPM)</div>
+      <div class="symp-desc">ตั้งค่า RPM filter ให้ถูกต้องเพื่อ filter motor fundamental โดยไม่ตัด signal ดีออก</div>
+      <div class="symp-fix"><span class="symp-fix-ico">💡</span>ใช้ค่านี้ตรงๆ ใน CLI: <code style="color:var(--g);font-family:var(--fm)">set rpm_filter_min_hz = {{ _rfmin }}</code></div>
+    </div>
+  </div>
+  {% endif %}
+
+  {# ─── 10. Rules Engine output ─── #}
+  {% for r in _rules %}{% if r.level=='danger' %}
+  <div class="symp s-crit">
+    <span class="symp-ico">❌</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">Rule Engine Alert</span><span class="symp-badge sb-crit">DANGER</span></div>
+      <div class="symp-val">{{ r.msg }}</div>
+      {% if r.suggestion %}<div class="symp-fix"><span class="symp-fix-ico">💡</span>{{ r.suggestion }}</div>{% endif %}
+    </div>
+  </div>
+  {% elif r.level=='warning' %}
+  <div class="symp s-warn">
+    <span class="symp-ico">⚠️</span>
+    <div class="symp-body">
+      <div class="symp-head"><span class="symp-title">Rule Engine Warning</span><span class="symp-badge sb-warn">WARNING</span></div>
+      <div class="symp-val">{{ r.msg }}</div>
+      {% if r.suggestion %}<div class="symp-fix"><span class="symp-fix-ico">💡</span>{{ r.suggestion }}</div>{% endif %}
+    </div>
+  </div>
+  {% endif %}{% endfor %}
+
+  </div>{# /symp-list #}
+  </div>{# /cb #}
+</div>{# /card #}
+
+{# ─── PROPWASH FIX CLI (collapsed) ─── #}
+{% if _pri>=40 %}
+<div class="card">
+  <div class="ch"><div class="ch-ic" style="background:rgba(255,187,0,.1)">🔧</div> PROPWASH FIX CLI — BF{{ _bfv }}</div>
+  <div class="cb">
+    <div class="code-box" style="margin-top:0">
+      <div class="code-h">
+        <span class="code-t">Propwash Fix — copy → CLI → save</span>
+        <button class="cpbtn" onclick="cpEl('priFix');toast('✓ Propwash CLI copied!')">📋 Copy</button>
+      </div>
+      <pre class="cli" id="priFix">{% if _bfv=='4.5' %}set iterm_relax_type          = SETPOINT
+set iterm_relax_cutoff        = 15
 set feedforward_smooth_factor = 65
-set dyn_notch_q          = 300{% elif _bfv=='4.3' %}set iterm_relax_type     = SETPOINT
+set dyn_notch_q               = 300
+set d_roll  = {{ analysis.pid.roll.d + 4 }}
+set d_pitch = {{ analysis.pid.pitch.d + 4 }}{% elif _bfv=='4.3' %}set iterm_relax_type     = SETPOINT
 set iterm_relax_cutoff   = 12
-set d_roll  = {{ (analysis.pid.roll.d + 4) if analysis else 42 }}
-set d_pitch = {{ (analysis.pid.pitch.d + 4) if analysis else 44 }}{% else %}set iterm_relax_type     = SETPOINT
-set iterm_relax_cutoff   = 15
+set d_roll  = {{ analysis.pid.roll.d + 4 }}
+set d_pitch = {{ analysis.pid.pitch.d + 4 }}{% else %}set iterm_relax_type          = SETPOINT
+set iterm_relax_cutoff        = 15
 set feedforward_smooth_factor = 60
-set d_roll  = {{ (analysis.pid.roll.d + 3) if analysis else 41 }}
-set d_pitch = {{ (analysis.pid.pitch.d + 3) if analysis else 43 }}{% endif %}
+set d_roll  = {{ analysis.pid.roll.d + 3 }}
+set d_pitch = {{ analysis.pid.pitch.d + 3 }}{% endif %}
+set dshot_bidir               = ON
+set rpm_filter_harmonics      = 3
+set rpm_filter_min_hz         = {{ _rfmin }}
 save</pre>
-      </div>
-      {% endif %}
     </div>
   </div>
 </div>
+{% endif %}
+
+</div>{# /pane-safety #}
 
 <!-- ── TAB: PID + FILTER ── -->
 <div class="rp" id="pane-tune">
