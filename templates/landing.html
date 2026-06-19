@@ -328,9 +328,9 @@ body::before{
   .tools-grid{grid-template-columns:repeat(2,1fr)}
   .footer-left,.footer-right{width:100%;justify-content:center;text-align:center}
   .hero-btns{flex-direction:column;align-items:flex-start}
-  .btn-primary,.btn-outline,.btn-dev,.btn-fb{width:100%;justify-content:center}
+  .btn-primary,.btn-outline,.btn-dev,.btn-fb{width:min(100%, 340px);justify-content:center}
   .hero-social-btns{flex-direction:column;align-items:flex-start}
-  .hero-store-btns{flex-direction:column;align-items:flex-start}
+  .hero-store-btns{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
   .btn-store{width:100%;pointer-events:none}
   .nav-menu-btn{
     min-width:84px;
@@ -522,15 +522,22 @@ body.no-hero-video .hero-bg-video{display:none;}
   overflow:hidden;
   isolation:isolate;
   transform:translateZ(0);
-  transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease, color .2s ease, filter .2s ease;
+  transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease, color .22s ease, filter .22s ease;
+  width:min(100%, 360px);
+  min-height:52px;
+  justify-content:center;
+  border-radius:14px;
+  border:1.5px solid rgba(0,255,136,.22);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.03),
+    0 10px 24px rgba(0,0,0,.20);
 }
 .btn-primary{
   display:inline-flex; align-items:center; gap:10px;
   background:linear-gradient(135deg, #0dff7a 0%, #7cff5a 48%, #8ff3ff 100%);
   color:#04130c;
   font-family:var(--font-t); font-size:15px; font-weight:900;
-  padding:14px 28px;
-  border-radius:16px;
+  padding:12px 18px;
   text-decoration:none;
   box-shadow:
     0 0 0 1px rgba(255,255,255,.08) inset,
@@ -570,10 +577,9 @@ body.no-hero-video .hero-bg-video{display:none;}
   background:linear-gradient(180deg, rgba(12,16,20,.90), rgba(8,12,16,.72));
   color:#ffffff;
   font-family:var(--font-t); font-size:15px; font-weight:700;
-  padding:13px 28px;
-  border-radius:16px;
+  padding:12px 18px;
   text-decoration:none;
-  border:1.5px solid rgba(255,255,255,.14);
+  border:1.5px solid rgba(0,255,136,.22);
   box-shadow:
     inset 0 0 0 1px rgba(255,255,255,.03),
     0 10px 24px rgba(0,0,0,.20);
@@ -597,10 +603,10 @@ body.no-hero-video .hero-bg-video{display:none;}
 }
 .btn-outline:hover::after{ transform:translateX(140%); }
 .btn-outline:hover{
-  border-color:rgba(255,255,255,.30);
+  border-color:rgba(0,255,136,.42);
   background:linear-gradient(180deg, rgba(15,22,27,.96), rgba(10,14,18,.80));
   transform:translateY(-2px);
-  box-shadow:0 14px 30px rgba(0,0,0,.24);
+  box-shadow:0 14px 30px rgba(0,0,0,.24), 0 0 24px rgba(0,255,136,.10);
 }
 
 /* ── NEW SOCIAL BUTTONS ── */
@@ -611,11 +617,9 @@ body.no-hero-video .hero-bg-video{display:none;}
 .btn-dev{
   display:inline-flex; align-items:center; gap:8px;
   background:linear-gradient(180deg, rgba(0,255,136,.10), rgba(0,255,136,.05));
-  border:1.5px solid rgba(0,255,136,.24);
   color:#9fffc2;
   font-family:var(--font-t); font-size:13px; font-weight:800;
-  padding:11px 22px;
-  border-radius:16px;
+  padding:10px 16px;
   text-decoration:none;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
 }
@@ -639,7 +643,7 @@ body.no-hero-video .hero-bg-video{display:none;}
 .btn-dev:hover::after{ transform:translateX(140%); }
 .btn-dev:hover{
   background:linear-gradient(180deg, rgba(0,255,136,.16), rgba(0,255,136,.08));
-  border-color:rgba(0,255,136,.44);
+  border-color:rgba(0,255,136,.42);
   transform:translateY(-2px);
   box-shadow:0 12px 26px rgba(0,255,136,.10), inset 0 0 0 1px rgba(255,255,255,.03);
   color:#ffffff;
@@ -651,11 +655,9 @@ body.no-hero-video .hero-bg-video{display:none;}
 .btn-fb{
   display:inline-flex; align-items:center; gap:8px;
   background:linear-gradient(180deg, rgba(24,119,242,.12), rgba(24,119,242,.06));
-  border:1.5px solid rgba(24,119,242,.26);
   color:#93c5fd;
   font-family:var(--font-t); font-size:13px; font-weight:800;
-  padding:11px 22px;
-  border-radius:16px;
+  padding:10px 16px;
   text-decoration:none;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
 }
@@ -679,22 +681,33 @@ body.no-hero-video .hero-bg-video{display:none;}
 .btn-fb:hover::after{ transform:translateX(140%); }
 .btn-fb:hover{
   background:linear-gradient(180deg, rgba(24,119,242,.18), rgba(24,119,242,.10));
-  border-color:rgba(24,119,242,.44);
+  border-color:rgba(0,255,136,.42);
   transform:translateY(-2px);
-  box-shadow:0 12px 26px rgba(24,119,242,.12), inset 0 0 0 1px rgba(255,255,255,.03);
+  box-shadow:0 12px 26px rgba(24,119,242,.12), inset 0 0 0 1px rgba(255,255,255,.03), 0 0 22px rgba(0,255,136,.08);
   color:#e0f2fe;
 }
 /* ── APP STORE BUTTONS ── */
 .hero-store-btns{
-  display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;
-  opacity:0;animation:fadeSlideUp .5s 1.38s forwards;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin-top:10px;
+  opacity:0;
+  animation:fadeSlideUp .5s 1.38s forwards;
 }
 .btn-store{
-  display:inline-flex;align-items:center;gap:11px;
-  padding:10px 18px 10px 14px;border-radius:13px;
-  text-decoration:none;position:relative;overflow:hidden;
-  cursor:default;pointer-events:none;
-  transition:all .2s;min-width:158px;
+  display:inline-flex;align-items:center;gap:10px;
+  padding:9px 12px 9px 10px;
+  border-radius:12px;
+  text-decoration:none;
+  position:relative;
+  overflow:hidden;
+  cursor:default;
+  pointer-events:none;
+  transition:all .2s;
+  min-width:0;
+  width:100%;
+  min-height:60px;
 }
 .btn-store-android{
   background:rgba(61,220,132,.07);
@@ -716,10 +729,10 @@ body.no-hero-video .hero-bg-video{display:none;}
 .btn-store-android::after{animation-delay:0s}
 .btn-store-ios::after{animation-delay:1.6s}
 @keyframes storeShimmer{0%,100%{left:-70%}60%{left:120%}}
-.btn-store-ico{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:32px;height:32px}
+.btn-store-ico{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:26px;height:26px}
 .btn-store-text{display:flex;flex-direction:column;line-height:1}
-.btn-store-sup{font-size:9px;font-family:var(--font-d);letter-spacing:.08em;opacity:.65;margin-bottom:3px}
-.btn-store-name{font-size:14px;font-weight:800;font-family:var(--font-t);letter-spacing:-.01em}
+.btn-store-sup{font-size:8px;font-family:var(--font-d);letter-spacing:.12em;opacity:.65;margin-bottom:2px}
+.btn-store-name{font-size:12px;font-weight:800;font-family:var(--font-t);letter-spacing:-.01em}
 .btn-store-android .btn-store-name{color:#3ddc84}
 .btn-store-ios .btn-store-name{color:#f0f0f0}
 .soon-badge{
@@ -825,9 +838,9 @@ footer{
   .tools-grid{grid-template-columns:repeat(2,1fr)}
   .footer-left,.footer-right{width:100%;justify-content:center;text-align:center}
   .hero-btns{flex-direction:column;align-items:flex-start}
-  .btn-primary,.btn-outline,.btn-dev,.btn-fb{width:100%;justify-content:center}
+  .btn-primary,.btn-outline,.btn-dev,.btn-fb{width:min(100%, 360px);justify-content:center}
   .hero-social-btns{flex-direction:column;align-items:flex-start}
-  .hero-store-btns{flex-direction:column;align-items:flex-start}
+  .hero-store-btns{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
   .btn-store{width:100%;pointer-events:none}
 }
 
@@ -1129,7 +1142,7 @@ footer{
       <span class="line3">บิน<span class="green hero-shine">นิ่งลื่น</span>กว่าเดิม</span>
     </h1>
     <div class="hero-rule"></div>
-    <p class="hero-desc">ConfigDoctor ช่วยคุณวิเคราะห์ ปรับแต่ง และปลดล็อกศักยภาพสูงสุดของโดรน FPV ของคุณ</p>
+    <p class="hero-desc">ConfigDoctor อ่านอาการโดรนให้ขาด แปลงข้อมูลดิบเป็นคำวินิจฉัยที่แม่นยำ ก่อนปัญหาจะเกิดกลางอากาศ</p>
 
     <!-- Primary action buttons -->
     <div class="hero-btns">
@@ -1196,7 +1209,7 @@ footer{
         </div>
         <div class="btn-store-text">
           <span class="btn-store-sup">COMING SOON ON</span>
-          <span class="btn-store-name">Play Store / APK</span>
+          <span class="btn-store-name">Play Store Android</span>
         </div>
         <div class="soon-badge">เร็วๆนี้</div>
       </span>
