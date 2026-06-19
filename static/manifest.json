@@ -1,0 +1,16 @@
+{
+  "name": "OBIXConfig Doctor",
+  "short_name": "ConfigDoctor",
+  "description": "Web application for analyzing FPV drone CLI dumps.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e1e2e",
+  "theme_color": "#00bef8",
+  "icons": [
+    {
+      "src": "/static/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
