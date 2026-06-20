@@ -6,6 +6,7 @@
 # - named presets: Freestyle/Racing/Cine/LR/UltraLR
 # ============================================================
 from typing import Dict, Any, Tuple, Optional
+from analyzer.units import cells_from_battery_string
 
 DRONE_CLASSES: Dict[str, Dict[str, Any]] = {
     "nano":       {"size_range": (0.0,  1.4),  "description": "Nano / Micro Whoop (<=1.4\")"},
@@ -90,12 +91,58 @@ _STYLE_ADJUST = {
     "longrange": {"p_mul":0.85,"i_mul":1.00,"d_mul":0.80},
 }
 
+# ── Reference cell count each BASELINE_CTRL key was effectively tuned for ──
+# "freestyle" has 3 explicit, hand-tuned variants (4S/5S/6S — see notes above,
+# these came from real bench/flight comparisons). Every OTHER class only ever
+# had a single static baseline with NO battery-awareness at all, which is a
+# real gap: higher cell count -> higher voltage -> faster motor response ->
+# generally needs LOWER P/D to avoid oscillation (the same physical reason
+# the freestyle 4S/5S/6S numbers differ from each other).
+#
+# UNCERTAINTY FLAG: the per-class reference cell below is *not* independently
+# flight-tested for every class — it's the most common battery cell count
+# for that class in this project's own PRESETS table (logic/presets.py),
+# used as a reasonable anchor so "no adjustment" happens for a build that
+# matches the typical/expected battery for its class. The scaling RATE
+# applied per extra/fewer cell is the one validated data point we do have
+# (the freestyle 4S->5S->6S deltas), extended to other classes under the
+# assumption that the same voltage/response relationship holds generally.
+# Treat the result the same way as the rest of this file's baselines: a
+# sensible starting point, not a flight-test-verified final tune.
+REF_CELLS = {
+    "nano": 1, "micro": 2, "whoop": 2, "cine": 4, "mini": 4,
+    "freestyle": 4, "freestyle_5s": 5, "freestyle_6s": 6,
+    "heavy_5": 6, "mid_lr": 6, "long_range": 6, "ultra_lr": 6,
+}
+# Per-cell multiplier, derived from the validated freestyle 4S/5S/6S baseline:
+#   P: 48 -> 44 -> 40   (avg -8.7%/cell)   I: 90 -> 88 -> 85   (avg -2.8%/cell)
+#   D: 38 -> 36 -> 34   (avg -5.3%/cell)
+_PID_PER_CELL = {"p_mul": 0.913, "i_mul": 0.972, "d_mul": 0.947}
+_MAX_SCALE_STEPS = 4  # don't extrapolate more than ±4 cells beyond the reference
+
+
 def _cells_from_str(s):
-    try: return max(1, min(int(str(s).upper().replace("S","").strip()), 8))
-    except Exception: return 4
+    """Deprecated local shim — kept so any external import doesn't break.
+    Use analyzer.units.cells_from_battery_string directly in new code."""
+    return cells_from_battery_string(s, default=4, lo=1, hi=8)
+
+
+def _battery_pid_scale(bkey: str, cells: int) -> Dict[str, float]:
+    """General battery-cell-count PID multiplier, relative to the reference
+    cell count baked into BASELINE_CTRL[bkey]. Returns {p_mul,i_mul,d_mul}
+    that is 1.0 (no-op) when `cells` equals that key's reference."""
+    ref = REF_CELLS.get(bkey, 4)
+    steps = max(-_MAX_SCALE_STEPS, min(cells - ref, _MAX_SCALE_STEPS))
+    if steps == 0:
+        return {"p_mul": 1.0, "i_mul": 1.0, "d_mul": 1.0}
+    return {
+        "p_mul": _PID_PER_CELL["p_mul"] ** steps,
+        "i_mul": _PID_PER_CELL["i_mul"] ** steps,
+        "d_mul": _PID_PER_CELL["d_mul"] ** steps,
+    }
 
 def _pick_baseline_key(cls_key, battery="4S"):
-    cells = _cells_from_str(str(battery or "4S"))
+    cells = cells_from_battery_string(battery, default=4, lo=1, hi=12)
     if cls_key == "freestyle":
         if cells >= 6: return "freestyle_6s"
         if cells == 5: return "freestyle_5s"
@@ -104,11 +151,21 @@ def _pick_baseline_key(cls_key, battery="4S"):
 def _apply_style(pid_axis, mul):
     return {"p":max(1,round(pid_axis["P"]*mul["p_mul"])),"i":max(1,round(pid_axis["I"]*mul["i_mul"])),"d":max(0,round(pid_axis.get("D",0)*mul["d_mul"]))}
 
+def _combine_muls(*muls):
+    out = {"p_mul": 1.0, "i_mul": 1.0, "d_mul": 1.0}
+    for m in muls:
+        for k in out:
+            out[k] *= m.get(k, 1.0)
+    return out
+
 def get_pid_for_class_style(cls_key, style, battery="4S"):
     bkey = _pick_baseline_key(cls_key, battery)
     base = BASELINE_CTRL.get(bkey) or BASELINE_CTRL.get(cls_key) or BASELINE_CTRL["freestyle"]
     pid_base = base.get("pid", {})
-    mul = _STYLE_ADJUST.get(style, _STYLE_ADJUST["freestyle"])
+    cells = cells_from_battery_string(battery, default=4, lo=1, hi=12)
+    style_mul   = _STYLE_ADJUST.get(style, _STYLE_ADJUST["freestyle"])
+    battery_mul = _battery_pid_scale(bkey, cells)
+    mul = _combine_muls(style_mul, battery_mul)
     roll_base  = pid_base.get("roll",  {"P":48,"I":90,"D":38})
     pitch_base = pid_base.get("pitch", {"P":52,"I":90,"D":40})
     yaw_base   = pid_base.get("yaw",   {"P":40,"I":90,"D":0})
