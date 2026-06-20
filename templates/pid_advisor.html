@@ -715,6 +715,447 @@
   .adv-content { padding: 14px; }
   .pid-grid { grid-template-columns: 1fr; }
 }
+
+/* ══════════════════════════════════════════════════════════
+   ULTRA UPGRADE — Motion, Glass, Intelligence Layer
+══════════════════════════════════════════════════════════ */
+
+/* ambient layers */
+body{
+  background:
+    radial-gradient(circle at 8% 2%, rgba(16,196,122,.12), transparent 24%),
+    radial-gradient(circle at 92% 8%, rgba(74,158,255,.10), transparent 22%),
+    radial-gradient(circle at 50% 120%, rgba(245,158,11,.06), transparent 28%),
+    linear-gradient(180deg,#04080d 0%, #03050a 100%);
+}
+body::before,
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+body::before{
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px),
+    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px);
+  background-size: 72px 72px, 72px 72px;
+  opacity:.18;
+  animation: driftGrid 18s linear infinite;
+}
+body::after{
+  background:
+    radial-gradient(circle at 18% 12%, rgba(16,196,122,.14), transparent 18%),
+    radial-gradient(circle at 80% 18%, rgba(74,158,255,.11), transparent 16%),
+    radial-gradient(circle at 55% 82%, rgba(167,139,250,.08), transparent 18%);
+  filter: blur(22px);
+  opacity:.75;
+}
+@keyframes driftGrid{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-72px,-72px,0)}
+}
+
+.page-wrap{
+  position:relative;
+  z-index:1;
+}
+
+/* hero shell */
+.pid-hero{
+  position:relative;
+  overflow:hidden;
+  margin: 18px 0 14px;
+  padding: 20px 20px 18px;
+  border:1px solid rgba(16,196,122,.14);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(9,14,17,.92), rgba(4,8,10,.84));
+  box-shadow:
+    0 24px 72px rgba(0,0,0,.34),
+    inset 0 1px 0 rgba(255,255,255,.03),
+    inset 0 0 0 1px rgba(255,255,255,.02);
+  display:grid;
+  grid-template-columns: minmax(0,1.22fr) minmax(280px,.92fr);
+  gap: 16px;
+}
+.pid-hero::before{
+  content:'';
+  position:absolute;
+  inset:-20% -10%;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(16,196,122,.18), transparent 18%),
+    radial-gradient(circle at 82% 14%, rgba(74,158,255,.16), transparent 16%),
+    radial-gradient(circle at 74% 82%, rgba(245,158,11,.12), transparent 18%);
+  filter: blur(18px);
+  opacity:.85;
+  animation: heroGlow 9s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+.pid-hero::after{
+  content:'';
+  position:absolute;
+  inset:auto -18% -46% -18%;
+  height:120px;
+  background:linear-gradient(110deg, transparent 20%, rgba(255,255,255,.08) 48%, transparent 76%);
+  transform:translateX(-20%) skewX(-20deg);
+  animation: heroSweep 6.4s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes heroGlow{
+  from{transform:translate3d(0,0,0) scale(.98); opacity:.55}
+  to{transform:translate3d(10px,-6px,0) scale(1.04); opacity:.95}
+}
+@keyframes heroSweep{
+  0%,72%{transform:translateX(-40%) skewX(-20deg); opacity:0}
+  80%{opacity:.85}
+  100%{transform:translateX(160%) skewX(-20deg); opacity:0}
+}
+.pid-hero-copy{
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap: 10px;
+}
+.pid-hero-ey{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  width:fit-content;
+  padding: 6px 12px;
+  border-radius:999px;
+  border:1px solid rgba(16,196,122,.18);
+  background:rgba(16,196,122,.06);
+  color:var(--green);
+  font-family:var(--font-head);
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  box-shadow:0 0 24px rgba(16,196,122,.08);
+}
+.pid-hero h1{
+  font-family:var(--font-head);
+  font-size:clamp(28px,4.4vw,48px);
+  line-height:.96;
+  letter-spacing:-.03em;
+  color:#f4fbff;
+  text-shadow:0 0 24px rgba(255,255,255,.04);
+  max-width: 14ch;
+}
+.pid-hero h1 em{
+  font-style:normal;
+  background:linear-gradient(120deg, var(--green), var(--cyan), #a78bfa, var(--amber));
+  background-size:240% 100%;
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation: heroTextShift 7s linear infinite;
+}
+@keyframes heroTextShift{
+  0%{background-position:0% 50%}
+  100%{background-position:240% 50%}
+}
+.pid-hero-sub{
+  font-size:13.5px;
+  color:var(--text2);
+  line-height:1.8;
+  max-width:62ch;
+}
+.pid-hero-chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:4px;
+}
+.pid-hero-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.03);
+  color:#dfeaf2;
+  font-family:var(--font-head);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  transition:transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.pid-hero-chip:hover{
+  transform:translateY(-1px);
+  border-color:rgba(16,196,122,.25);
+  background:rgba(16,196,122,.08);
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+.pid-hero-metrics{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  align-content:start;
+}
+.hero-metric{
+  position:relative;
+  overflow:hidden;
+  min-height: 108px;
+  padding: 14px 14px 13px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.08);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.03),
+    0 14px 32px rgba(0,0,0,.22);
+  backdrop-filter:blur(10px);
+}
+.hero-metric::before{
+  content:'';
+  position:absolute;
+  inset:-20% -20%;
+  background:linear-gradient(115deg, transparent 20%, rgba(255,255,255,.08) 42%, transparent 66%);
+  transform:translateX(-120%);
+  animation: metricSweep 5.8s ease-in-out infinite;
+  pointer-events:none;
+}
+.hero-metric.good{border-color:rgba(16,196,122,.18)}
+.hero-metric.info{border-color:rgba(74,158,255,.18)}
+.hero-metric.warn{border-color:rgba(245,158,11,.18)}
+.hero-metric.purple{border-color:rgba(167,139,250,.18)}
+.hero-metric-label{
+  font-family:var(--font-head);
+  font-size:8px;
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted2);
+  margin-bottom:10px;
+}
+.hero-metric-val{
+  font-family:var(--font-head);
+  font-size:28px;
+  font-weight:900;
+  line-height:1;
+  color:#f6fbff;
+  margin-bottom:8px;
+}
+.hero-metric-sub{
+  font-size:12px;
+  color:var(--text2);
+  line-height:1.6;
+}
+@keyframes metricSweep{
+  0%,78%{transform:translateX(-120%); opacity:0}
+  84%{opacity:.75}
+  100%{transform:translateX(140%); opacity:0}
+}
+
+/* smart summary strip in results */
+.smart-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+.smart-card{
+  position:relative;
+  overflow:hidden;
+  padding:14px 14px 13px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.08);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  box-shadow:0 12px 26px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.03);
+  backdrop-filter:blur(10px);
+}
+.smart-card::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(16,196,122,.12), transparent 16%),
+    radial-gradient(circle at 82% 16%, rgba(74,158,255,.10), transparent 18%);
+  opacity:.85;
+  pointer-events:none;
+}
+.smart-card.good{border-color:rgba(16,196,122,.18)}
+.smart-card.info{border-color:rgba(74,158,255,.18)}
+.smart-card.warn{border-color:rgba(245,158,11,.18)}
+.smart-card.purple{border-color:rgba(167,139,250,.18)}
+.smart-lbl{
+  position:relative;
+  z-index:1;
+  font-family:var(--font-head);
+  font-size:8px;
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted2);
+  margin-bottom:8px;
+}
+.smart-val{
+  position:relative;
+  z-index:1;
+  font-family:var(--font-head);
+  font-size:22px;
+  font-weight:900;
+  line-height:1;
+  color:#f4fbff;
+  margin-bottom:7px;
+}
+.smart-desc{
+  position:relative;
+  z-index:1;
+  font-size:12px;
+  line-height:1.6;
+  color:var(--text2);
+}
+.smart-bar{
+  position:relative;
+  z-index:1;
+  margin-top:10px;
+  height:6px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  overflow:hidden;
+}
+.smart-bar > span{
+  display:block;
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--green),var(--cyan),#a78bfa);
+  box-shadow:0 0 14px rgba(16,196,122,.24);
+  transition:width .45s ease;
+}
+
+/* panel polish */
+.stats-strip{
+  position:relative;
+  z-index:1;
+  border-radius: 18px;
+  overflow:hidden;
+  margin-top: 12px;
+  box-shadow:0 14px 32px rgba(0,0,0,.18);
+}
+.stat-cell{
+  background:linear-gradient(180deg, rgba(8,14,18,.88), rgba(5,9,12,.86));
+}
+.adv-layout{
+  margin-top:14px;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:24px;
+  overflow:hidden;
+  background:linear-gradient(180deg, rgba(8,10,14,.7), rgba(4,7,10,.9));
+  box-shadow:0 28px 68px rgba(0,0,0,.3);
+}
+.adv-left{
+  background:linear-gradient(180deg, rgba(255,255,255,.01), rgba(255,255,255,.00));
+}
+.adv-right{
+  background:
+    radial-gradient(circle at 65% 10%, rgba(16,196,122,.05), transparent 18%),
+    radial-gradient(circle at 90% 45%, rgba(74,158,255,.04), transparent 18%),
+    rgba(0,0,0,.08);
+}
+.pid-input-section,
+.profile-section,
+.symptom-section,
+.diag-header,
+.quick-win-banner,
+.adv-content > div,
+.pcard .psec,
+.radar-section,
+.pid-delta-section,
+.cli-section,
+.bb-hint,
+.bf-note,
+.tip-item,
+.related-chip{
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.pid-num:focus,
+.filt-num:focus,
+.symptom-search:focus{
+  border-color: rgba(16,196,122,.5) !important;
+  box-shadow:0 0 0 4px rgba(16,196,122,.08);
+}
+.symptom-item{
+  position:relative;
+  overflow:hidden;
+}
+.symptom-item::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(110deg, transparent 20%, rgba(255,255,255,.05) 44%, transparent 62%);
+  transform:translateX(-120%);
+  transition:transform .45s ease;
+}
+.symptom-item:hover::before,
+.symptom-item.active::before{
+  transform:translateX(140%);
+}
+.symptom-item.active{
+  box-shadow:0 10px 26px rgba(16,196,122,.08);
+}
+.profile-btn.active{
+  box-shadow:0 0 18px rgba(16,196,122,.12);
+}
+.diag-header{
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+}
+.diag-icon-wrap{
+  box-shadow:0 0 0 1px rgba(255,255,255,.04) inset, 0 14px 30px rgba(0,0,0,.25);
+}
+.quick-win-banner{
+  box-shadow:0 16px 36px rgba(0,0,0,.18);
+}
+.adj-card:hover,
+.radar-section:hover,
+.pid-delta-section:hover,
+.cli-section:hover{
+  transform:translateY(-1px);
+  box-shadow:0 18px 36px rgba(0,0,0,.18);
+}
+.cli-body{
+  background:
+    radial-gradient(circle at 20% 0%, rgba(16,196,122,.05), transparent 18%),
+    rgba(0,0,0,.18);
+}
+.tip-item:hover,
+.related-chip:hover{
+  transform:translateY(-1px);
+  box-shadow:0 12px 26px rgba(0,0,0,.14);
+}
+
+@media(max-width:960px){
+  .pid-hero{
+    grid-template-columns:1fr;
+    padding:18px;
+  }
+  .pid-hero h1{max-width:none}
+  .pid-hero-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .smart-grid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .pid-hero-metrics{grid-template-columns:1fr}
+  .hero-metric{min-height:auto}
+  .smart-grid{grid-template-columns:1fr}
+}
+
+/* motion reduction */
+@media (prefers-reduced-motion: reduce){
+  body::before, body::after, .pid-hero::before, .pid-hero::after,
+  .pid-hero h1 em, .hero-metric::before, .smart-card::after{
+    animation:none !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -738,6 +1179,47 @@
   <div class="stat-cell">
     <div class="stat-num v5-purple">BF 4.5</div>
     <div class="stat-lbl">Validated</div>
+  </div>
+</div>
+
+
+<!-- Hero -->
+<div class="pid-hero">
+  <div class="pid-hero-copy">
+    <div class="pid-hero-ey">🧠 PID Intelligence Engine</div>
+    <h1>อ่านอาการโดรนให้ขาด ก่อนมันงอแงกลางอากาศ</h1>
+    <p class="pid-hero-sub">
+      วินิจฉัยอาการจาก PID, Filter และ Flight Style แบบเข้าใจง่าย พร้อมคำนวณค่า delta ที่เหมาะกับ profile ปัจจุบัน
+      ให้ทั้งคำอธิบาย, แนวทางแก้ และ CLI พร้อมใช้งานในที่เดียว
+    </p>
+    <div class="pid-hero-chips">
+      <span class="pid-hero-chip">Real PID Delta</span>
+      <span class="pid-hero-chip">Profile-aware</span>
+      <span class="pid-hero-chip">Blackbox hint</span>
+      <span class="pid-hero-chip">BF 4.4 / 4.5</span>
+    </div>
+  </div>
+  <div class="pid-hero-metrics" id="heroMetrics">
+    <div class="hero-metric good">
+      <div class="hero-metric-label">Smart Confidence</div>
+      <div class="hero-metric-val" id="heroConfVal">—</div>
+      <div class="hero-metric-sub" id="heroConfSub">รอเลือกอาการ</div>
+    </div>
+    <div class="hero-metric info">
+      <div class="hero-metric-label">Filter Headroom</div>
+      <div class="hero-metric-val" id="heroHeadroomVal">—</div>
+      <div class="hero-metric-sub" id="heroHeadroomSub">เทียบ gyro กับ d-term</div>
+    </div>
+    <div class="hero-metric warn">
+      <div class="hero-metric-label">Profile Fit</div>
+      <div class="hero-metric-val" id="heroFitVal">—</div>
+      <div class="hero-metric-sub" id="heroFitSub">ยังไม่เลือกอาการ</div>
+    </div>
+    <div class="hero-metric purple">
+      <div class="hero-metric-label">Tune Load</div>
+      <div class="hero-metric-val" id="heroLoadVal">—</div>
+      <div class="hero-metric-sub" id="heroLoadSub">ความเข้มของการปรับ</div>
+    </div>
   </div>
 </div>
 
@@ -883,7 +1365,7 @@
       <div class="adv-empty-title">PID Symptom Advisor</div>
       <div class="adv-empty-sub">
         กรอกค่า PID ปัจจุบัน แล้วเลือกอาการที่โดรนแสดง<br>
-        ระบบจะวินิจฉัยและให้ CLI fix พร้อม paste ทันที
+        ระบบจะวินิจฉัยแบบอ่านง่าย พร้อมให้ CLI fix ที่คัดลอกไปใช้ได้ทันที
       </div>
       <div class="adv-empty-chips">
         <span class="v5-pill g">{{ symptoms|length }} อาการ</span>
@@ -923,6 +1405,8 @@
           </div>
         </div>
       </div>
+
+      <div class="smart-grid" id="res-smart" style="display:none"></div>
 
       <!-- Quick win banner -->
       <div class="quick-win-banner" id="res-quickwin" style="display:none">
@@ -1063,7 +1547,166 @@ var currentSymptom = null;
 var currentProfile = 'freestyle';
 var radarChart = null;
 
+// ── Smart helpers ──
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+function avg(nums) {
+  var arr = (nums || []).filter(function(n){ return Number.isFinite(n); });
+  if(!arr.length) return 0;
+  return arr.reduce(function(a,b){ return a + b; }, 0) / arr.length;
+}
+function labelFromSeverity(sev) {
+  var map = {critical:'CRITICAL', high:'HIGH', medium:'MEDIUM', low:'LOW'};
+  return map[sev] || String(sev || 'INFO').toUpperCase();
+}
+function fitForProfile(profile, category) {
+  profile = String(profile || '').toLowerCase();
+  category = String(category || '').toLowerCase();
+  var score = 66;
+
+  if(profile === 'freestyle'){
+    if(/oscillation|propwash|response|pid_advanced|thermal/.test(category)) score = 88;
+    else if(/yaw|setup/.test(category)) score = 74;
+    else score = 78;
+  }else if(profile === 'racing'){
+    if(/response|yaw|setup/.test(category)) score = 90;
+    else if(/oscillation|thermal/.test(category)) score = 70;
+    else score = 80;
+  }else if(profile === 'longrange'){
+    if(/thermal|setup|vtx|video/.test(category)) score = 88;
+    else if(/oscillation|propwash/.test(category)) score = 72;
+    else score = 77;
+  }else{
+    if(/setup|response/.test(category)) score = 82;
+  }
+
+  return clamp(Math.round(score), 45, 96);
+}
+function filterHeadroom(pid) {
+  var gyro = Math.max(1, pid.gyro_lpf1 || 0);
+  var dterm = Math.max(0, pid.dterm_lpf1 || 0);
+  var gap = gyro - dterm;
+  var pct = clamp(Math.round((gap / gyro) * 100), 0, 100);
+  return { gap: gap, pct: pct };
+}
+function tuneLoad(pid, adv) {
+  var pAvg = avg([pid.p_roll, pid.p_pitch, pid.p_yaw]);
+  var dAvg = avg([pid.d_roll, pid.d_pitch, pid.d_yaw]);
+  var ratio = dAvg / Math.max(1, pAvg);
+  var sev = String(adv.severity || 'low').toLowerCase();
+  var base = 24;
+  if(sev === 'critical') base = 84;
+  else if(sev === 'high') base = 70;
+  else if(sev === 'medium') base = 52;
+  else base = 34;
+
+  base += clamp(Math.round((ratio - 0.65) * 42), -10, 18);
+  base += clamp(Math.round((120 - pid.gyro_lpf1) / 8), -8, 8);
+  base -= clamp(Math.round((pid.ff - 100) / 20), -6, 6);
+
+  return clamp(base, 8, 96);
+}
+function tuneLoadLabel(v) {
+  if(v >= 80) return 'Critical';
+  if(v >= 65) return 'High';
+  if(v >= 45) return 'Medium';
+  return 'Low';
+}
+function smartSummary(sym, adv, pid) {
+  var cat = String(sym.category || '').toLowerCase();
+  var pAvg = avg([pid.p_roll, pid.p_pitch, pid.p_yaw]);
+  var dAvg = avg([pid.d_roll, pid.d_pitch, pid.d_yaw]);
+  var head = filterHeadroom(pid).pct;
+  var fit = fitForProfile(currentProfile, cat);
+
+  if(/oscillation|propwash/.test(cat)) {
+    return 'อาการนี้มักตอบสนองดีที่สุดเมื่อ D-term และ filter ถูกตั้งแบบพอเหมาะ — ค่า P/D ปัจจุบันกับ headroom filter ชี้ว่าควรปรับทีละน้อย แล้วทดสอบ hover ก่อน';
+  }
+  if(/response|yaw/.test(cat)) {
+    return 'แนวโน้มอยู่ที่การเพิ่มความคมของ stick response โดยคุม yaw/center behavior ให้เสถียร — profile ปัจจุบันเข้ากับการจูนแบบนี้พอสมควร';
+  }
+  if(/thermal|esc/.test(cat)) {
+    return 'จุดสำคัญคือความร้อนและการป้องกันโหลดสะสม — ถ้า D สูงหรือ filter headroom น้อย ควรลดความร้อนของระบบก่อน';
+  }
+  if(/setup|video|vtx/.test(cat)) {
+    return 'ปัญหากลุ่มนี้มักไม่ใช่ PID ล้วน แต่สัมพันธ์กับ hardware / signal / configuration — ควรตรวจทีละชั้นเพื่อตัดสาเหตุให้ชัด';
+  }
+
+  return 'ระบบคำนวณจาก PID จริง, filter headroom และ flight profile เพื่อให้คำแนะนำที่กะทัดรัดแต่แม่นยำที่สุดสำหรับอาการนี้';
+}
+
+
 // ── PID getters ──
+
+function renderHeroMetrics(adv, sym, pid) {
+  var conf = clamp(Math.round((adv.confidence || 76) + (adv.severity === 'critical' ? 8 : adv.severity === 'high' ? 5 : adv.severity === 'medium' ? 3 : 0)), 55, 98);
+  var head = filterHeadroom(pid);
+  var fit = fitForProfile(currentProfile, sym.category);
+  var load = tuneLoad(pid, adv);
+  var loadLbl = tuneLoadLabel(load);
+
+  document.getElementById('heroConfVal').textContent = conf + '%';
+  document.getElementById('heroConfSub').textContent = adv.quick_win ? 'ความมั่นใจจาก pattern นี้สูง' : 'Confidence จาก pattern + profile';
+  document.getElementById('heroHeadroomVal').textContent = head.pct + '%';
+  document.getElementById('heroHeadroomSub').textContent = head.gap >= 0 ? ('Gap '+head.gap+' Hz ระหว่าง gyro / d-term') : 'd-term สูงกว่า gyro — ควรระวัง noise';
+  document.getElementById('heroFitVal').textContent = fit + '%';
+  document.getElementById('heroFitSub').textContent = currentProfile.charAt(0).toUpperCase() + currentProfile.slice(1) + ' · ' + (fit >= 85 ? 'match ดีมาก' : fit >= 75 ? 'match ปานกลาง' : 'ควรทดสอบเพิ่ม');
+  document.getElementById('heroLoadVal').textContent = loadLbl;
+  document.getElementById('heroLoadSub').textContent = 'Tune load ประเมินจาก severity และ balance ของ PID';
+}
+
+function renderSmartPanel(adv, sym, pid) {
+  var panel = document.getElementById('res-smart');
+  var head = filterHeadroom(pid);
+  var fit = fitForProfile(currentProfile, sym.category);
+  var load = tuneLoad(pid, adv);
+  var loadLbl = tuneLoadLabel(load);
+  var summary = smartSummary(sym, adv, pid);
+  panel.style.display = 'grid';
+  panel.className = 'smart-grid';
+
+  var cards = [
+    {
+      cls: load >= 80 ? 'warn' : load >= 55 ? 'info' : 'good',
+      lbl: 'Profile Fit',
+      val: fit + '%',
+      desc: currentProfile.charAt(0).toUpperCase() + currentProfile.slice(1) + ' ↔ ' + (sym.category || 'general'),
+      bar: fit
+    },
+    {
+      cls: head.pct < 30 ? 'warn' : 'good',
+      lbl: 'Filter Headroom',
+      val: head.pct + '%',
+      desc: 'Gyro LPF ' + pid.gyro_lpf1 + 'Hz · D-term LPF ' + pid.dterm_lpf1 + 'Hz',
+      bar: head.pct
+    },
+    {
+      cls: load >= 80 ? 'purple' : load >= 55 ? 'warn' : 'info',
+      lbl: 'Tune Load',
+      val: loadLbl,
+      desc: 'ความเข้มของการปรับจากอาการที่เลือก',
+      bar: load
+    }
+  ];
+
+  panel.innerHTML = cards.map(function(c){
+    return '<div class="smart-card ' + c.cls + '">' +
+      '<div class="smart-lbl">' + c.lbl + '</div>' +
+      '<div class="smart-val">' + c.val + '</div>' +
+      '<div class="smart-desc">' + c.desc + '</div>' +
+      '<div class="smart-bar"><span style="width:' + clamp(c.bar,0,100) + '%"></span></div>' +
+    '</div>';
+  }).join('');
+
+  // add a summary card span under the grid if wanted
+  var summaryCard = document.createElement('div');
+  summaryCard.className = 'smart-card ' + (adv.severity === 'critical' ? 'warn' : 'good');
+  summaryCard.style.gridColumn = '1 / -1';
+  summaryCard.innerHTML =
+    '<div class="smart-lbl">Smart Summary</div>' +
+    '<div class="smart-desc" style="font-size:13px;color:var(--text);line-height:1.8">' + summary + '</div>';
+  panel.appendChild(summaryCard);
+}
+
 function getPID() {
   return {
     p_roll:  +document.getElementById('pid_p_roll').value || 48,
@@ -1127,6 +1770,7 @@ function renderResult(id) {
   var adv = ADVICE_MAP[id];
   var sym = SYMPTOM_MAP[id];
   if(!adv || !sym) return;
+  var pid = getPID();
 
   document.getElementById('advEmpty').style.display = 'none';
   var result = document.getElementById('advResult');
@@ -1152,6 +1796,10 @@ function renderResult(id) {
   document.getElementById('res-confidence-fill').style.width = (adv.confidence||75) + '%';
   document.getElementById('res-confidence-pct').textContent = (adv.confidence||75) + '%';
 
+  // Hero intelligence layer
+  renderHeroMetrics(adv, sym, pid);
+  renderSmartPanel(adv, sym, pid);
+
   // Axes pills
   var axesPills = document.getElementById('res-axes-pills');
   axesPills.innerHTML = '';
@@ -1171,7 +1819,8 @@ function renderResult(id) {
     qwBanner.style.display = 'flex';
     document.getElementById('res-quickwin-text').textContent = adv.quick_win;
   } else {
-    qwBanner.style.display = 'none';
+    qwBanner.style.display = 'flex';
+    document.getElementById('res-quickwin-text').textContent = smartSummary(sym, adv, pid);
   }
 
   // Diagnosis
@@ -1245,12 +1894,12 @@ function renderAdjustments(adjs) {
   if(!adjs) return;
 
   adjs.forEach(function(adj) {
-    var dir = adj.direction || '';
+    var dir = String(adj.direction || '');
     var dirClass = 'check';
-    var dirLabel = dir;
-    if(dir.indexOf('เพิ่ม')>=0 || dir.indexOf('เปิด')>=0) { dirClass='up'; dirLabel='↑ '+dir; }
-    else if(dir.indexOf('ลด')>=0) { dirClass='down'; dirLabel='↓ '+dir; }
-    else if(dir.indexOf('ตั้ง')>=0 || dir.indexOf('เปลี่ยน')>=0 || dir.indexOf('assign')>=0) { dirClass='set'; }
+    var dirLabel = dir || 'review';
+    if(/เพิ่ม|up|raise|boost/i.test(dir)) { dirClass='up'; dirLabel='↑ '+dirLabel; }
+    else if(/ลด|down|reduce|lower/i.test(dir)) { dirClass='down'; dirLabel='↓ '+dirLabel; }
+    else if(/ตั้ง|เปลี่ยน|assign|set/i.test(dir)) { dirClass='set'; }
 
     var card = document.createElement('div');
     card.className = 'adj-card ' + dirClass;
@@ -1270,16 +1919,47 @@ function renderPIDDelta(adjs) {
   var pid = getPID();
   var deltas = {p_roll:0, i_roll:0, d_roll:0, p_pitch:0, i_pitch:0, d_pitch:0, p_yaw:0, i_yaw:0, d_yaw:0};
 
+  function signedDelta(adj) {
+    if(typeof adj.delta === 'number' && !isNaN(adj.delta)) return adj.delta;
+    var amt = adj.amount;
+    if(typeof amt === 'string') {
+      var n = parseFloat(amt.replace(/[^\d.-]/g,''));
+      if(!isNaN(n)) {
+        if(/ลด|down|lower|reduce|decrease/i.test(String(adj.direction||''))) return -Math.abs(n);
+        if(/เพิ่ม|up|raise|boost|increase/i.test(String(adj.direction||''))) return Math.abs(n);
+        return n;
+      }
+    }
+    if(typeof amt === 'number') return amt;
+    return 0;
+  }
+
   if(adjs) {
     adjs.forEach(function(adj) {
-      var d = adj.delta || 0;
+      var d = signedDelta(adj);
       if(d === 0) return;
-      var ax = adj.axis || 'both';
-      if(ax === 'both' || ax === 'roll')  { deltas.p_roll+=d; deltas.d_roll+=d; }
-      if(ax === 'both' || ax === 'pitch') { deltas.p_pitch+=d; deltas.d_pitch+=d; }
-      if(ax === 'yaw')  { deltas.p_yaw+=d; deltas.i_yaw+=d; }
-      if(adj.param && adj.param.indexOf('i_roll')>=0)  { deltas.i_roll+=d; }
-      if(adj.param && adj.param.indexOf('i_pitch')>=0) { deltas.i_pitch+=d; }
+      var axis = String(adj.axis || '').toLowerCase();
+      var param = String(adj.param || '').toLowerCase();
+
+      // Smart mapping: exact term first, then axis fallbacks
+      if(/p[_-]?roll/.test(param) || (/roll/.test(axis) && /\bp\b/.test(param))) deltas.p_roll += d;
+      if(/i[_-]?roll/.test(param) || (/roll/.test(axis) && /\bi\b/.test(param))) deltas.i_roll += d;
+      if(/d[_-]?roll/.test(param) || (/roll/.test(axis) && /\bd\b/.test(param))) deltas.d_roll += d;
+
+      if(/p[_-]?pitch/.test(param) || (/pitch/.test(axis) && /\bp\b/.test(param))) deltas.p_pitch += d;
+      if(/i[_-]?pitch/.test(param) || (/pitch/.test(axis) && /\bi\b/.test(param))) deltas.i_pitch += d;
+      if(/d[_-]?pitch/.test(param) || (/pitch/.test(axis) && /\bd\b/.test(param))) deltas.d_pitch += d;
+
+      if(/p[_-]?yaw/.test(param) || (/yaw/.test(axis) && /\bp\b/.test(param))) deltas.p_yaw += d;
+      if(/i[_-]?yaw/.test(param) || (/yaw/.test(axis) && /\bi\b/.test(param))) deltas.i_yaw += d;
+      if(/d[_-]?yaw/.test(param) || (/yaw/.test(axis) && /\bd\b/.test(param))) deltas.d_yaw += d;
+
+      // axis fallback when backend sends generic "both"
+      if(axis === 'both') {
+        if(/\bp\b/.test(param)) { deltas.p_roll += d; deltas.p_pitch += d; }
+        if(/\bi\b/.test(param)) { deltas.i_roll += d; deltas.i_pitch += d; }
+        if(/\bd\b/.test(param)) { deltas.d_roll += d; deltas.d_pitch += d; }
+      }
     });
   }
 
@@ -1321,22 +2001,34 @@ function renderCLI(template) {
   var cliDiv = document.getElementById('res-cli');
   if(!template) { cliDiv.textContent = '# ไม่มี CLI template'; return; }
 
+  function applyOffset(value, op, minClamp) {
+    var v = Number(value) || 0;
+    if(!op) return v;
+    var m = String(op).match(/([+-])\s*(\d+(?:\.\d+)?)/);
+    if(!m) return v;
+    var n = parseFloat(m[2]);
+    if(m[1] === '-') v -= n; else v += n;
+    if(typeof minClamp === 'number') v = Math.max(minClamp, v);
+    return v;
+  }
+  function resolvePlaceholder(key, op) {
+    var map = {
+      p_roll: pid.p_roll, p_pitch: pid.p_pitch, p_yaw: pid.p_yaw,
+      i_roll: pid.i_roll, i_pitch: pid.i_pitch, i_yaw: pid.i_yaw,
+      d_roll: pid.d_roll, d_pitch: pid.d_pitch, d_yaw: pid.d_yaw,
+      gyro_lpf1: pid.gyro_lpf1, dterm_lpf1: pid.dterm_lpf1,
+      ag: pid.ag, ff: pid.ff, ff_yaw: 70
+    };
+    var base = map[key];
+    if(base === undefined) return '{' + key + (op || '') + '}';
+    var clampMin = /gyro_lpf1/.test(key) ? 50 : /dterm_lpf1/.test(key) ? 40 : 0;
+    return applyOffset(base, op, clampMin);
+  }
+
   var lines = template.map(function(line) {
-    // Replace placeholders with real values
-    return line
-      .replace(/{p_roll\s*([+-]\s*\d+)?}/g,  function(m,op){ return op ? Math.max(0,pid.p_roll+eval(op)) : pid.p_roll; })
-      .replace(/{p_pitch\s*([+-]\s*\d+)?}/g, function(m,op){ return op ? Math.max(0,pid.p_pitch+eval(op)) : pid.p_pitch; })
-      .replace(/{i_roll\s*([+-]\s*\d+)?}/g,  function(m,op){ return op ? Math.max(0,pid.i_roll+eval(op)) : pid.i_roll; })
-      .replace(/{i_pitch\s*([+-]\s*\d+)?}/g, function(m,op){ return op ? Math.max(0,pid.i_pitch+eval(op)) : pid.i_pitch; })
-      .replace(/{d_roll\s*([+-]\s*\d+)?}/g,  function(m,op){ return op ? Math.max(0,pid.d_roll+eval(op)) : pid.d_roll; })
-      .replace(/{d_pitch\s*([+-]\s*\d+)?}/g, function(m,op){ return op ? Math.max(0,pid.d_pitch+eval(op)) : pid.d_pitch; })
-      .replace(/{p_yaw\s*([+-]\s*\d+)?}/g,   function(m,op){ return op ? Math.max(0,pid.p_yaw+eval(op)) : pid.p_yaw; })
-      .replace(/{i_yaw\s*([+-]\s*\d+)?}/g,   function(m,op){ return op ? Math.max(0,pid.i_yaw+eval(op)) : pid.i_yaw; })
-      .replace(/{gyro_lpf1\s*([+-]\s*\d+)?}/g, function(m,op){ return op ? Math.max(50,pid.gyro_lpf1+eval(op)) : pid.gyro_lpf1; })
-      .replace(/{dterm_lpf1\s*([+-]\s*\d+)?}/g, function(m,op){ return op ? Math.max(40,pid.dterm_lpf1+eval(op)) : pid.dterm_lpf1; })
-      .replace(/{ag\s*([+-]\s*\d+)?}/g,      function(m,op){ return op ? Math.max(0,pid.ag+eval(op)) : pid.ag; })
-      .replace(/{ff\s*([+-]\s*\d+)?}/g,      function(m,op){ return op ? Math.max(0,pid.ff+eval(op)) : pid.ff; })
-      .replace(/{ff_yaw\s*([+-]\s*\d+)?}/g,  function(m,op){ return op ? Math.max(0,70+eval(op)) : 70; });
+    return String(line).replace(/\{([a-z_]+)(\s*[+-]\s*\d+(?:\.\d+)?)?\}/gi, function(_, key, op){
+      return resolvePlaceholder(String(key).toLowerCase(), op || '');
+    });
   });
 
   // Syntax highlight
