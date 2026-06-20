@@ -8,8 +8,7 @@
 {% set og_description = "กรอกสเปคโดรน FPV รับค่า PID + Filter CLI ที่แม่นยำ พร้อมคำอธิบาย" %}
 {% set og_url         = "https://configdoctor.onrender.com/app" %}
 {% include "partials/og_tags.html" %}
-<link rel="icon" type="image/png" sizes="512x512" href="{{ url_for('static', filename='favicon.png') }}">
-<link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.png') }}">
+<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -49,6 +48,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .shell{position:relative;z-index:1;max-width:1180px;margin:0 auto;
   display:grid;grid-template-columns:380px 1fr;gap:0;align-items:start;
   min-height:calc(100vh - var(--nh))}
+.shell>*{min-width:0}  /* PATCH: prevent grid blowout from long unwrapped .cli content on narrow screens */
 
 /* ════ LEFT: FORM ════ */
 .panel{position:sticky;top:var(--nh);padding:22px 22px 40px;
@@ -287,7 +287,7 @@ pre::-webkit-scrollbar-thumb{background:rgba(0,255,68,.2);border-radius:2px}
 <nav class="nav">
   <a href="/landing"><img class="nav-logo-img" src="{{ url_for('static', filename='img/configdoctor-logo.png') }}" alt="ConfigDoctor"></a>
   <div class="nav-r">
-    <span class="nav-ver">🇹🇭</span>
+    <span class="nav-ver">v9.0</span>
     <a class="nav-back" href="/landing">← กลับหน้าแรก</a>
   </div>
 </nav>
