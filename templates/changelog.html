@@ -7,7 +7,7 @@
 {% set og_url         = "https://configdoctor.onrender.com/changelog" %}
 {% include "partials/og_tags.html" %}
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Changelog — OBIXConfig Doctor</title>
+<title>Changelog — ConfigDoctor</title>
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/site-theme.css') }}">
 <style>
@@ -90,6 +90,97 @@
 .cl-feat-body { flex:1; min-width:0; }
 .cl-feat-title { font-weight:600; color:var(--text); margin-bottom:3px; }
 .cl-feat-desc  { font-size:12px; color:var(--text2); }
+
+/* Summary panel */
+.cl-summary{
+  display:grid;
+  grid-template-columns:1.25fr .75fr;
+  gap:16px;
+  margin-bottom:28px;
+}
+.cl-summary-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-xl);
+  padding:20px 18px;
+  position:relative;
+  overflow:hidden;
+}
+.cl-summary-card::before{
+  content:'';
+  position:absolute; inset:0;
+  background:radial-gradient(circle at 18% 0%, rgba(16,196,122,.08), transparent 30%),
+             radial-gradient(circle at 90% 10%, rgba(74,158,255,.06), transparent 26%);
+  pointer-events:none;
+}
+.cl-summary-title{
+  font-family:var(--font-head);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.12em;
+  color:var(--green);
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+.cl-summary-copy{
+  position:relative;
+  z-index:1;
+  font-size:13px;
+  line-height:1.8;
+  color:var(--text2);
+}
+.cl-summary-copy strong{ color:var(--text); }
+.cl-summary-list{
+  display:flex; flex-wrap:wrap; gap:8px;
+  position:relative; z-index:1;
+  margin-top:14px;
+}
+.cl-summary-chip{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:8px 11px;
+  border-radius:999px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  color:var(--text);
+  font-size:11px;
+  font-weight:600;
+}
+.cl-summary-aside{
+  display:grid;
+  gap:12px;
+}
+.cl-mini{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:14px 15px;
+}
+.cl-mini-k{ font-family:var(--font-head); font-size:9px; letter-spacing:.12em; color:var(--muted2); margin-bottom:6px; text-transform:uppercase; }
+.cl-mini-v{ font-family:var(--font-head); font-size:18px; font-weight:900; color:var(--text); line-height:1.15; }
+.cl-mini-d{ margin-top:5px; font-size:11.5px; color:var(--text2); line-height:1.55; }
+
+.cl-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:22px; }
+@media(max-width:600px){ .cl-stats{grid-template-columns:1fr 1fr} }
+.cl-card.latest-card{box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.cl-card-head{flex-wrap:wrap}
+.cl-date{
+  margin-left:auto;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border2);
+  border-radius:999px;
+  padding:3px 9px;
+}
+.cl-ver{font-size:14px}
+.cl-feat-title{font-weight:700}
+.cl-feat-desc{line-height:1.65}
+.cl-note{
+  margin-top:14px;
+  font-size:12px;
+  line-height:1.7;
+  color:var(--text2);
+}
+.cl-note strong{ color:var(--text); }
+
 </style>
 {% set nav_page = "changelog" %}
 </head>
@@ -101,17 +192,45 @@
 
   <!-- Hero -->
   <div class="v5-hero v5-fade-in">
-    <div class="v5-hero-eyebrow">📝 Updates</div>
-    <h1 class="v5-hero-title">Changelog · <em>Release History</em></h1>
-    <p class="v5-hero-sub">บันทึกการอัปเดตทุก version — ฟีเจอร์ใหม่, bug fixes, และการปรับปรุงประสิทธิภาพ</p>
+    <div class="v5-hero-eyebrow">📝 Release Notes</div>
+    <h1 class="v5-hero-title">Changelog · <em>Build History</em></h1>
+    <p class="v5-hero-sub">สรุปการอัปเดตของ ConfigDoctor แบบอ่านง่าย — ฟีเจอร์ใหม่ การแก้ไขบั๊ก การปรับประสิทธิภาพ และการเปลี่ยนแปลงสำคัญในแต่ละเวอร์ชัน</p>
+  </div>
+
+  <div class="cl-summary v5-fade-in-1">
+    <div class="cl-summary-card">
+      <div class="cl-summary-title">ภาพรวมการพัฒนา</div>
+      <div class="cl-summary-copy">
+        ConfigDoctor อัปเดตต่อเนื่องเพื่อให้การวิเคราะห์ FPV <strong>แม่นขึ้น เร็วขึ้น และปลอดภัยขึ้น</strong> — ครอบคลุมตั้งแต่ Drone Analyzer, Blackbox CSV, CLI Surgeon ไปจนถึงเครื่องมือ tuning และ utility ต่าง ๆ ที่ช่วยให้นักบิน FPV ใช้งานได้สะดวกขึ้นทุกขั้นตอน
+      </div>
+      <div class="cl-summary-list">
+        <span class="cl-summary-chip">🔒 Security</span>
+        <span class="cl-summary-chip">⚡ Performance</span>
+        <span class="cl-summary-chip">🧠 Smarter Analysis</span>
+        <span class="cl-summary-chip">📊 Blackbox</span>
+        <span class="cl-summary-chip">🧰 Utilities</span>
+      </div>
+    </div>
+    <div class="cl-summary-aside">
+      <div class="cl-mini">
+        <div class="cl-mini-k">Latest Build</div>
+        <div class="cl-mini-v">v5.2 Apex Pro</div>
+        <div class="cl-mini-d">เสถียรภาพดีขึ้น พร้อมมาตรการความปลอดภัยและระบบแคชที่เร็วขึ้น</div>
+      </div>
+      <div class="cl-mini">
+        <div class="cl-mini-k">Focus</div>
+        <div class="cl-mini-v">FPV Analysis</div>
+        <div class="cl-mini-d">วิเคราะห์, จูน, และกู้ข้อมูล Blackbox ในที่เดียว</div>
+      </div>
+    </div>
   </div>
 
   <!-- Stats -->
   <div class="cl-stats v5-fade-in-1">
-    <div class="v5-stat g"><div class="v5-stat-val">5.2</div><div class="v5-stat-lbl">Latest Version</div></div>
-    <div class="v5-stat b"><div class="v5-stat-val">25+</div><div class="v5-stat-lbl">Tools</div></div>
-    <div class="v5-stat a"><div class="v5-stat-val">100+</div><div class="v5-stat-lbl">Bug Fixes</div></div>
-    <div class="v5-stat p"><div class="v5-stat-val">2023</div><div class="v5-stat-lbl">First Release</div></div>
+    <div class="v5-stat g"><div class="v5-stat-val">5.2</div><div class="v5-stat-lbl">Latest Build</div></div>
+    <div class="v5-stat b"><div class="v5-stat-val">25+</div><div class="v5-stat-lbl">Core Tools</div></div>
+    <div class="v5-stat a"><div class="v5-stat-val">100+</div><div class="v5-stat-lbl">Improvements</div></div>
+    <div class="v5-stat p"><div class="v5-stat-val">2023</div><div class="v5-stat-lbl">Launch Year</div></div>
   </div>
 
   <!-- Timeline -->
@@ -129,10 +248,10 @@
         </div>
         <div class="cl-card-body open">
           <div class="cl-features">
-            <div class="cl-feat security"><span class="cl-feat-ico">🔒</span><span class="cl-feat-type">SECURITY</span><div class="cl-feat-body"><div class="cl-feat-title">Security Hardening · CSRF · Rate Limiting</div><div class="cl-feat-desc">Flask-WTF CSRF protection ทุก POST · Flask-Limiter 20 req/min · CSP headers ครบถ้วน · SECRET_KEY enforcement</div></div></div>
-            <div class="cl-feat new"><span class="cl-feat-ico">⚡</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">Flask-Compress — Response Compression</div><div class="cl-feat-desc">HTML/JSON เล็กลง ~70% ด้วย gzip/brotli</div></div></div>
-            <div class="cl-feat perf"><span class="cl-feat-ico">🚀</span><span class="cl-feat-type">PERF</span><div class="cl-feat-body"><div class="cl-feat-title">SHA-256 Hash Cache for Downloads</div><div class="cl-feat-desc">ไม่ re-compute ทุก request, cache by mtime</div></div></div>
-            <div class="cl-feat fix"><span class="cl-feat-ico">🔧</span><span class="cl-feat-type">FIX</span><div class="cl-feat-body"><div class="cl-feat-title">Preset Expansion — 35+ Build Profiles</div><div class="cl-feat-desc">ครอบ 1"–12" ทุก battery S-count, 5" แยก 4S/5S/6S baseline PID</div></div></div>
+            <div class="cl-feat security"><span class="cl-feat-ico">🔒</span><span class="cl-feat-type">SECURITY</span><div class="cl-feat-body"><div class="cl-feat-title">Security hardening · CSRF · rate limiting</div><div class="cl-feat-desc">ป้องกัน CSRF ทุก request · จำกัดความถี่ 20 req/min · เพิ่ม CSP headers · บังคับใช้ SECRET_KEY</div></div></div>
+            <div class="cl-feat new"><span class="cl-feat-ico">⚡</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">Flask-Compress — Response Compression</div><div class="cl-feat-desc">ลดขนาด HTML/JSON และตอบสนองได้เร็วขึ้นด้วย gzip/brotli</div></div></div>
+            <div class="cl-feat perf"><span class="cl-feat-ico">🚀</span><span class="cl-feat-type">PERF</span><div class="cl-feat-body"><div class="cl-feat-title">SHA-256 cache for downloads</div><div class="cl-feat-desc">ไม่คำนวณซ้ำทุก request — cache ตาม mtime</div></div></div>
+            <div class="cl-feat fix"><span class="cl-feat-ico">🔧</span><span class="cl-feat-type">FIX</span><div class="cl-feat-body"><div class="cl-feat-title">Preset expansion — 35+ build profiles</div><div class="cl-feat-desc">ครอบ build ตั้งแต่ 1"–12" และแยก baseline สำหรับ 5" ใน 4S/5S/6S</div></div></div>
           </div>
         </div>
       </div>
@@ -150,11 +269,11 @@
         </div>
         <div class="cl-card-body">
           <div class="cl-features">
-            <div class="cl-feat new"><span class="cl-feat-ico">🎮</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">FPV Training Simulator NEO</div><div class="cl-feat-desc">3D drone sim · 4 modes · Gamepad support · Tutorial + Race mode</div></div></div>
-            <div class="cl-feat new"><span class="cl-feat-ico">⚡</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">Quick Tune Pad</div><div class="cl-feat-desc">เลือกอาการ → PID delta matrix + CLI พร้อม paste</div></div></div>
-            <div class="cl-feat new"><span class="cl-feat-ico">🔋</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">Battery Health · Motor Thermal · Loop Analyzer</div><div class="cl-feat-desc">เครื่องมือวิเคราะห์ hardware ใหม่ 3 ตัว</div></div></div>
-            <div class="cl-feat fix"><span class="cl-feat-ico">🔧</span><span class="cl-feat-type">FIX</span><div class="cl-feat-body"><div class="cl-feat-title">Physics Accuracy — W/g, RPM, TWR</div><div class="cl-feat-desc">ปรับสูตรคำนวณตาม RCBenchmark 1520 real bench data</div></div></div>
-            <div class="cl-feat fix"><span class="cl-feat-ico">🛡️</span><span class="cl-feat-type">FIX</span><div class="cl-feat-body"><div class="cl-feat-title">1S–2S Build Support</div><div class="cl-feat-desc">ลบ min=3 limit, รองรับ nano whoop ขนาดเล็ก</div></div></div>
+            <div class="cl-feat new"><span class="cl-feat-ico">🎮</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">FPV Training Simulator NEO</div><div class="cl-feat-desc">3D drone sim · 4 โหมด · รองรับ gamepad · มี tutorial และ race mode</div></div></div>
+            <div class="cl-feat new"><span class="cl-feat-ico">⚡</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">Quick Tune Pad</div><div class="cl-feat-desc">เลือกอาการแล้วได้ PID delta matrix และ CLI พร้อมนำไปใช้</div></div></div>
+            <div class="cl-feat new"><span class="cl-feat-ico">🔋</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">Battery Health · Motor Thermal · Loop Analyzer</div><div class="cl-feat-desc">ชุดเครื่องมือวิเคราะห์ฮาร์ดแวร์ใหม่ 3 ตัว</div></div></div>
+            <div class="cl-feat fix"><span class="cl-feat-ico">🔧</span><span class="cl-feat-type">FIX</span><div class="cl-feat-body"><div class="cl-feat-title">Physics accuracy — W/g, RPM, TWR</div><div class="cl-feat-desc">ปรับสูตรคำนวณให้ใกล้เคียงข้อมูลทดสอบ RCBenchmark 1520 มากขึ้น</div></div></div>
+            <div class="cl-feat fix"><span class="cl-feat-ico">🛡️</span><span class="cl-feat-type">FIX</span><div class="cl-feat-body"><div class="cl-feat-title">1S–2S build support</div><div class="cl-feat-desc">รองรับ nano whoop และบอร์ดขนาดเล็กโดยไม่ติด min=3 limit</div></div></div>
           </div>
         </div>
       </div>
@@ -172,11 +291,11 @@
         </div>
         <div class="cl-card-body">
           <div class="cl-features">
-            <div class="cl-feat new"><span class="cl-feat-ico">📊</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">Blackbox CSV Analyzer — HOT</div><div class="cl-feat-desc">วิเคราะห์ flight log · PID score · motor balance · battery sag</div></div></div>
-            <div class="cl-feat new"><span class="cl-feat-ico">🩺</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">CLI Surgeon</div><div class="cl-feat-desc">วิเคราะห์ diff all / dump — ตรวจ filter, PID, motor protocol</div></div></div>
-            <div class="cl-feat new"><span class="cl-feat-ico">🎖️</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">Military UAS Analyzer</div><div class="cl-feat-desc">วิเคราะห์โดรนทหาร 6 modules — physics + mission planning</div></div></div>
+            <div class="cl-feat new"><span class="cl-feat-ico">📊</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">Blackbox CSV Analyzer — HOT</div><div class="cl-feat-desc">วิเคราะห์ flight log · PID score · motor balance · battery sag อย่างเป็นระบบ</div></div></div>
+            <div class="cl-feat new"><span class="cl-feat-ico">🩺</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">CLI Surgeon</div><div class="cl-feat-desc">วิเคราะห์ diff all / dump เพื่อเช็ก filter, PID และ motor protocol</div></div></div>
+            <div class="cl-feat new"><span class="cl-feat-ico">🎖️</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">Military UAS Analyzer</div><div class="cl-feat-desc">วิเคราะห์โดรนพิเศษหลายโมดูล — physics + mission planning</div></div></div>
             <div class="cl-feat new"><span class="cl-feat-ico">🌐</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">Community Features</div><div class="cl-feat-desc">Build Card · Tuning Log · Config Leaderboard</div></div></div>
-            <div class="cl-feat perf"><span class="cl-feat-ico">🔬</span><span class="cl-feat-type">PERF</span><div class="cl-feat-body"><div class="cl-feat-title">Advanced Physics — prop_logic v4</div><div class="cl-feat-desc">TWR, ESC sizing, hover throttle %, C-rating burst/continuous</div></div></div>
+            <div class="cl-feat perf"><span class="cl-feat-ico">🔬</span><span class="cl-feat-type">PERF</span><div class="cl-feat-body"><div class="cl-feat-title">Advanced physics — prop_logic v4</div><div class="cl-feat-desc">TWR, ESC sizing, hover throttle %, และ C-rating burst/continuous</div></div></div>
           </div>
         </div>
       </div>
@@ -188,15 +307,15 @@
       <div class="cl-card" onclick="toggleCard(this)">
         <div class="cl-card-head">
           <span class="v5-pill neu">LEGACY</span>
-          <span class="cl-ver">v2.x — Core Tools</span>
+          <span class="cl-ver">v2.x — Core Foundation</span>
           <span class="cl-date">2023–2024</span>
           <span class="cl-chevron">▾</span>
         </div>
         <div class="cl-card-body">
           <div class="cl-features">
-            <div class="cl-feat new"><span class="cl-feat-ico">🔬</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">Drone Analyzer — Core</div><div class="cl-feat-desc">PID · Filter · Motor analysis จาก frame size, weight, battery, style</div></div></div>
-            <div class="cl-feat new"><span class="cl-feat-ico">💊</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">PID Symptom Advisor · RPM Filter · Rates Visualizer</div><div class="cl-feat-desc">เครื่องมือ tuning พื้นฐาน</div></div></div>
-            <div class="cl-feat new"><span class="cl-feat-ico">📡</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">VTX Tools — Bands, Range, SmartAudio</div><div class="cl-feat-desc">ตาราง Band/Channel + คำนวณระยะสัญญาณ</div></div></div>
+            <div class="cl-feat new"><span class="cl-feat-ico">🔬</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">Drone Analyzer — Core</div><div class="cl-feat-desc">PID · Filter · Motor analysis จาก frame size, weight, battery และบินสไตล์</div></div></div>
+            <div class="cl-feat new"><span class="cl-feat-ico">💊</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">PID Symptom Advisor · RPM Filter · Rates Visualizer</div><div class="cl-feat-desc">ชุดเครื่องมือ tuning พื้นฐาน</div></div></div>
+            <div class="cl-feat new"><span class="cl-feat-ico">📡</span><span class="cl-feat-type">NEW</span><div class="cl-feat-body"><div class="cl-feat-title">VTX Tools — Bands, Range, SmartAudio</div><div class="cl-feat-desc">ตาราง Band/Channel และตัวช่วยคำนวณระยะสัญญาณ</div></div></div>
           </div>
         </div>
       </div>
@@ -208,7 +327,7 @@
   <div class="v5-divider"></div>
   <div style="text-align:center; padding:var(--sp-6) 0">
     <p style="font-size:12px; color:var(--muted2); line-height:1.8">
-      OBIXConfig Doctor พัฒนาสำหรับชุมชน FPV 🇹🇭 · ทุก update ผ่านการทดสอบกับ Betaflight 4.4/4.5<br>
+      ConfigDoctor พัฒนาสำหรับชุมชน FPV 🇹🇭 · ทุกเวอร์ชันผ่านการทดสอบก่อนปล่อยใช้งาน<br>
       <a href="https://www.facebook.com/banmysanti/" target="_blank" rel="noopener" style="color:var(--green)">OBIXConfig Lab Facebook</a>
     </p>
   </div>
