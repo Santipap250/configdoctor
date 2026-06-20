@@ -2,93 +2,551 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-{% set og_title       = "About — OBIXConfig Doctor v5 Pro" %}
-{% set og_description = "OBIXConfig Doctor — FPV Drone Configuration & Tuning Tool สำหรับชุมชน FPV ไทย" %}
+{% set og_title       = "About — ConfigDoctor" %}
+{% set og_description = "ConfigDoctor — FPV Drone Diagnostic Platform สำหรับวิเคราะห์ PID, Filter, Blackbox, CLI และ Battery ของโดรน FPV" %}
 {% set og_url         = "https://configdoctor.onrender.com/about" %}
 {% include "partials/og_tags.html" %}
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>About — OBIXConfig Doctor</title>
+<title>About — ConfigDoctor</title>
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/site-theme.css') }}">
 <style>
-/* About page extras */
-.about-logo-wrap {
-  display:flex; align-items:center; gap:20px;
-  padding:28px; background:var(--surface); border:1px solid var(--border);
-  border-radius:var(--r-xl); margin-bottom:32px;
+/* ═══════════════════════════════════════════════════════
+   ABOUT PAGE — CONFIGDOCTOR
+   Landing-matched visual language · premium FPV glass · neon HUD
+═══════════════════════════════════════════════════════ */
+:root{
+  --bg:#040808;
+  --glass:rgba(8,14,12,.78);
+  --glass-2:rgba(10,18,16,.90);
+  --line:rgba(0,255,136,.14);
+  --line-2:rgba(0,255,255,.10);
+  --g:#00ff44; --g2:#00cc33; --b:#00a8ff; --a:#ffb020; --r:#ff3355; --p:#b05cff;
+  --txt:#eff7f0; --txt-2:rgba(255,255,255,.68); --txt-3:rgba(255,255,255,.42);
+  --font-d:'Orbitron',monospace;
+  --font-t:'Sarabun',sans-serif;
+  --font-m:'JetBrains Mono',monospace;
 }
-.about-logo-wrap img { height:64px; filter:drop-shadow(0 0 24px rgba(16,196,122,.4)); }
-.about-brand { font-family:var(--font-head); font-size:22px; font-weight:900; color:var(--text); letter-spacing:.04em; }
-.about-brand em { color:var(--green); font-style:normal; }
-.about-tagline { font-size:13px; color:var(--text2); margin-top:6px; line-height:1.6; }
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:var(--font-t);
+  color:var(--txt);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(0,255,136,.08), transparent 20%),
+    radial-gradient(circle at 80% 10%, rgba(0,255,255,.05), transparent 18%),
+    linear-gradient(180deg,#020505 0%, #040808 100%);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg, rgba(0,255,136,.04) 1px, transparent 1px),
+    linear-gradient(rgba(0,255,136,.04) 1px, transparent 1px);
+  background-size:64px 64px;
+  opacity:.22;
+  mask-image:linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+}
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:repeating-linear-gradient(180deg, transparent 0 3px, rgba(0,0,0,.06) 3px 6px);
+  opacity:.15;
+}
 
-/* Feature grid */
-.feat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; }
-.feat-card {
-  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg);
-  padding:18px 16px; transition:all var(--dur) var(--ease);
+.page-wrap{
+  position:relative;
+  z-index:1;
+  max-width:1140px;
+  margin:0 auto;
+  padding:18px 16px 96px;
 }
-.feat-card:hover { border-color:rgba(16,196,122,0.2); transform:translateY(-2px); }
-.feat-card::before {
-  content:''; display:block; height:2px; border-radius:2px; margin-bottom:14px;
-}
-.feat-card.g::before { background:var(--green); }
-.feat-card.b::before { background:var(--blue); }
-.feat-card.a::before { background:var(--amber); }
-.feat-card.p::before { background:var(--purple); }
-.feat-card.r::before { background:var(--red); }
-.feat-card.c::before { background:var(--cyan); }
-.feat-icon { font-size:28px; margin-bottom:10px; }
-.feat-title { font-family:var(--font-head); font-size:12px; font-weight:700; letter-spacing:.08em; color:var(--text); margin-bottom:6px; }
-.feat-desc  { font-size:12px; color:var(--text2); line-height:1.65; }
+.page-wrap--narrow{max-width:980px}
 
-/* Tech stack */
-.tech-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:8px; }
-.tech-item {
-  display:flex; align-items:center; gap:10px;
-  padding:10px 12px; background:var(--surface);
-  border:1px solid var(--border); border-radius:var(--r-sm);
+/* Top command bar to match landing/index */
+.about-topbar{
+  position:relative;
+  z-index:160;
+  margin-top:74px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 16px;
+  margin:0 auto;
+  max-width:1140px;
+  backdrop-filter:blur(18px) saturate(1.15);
+  background:linear-gradient(180deg, rgba(4,8,8,.85), rgba(4,8,8,.46));
+  border-bottom:1px solid rgba(0,255,136,.08);
 }
-.tech-icon { font-size:18px; flex-shrink:0; }
-.tech-name { font-size:12px; font-weight:600; color:var(--text); }
-.tech-ver  { font-family:var(--font-mono); font-size:10px; color:var(--muted2); }
+.about-topbar::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(90deg, rgba(0,255,68,.06), transparent 30%, transparent 70%, rgba(0,255,68,.04));
+  opacity:.7;
+}
+.about-topbar .left,
+.about-topbar .right{
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.about-topbar .mini-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  padding:0 16px;
+  border-radius:14px;
+  border:1px solid rgba(0,255,136,.18);
+  background:linear-gradient(180deg, rgba(10,16,14,.96), rgba(5,9,12,.86));
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.28),
+    inset 0 0 0 1px rgba(255,255,255,.03),
+    inset 0 0 22px rgba(0,255,136,.05);
+  color:#e9fff0;
+  font-family:var(--font-d);
+  letter-spacing:.18em;
+  font-size:10px;
+  font-weight:900;
+  text-transform:uppercase;
+  text-decoration:none;
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.about-topbar .mini-badge::before{
+  content:'';
+  position:absolute;
+  inset:-35% -12%;
+  background:
+    radial-gradient(circle at 20% 40%, rgba(0,255,136,.18) 0 12%, transparent 13% 100%),
+    radial-gradient(circle at 40% 70%, rgba(0,255,255,.14) 0 10%, transparent 11% 100%),
+    radial-gradient(circle at 70% 30%, rgba(255,255,255,.14) 0 8%, transparent 9% 100%),
+    radial-gradient(circle at 85% 65%, rgba(0,255,136,.12) 0 10%, transparent 11% 100%);
+  filter:blur(12px);
+  opacity:.72;
+  animation:menuSmoke 5.8s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+.about-topbar .mini-badge::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(110deg, transparent 18%, rgba(255,255,255,.18) 38%, transparent 58%);
+  transform:translateX(-120%);
+  animation:menuSweep 4.8s ease-in-out infinite;
+  pointer-events:none;
+}
+.about-topbar .mini-badge:hover{
+  transform:translateY(-1px);
+  border-color:rgba(0,255,136,.34);
+  box-shadow:
+    0 14px 34px rgba(0,0,0,.34),
+    0 0 26px rgba(0,255,136,.14),
+    inset 0 0 0 1px rgba(255,255,255,.05);
+}
+.about-topbar .mini-badge:active{transform:translateY(1px) scale(.986)}
+.about-topbar .mini-badge .label{position:relative;z-index:1}
+.about-topbar .mini-badge.back{
+  min-width:118px;
+  justify-content:center;
+}
+.about-topbar .mini-badge.menu{
+  min-width:96px;
+}
+.about-topbar .version{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:34px;
+  padding:0 14px;
+  border-radius:12px;
+  border:1px solid rgba(0,255,68,.16);
+  color:var(--g);
+  font-family:var(--font-d);
+  font-size:10px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  background:rgba(0,255,68,.05);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+}
+.about-menu-wrap{position:relative}
 
-/* Disclaimer */
-.disclaimer {
-  background:var(--amber-dim); border:1px solid rgba(245,158,11,0.2);
-  border-radius:var(--r-lg); padding:16px 18px;
+.about-hero{
+  position:relative;
+  margin-top:18px;
+  padding:34px 24px 28px;
+  border-radius:28px;
+  border:1px solid rgba(0,255,136,.14);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(0,255,136,.12), transparent 28%),
+    linear-gradient(180deg, rgba(8,14,12,.82), rgba(4,8,10,.76));
+  box-shadow:
+    0 24px 70px rgba(0,0,0,.34),
+    inset 0 0 0 1px rgba(255,255,255,.03);
+  overflow:hidden;
 }
-.disclaimer-title { font-family:var(--font-head); font-size:11px; font-weight:700; letter-spacing:.1em; color:var(--amber); margin-bottom:8px; }
-.disclaimer-body  { font-size:13px; color:var(--text2); line-height:1.7; }
+.about-hero::before{
+  content:'';
+  position:absolute;
+  inset:-20% -10%;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(0,255,136,.12), transparent 20%),
+    radial-gradient(circle at 85% 0%, rgba(0,255,255,.08), transparent 20%);
+  filter:blur(18px);
+  pointer-events:none;
+}
+.about-eyebrow{
+  position:relative;
+  z-index:1;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-family:var(--font-d);
+  font-size:10px;
+  letter-spacing:.2em;
+  color:var(--g);
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+.about-eyebrow::before{
+  content:'';
+  width:18px;
+  height:1px;
+  background:linear-gradient(90deg, transparent, rgba(0,255,68,.9));
+}
+.about-title{
+  position:relative;
+  z-index:1;
+  margin:0;
+  font-family:var(--font-t);
+  font-size:clamp(30px,5.5vw,54px);
+  font-weight:900;
+  line-height:1.02;
+  letter-spacing:-.03em;
+}
+.about-title em{
+  font-style:normal;
+  background:linear-gradient(90deg,#00ff66,#8cfffb,#7c5cff,#00ff66);
+  background-size:280% 100%;
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+  animation:gradientFlow 4s linear infinite;
+}
+.about-sub{
+  position:relative;
+  z-index:1;
+  max-width:760px;
+  margin:14px 0 0;
+  color:var(--txt-2);
+  font-size:15px;
+  line-height:1.8;
+}
+
+.about-logo-wrap{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:20px;
+  align-items:center;
+  padding:22px;
+  margin:18px 0 28px;
+  border-radius:24px;
+  border:1px solid rgba(0,255,136,.14);
+  background:linear-gradient(180deg, rgba(8,14,12,.82), rgba(4,8,10,.72));
+  box-shadow:0 18px 42px rgba(0,0,0,.24), inset 0 0 0 1px rgba(255,255,255,.03);
+  backdrop-filter:blur(14px);
+}
+.about-logo-wrap img{
+  width:76px;height:76px;object-fit:contain;
+  filter:drop-shadow(0 0 24px rgba(0,255,136,.25));
+}
+.about-brand{
+  font-family:var(--font-d);
+  font-size:clamp(20px,4vw,28px);
+  font-weight:900;
+  letter-spacing:.02em;
+}
+.about-brand em{
+  font-style:normal;
+  background:linear-gradient(90deg,#00ff66,#8cfffb,#7c5cff,#00ff66);
+  background-size:280% 100%;
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+  animation:gradientFlow 4s linear infinite;
+}
+.about-tagline{
+  margin-top:8px;
+  color:var(--txt-2);
+  font-size:13px;
+  line-height:1.7;
+}
+.about-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.about-pill{
+  display:inline-flex;
+  align-items:center;
+  min-height:28px;
+  padding:0 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.03);
+  color:rgba(255,255,255,.76);
+  font-size:10px;
+  font-family:var(--font-d);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.about-pill.g{border-color:rgba(0,255,136,.16);background:rgba(0,255,136,.06);color:#caffd8}
+.about-pill.b{border-color:rgba(0,168,255,.16);background:rgba(0,168,255,.06);color:#ccecff}
+.about-pill.a{border-color:rgba(255,176,32,.16);background:rgba(255,176,32,.06);color:#ffe7b2}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:34px 0 16px;
+}
+.section-head span{
+  font-family:var(--font-d);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.2em;
+  color:rgba(160,255,196,.72);
+  text-transform:uppercase;
+}
+.section-head::after{
+  content:'';
+  flex:1;
+  height:1px;
+  background:linear-gradient(90deg, rgba(0,255,136,.2), transparent);
+}
+
+.panel{
+  position:relative;
+  padding:22px;
+  border-radius:22px;
+  border:1px solid rgba(0,255,136,.12);
+  background:
+    linear-gradient(180deg, rgba(8,14,12,.80), rgba(4,8,10,.74));
+  box-shadow:0 18px 40px rgba(0,0,0,.22), inset 0 0 0 1px rgba(255,255,255,.03);
+  overflow:hidden;
+}
+.panel::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(0,255,136,.08), transparent 22%),
+    radial-gradient(circle at 90% 100%, rgba(0,255,255,.05), transparent 24%);
+  pointer-events:none;
+}
+.copy{
+  position:relative;
+  z-index:1;
+  color:var(--txt-2);
+  line-height:1.85;
+  font-size:14px;
+}
+.copy strong{color:var(--txt)}
+
+.feat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:12px;
+}
+.feat-card{
+  position:relative;
+  padding:18px 16px 16px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.08);
+  background:
+    linear-gradient(180deg, rgba(10,16,14,.85), rgba(4,8,10,.72));
+  box-shadow:0 14px 30px rgba(0,0,0,.18);
+  overflow:hidden;
+  transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.feat-card::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(0,255,136,.04), transparent 36%);
+  opacity:.95;
+  pointer-events:none;
+}
+.feat-card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(0,255,136,.22);
+  box-shadow:0 18px 36px rgba(0,0,0,.22), 0 0 18px rgba(0,255,136,.06);
+}
+.feat-card .bar{
+  height:2px;
+  width:56px;
+  border-radius:99px;
+  margin-bottom:14px;
+}
+.feat-card.g .bar{background:linear-gradient(90deg,var(--g),transparent)}
+.feat-card.b .bar{background:linear-gradient(90deg,var(--b),transparent)}
+.feat-card.a .bar{background:linear-gradient(90deg,var(--a),transparent)}
+.feat-card.p .bar{background:linear-gradient(90deg,var(--p),transparent)}
+.feat-card.r .bar{background:linear-gradient(90deg,var(--r),transparent)}
+.feat-card.c .bar{background:linear-gradient(90deg,var(--cy),transparent)}
+.feat-icon{font-size:26px;margin-bottom:8px}
+.feat-title{position:relative;z-index:1;font-size:13px;font-weight:800;line-height:1.4;color:var(--txt);margin-bottom:6px}
+.feat-desc{position:relative;z-index:1;font-size:12px;line-height:1.7;color:var(--txt-2)}
+
+.tech-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:10px;
+}
+.tech-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.03);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+}
+.tech-icon{font-size:18px;flex-shrink:0}
+.tech-name{font-size:12px;font-weight:700;color:var(--txt)}
+.tech-ver{font-family:var(--font-m);font-size:10px;color:var(--txt-3)}
+
+.disclaimer{
+  padding:18px 18px 17px;
+  border-radius:18px;
+  border:1px solid rgba(255,176,32,.22);
+  background:linear-gradient(180deg, rgba(255,176,32,.08), rgba(8,14,12,.80));
+  box-shadow:0 16px 34px rgba(0,0,0,.2);
+}
+.disclaimer-title{
+  font-family:var(--font-d);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.18em;
+  color:#ffcc66;
+  margin-bottom:8px;
+  text-transform:uppercase;
+}
+.disclaimer-body{font-size:13px;line-height:1.8;color:var(--txt-2)}
+
+.support-card{
+  text-align:center;
+  padding:28px 24px;
+  border-radius:22px;
+  border:1px solid rgba(0,255,136,.12);
+  background:linear-gradient(180deg, rgba(8,14,12,.80), rgba(4,8,10,.74));
+  box-shadow:0 18px 40px rgba(0,0,0,.22), inset 0 0 0 1px rgba(255,255,255,.03);
+}
+.support-title{font-family:var(--font-d);font-size:14px;font-weight:900;color:#ffcc66;letter-spacing:.08em;margin-bottom:8px}
+.support-copy{font-size:13px;line-height:1.8;color:var(--txt-2);margin-bottom:16px}
+.support-qr{
+  width:144px;border-radius:14px;border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 10px 24px rgba(0,0,0,.24);
+}
+.support-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:42px;padding:0 18px;margin-top:16px;
+  border-radius:14px;border:1px solid rgba(0,255,136,.16);
+  background:linear-gradient(180deg, rgba(10,16,14,.96), rgba(5,9,12,.86));
+  color:#e9fff0;text-decoration:none;font-family:var(--font-d);font-size:10px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;
+  box-shadow:0 10px 30px rgba(0,0,0,.28), inset 0 0 0 1px rgba(255,255,255,.03);
+  transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.support-btn:hover{transform:translateY(-1px);border-color:rgba(0,255,136,.34);box-shadow:0 14px 34px rgba(0,0,0,.34),0 0 26px rgba(0,255,136,.14)}
+.support-btn:active{transform:translateY(1px) scale(.986)}
+
+.footer-space{height:24px}
+
+@keyframes menuSmoke{
+  0%{ transform: translate3d(0,0,0) scale(.96); opacity:.52; }
+  50%{ transform: translate3d(6px,-3px,0) scale(1.04); opacity:.8; }
+  100%{ transform: translate3d(0,-2px,0) scale(1); opacity:.62; }
+}
+@keyframes menuSweep{
+  0%, 58%{ transform:translateX(-120%); opacity:0; }
+  66%{ opacity:.65; }
+  100%{ transform:translateX(140%); opacity:0; }
+}
+@keyframes gradientFlow{
+  0%{background-position:0% 50%}
+  100%{background-position:280% 50%}
+}
+
+@media(max-width:760px){
+  .about-topbar{padding:12px 12px;margin-top:64px}
+  .about-topbar .mini-badge.back{min-width:104px}
+  .about-topbar .mini-badge.menu{min-width:86px}
+  .about-hero{padding:28px 18px 22px;border-radius:22px}
+  .about-logo-wrap{grid-template-columns:1fr;justify-items:start}
+  .feat-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px){
+  .feat-grid{grid-template-columns:1fr}
+  .tech-grid{grid-template-columns:1fr 1fr}
+  .about-topbar .version{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 </style>
 {% set nav_page = "about" %}
 </head>
 <body>
 {% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+<div class="about-topbar" role="navigation" aria-label="Page actions">
+  <div class="left">
+    <a href="/landing" class="mini-badge back" aria-label="กลับหน้าแรก">
+      <span class="label">BACK</span>
+    </a>
+    <div class="version">v5.3</div>
+  </div>
+  <div class="right about-menu-wrap">
+    <a href="/landing" class="mini-badge menu" aria-label="เมนูหลัก">
+      <span class="label">MENU</span>
+    </a>
+  </div>
+</div>
 
-<div class="page-wrap page-wrap--narrow" style="padding-top:70px">
+<div class="page-wrap page-wrap--narrow">
 
   <!-- Hero -->
-  <div class="v5-hero v5-fade-in">
-    <div class="v5-hero-eyebrow">ℹ️ About</div>
-    <h1 class="v5-hero-title">เกี่ยวกับ <em>OBIXConfig Doctor</em></h1>
-    <p class="v5-hero-sub">เครื่องมือวิเคราะห์และปรับแต่ง configuration โดรน FPV — สร้างโดยนักบิน FPV เพื่อชุมชน FPV ไทย</p>
+  <div class="about-hero v5-fade-in">
+    <div class="about-eyebrow">ℹ️ About · Platform Overview</div>
+    <h1 class="about-title">เกี่ยวกับ <em>ConfigDoctor</em></h1>
+    <p class="about-sub">แพลตฟอร์มวิเคราะห์โดรน FPV แบบครบวงจร ที่ช่วยอ่านอาการ ปรับจูน และสร้างแนวทางแก้ไขจากข้อมูลจริง เพื่อให้ผู้ใช้ตัดสินใจได้เร็วขึ้นและบินได้มั่นใจขึ้น</p>
   </div>
 
   <!-- Logo block -->
   <div class="about-logo-wrap v5-fade-in-1">
-    <img src="{{ url_for('static', filename='img/obix-logo.png') }}" alt="OBIXConfig Doctor">
+    <img src="{{ url_for('static', filename='img/configdoctor-landing-logo.png') }}" alt="ConfigDoctor">
     <div>
-      <div class="about-brand">OBIX<em>Config</em> Doctor</div>
+      <div class="about-brand">Config<em>Doctor</em></div>
       <div class="about-tagline">
-        FPV Drone Tuning &amp; Analysis Platform · v5.2 Pro<br>
-        พัฒนาสำหรับชุมชน FPV 🇹🇭 · ฟรี 100% · ไม่มีโฆษณา
+        FPV Drone Diagnostic Platform · v5.3<br>
+        วิเคราะห์ PID · Filter · Blackbox · CLI · Motor · Battery · Flight time<br>
+        ฟรี 100% · ไม่มีโฆษณา · ไม่บังคับล็อกอิน
       </div>
-      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-        <span class="v5-pill g"><span class="v5-pill-dot pulse"></span>Active</span>
-        <span class="v5-pill b">Betaflight 4.4/4.5</span>
-        <span class="v5-pill neu">Open Source</span>
+      <div class="about-pills">
+        <span class="about-pill g">Active</span>
+        <span class="about-pill b">BF 4.3–4.5</span>
+        <span class="about-pill a">Mobile Ready</span>
       </div>
     </div>
   </div>
@@ -98,11 +556,11 @@
     <span class="v5-section-head-label">🎯 คืออะไร</span>
     <div class="v5-section-head-line"></div>
   </div>
-  <div class="v5-card v5-card--accent v5-fade-in-2" style="margin-bottom:24px">
-    <div class="v5-card-body" style="font-size:14px;line-height:1.85;color:var(--text2)">
-      <p style="margin-bottom:12px"><strong style="color:var(--text)">OBIXConfig Doctor</strong> เป็นเว็บ tool สำหรับนักบิน FPV ที่ต้องการ setup และ tune โดรนได้อย่างถูกต้องและรวดเร็ว โดยไม่ต้องลองผิดลองถูกนาน</p>
-      <p style="margin-bottom:12px">ระบบคำนวณค่า PID, Filter, Motor และ Power จากสเปคโดรนจริง โดยอ้างอิงจาก <strong style="color:var(--text)">RCBenchmark 1520 data</strong>, Betaflight telemetry, และประสบการณ์ชุมชน FPV ไทย</p>
-      <p>เหมาะสำหรับทั้ง <span class="v5-pill g" style="font-size:10px">มือใหม่</span> ที่ต้องการจุดเริ่มต้นที่ปลอดภัย และ <span class="v5-pill b" style="font-size:10px">นักบิน Pro</span> ที่ต้องการวิเคราะห์ Build ก่อนบิน</p>
+  <div class="panel v5-fade-in-2" style="margin-bottom:24px">
+    <div class="copy">
+      <p style="margin-bottom:12px"><strong>ConfigDoctor</strong> คือศูนย์วิเคราะห์โดรน FPV สำหรับนักบินที่ต้องการมองเห็นปัญหาให้ชัดก่อนบินจริง ระบบช่วยแปลงข้อมูลจาก build, diff all และ Blackbox ให้กลายเป็นคำแนะนำที่อ่านง่ายและนำไปใช้ได้จริง</p>
+      <p style="margin-bottom:12px">โฟกัสหลักของระบบในตอนนี้คือ <strong>Drone Analyzer</strong>, <strong>Blackbox Analyzer</strong>, <strong>CLI Surgeon</strong>, <strong>PID Advisor</strong>, <strong>Quick Tune Pad</strong> และชุดเครื่องมือปรับแต่งที่เกี่ยวกับ <strong>RPM Filter</strong>, <strong>Motor × Prop</strong> และ <strong>Battery Health</strong></p>
+      <p>เหมาะสำหรับทั้ง <span class="about-pill g" style="display:inline-flex;vertical-align:middle">มือใหม่</span> ที่อยากเริ่มอย่างปลอดภัย และ <span class="about-pill b" style="display:inline-flex;vertical-align:middle">นักบิน FPV</span> ที่ต้องการวิเคราะห์ Build ก่อนทดสอบจริง</p>
     </div>
   </div>
 
@@ -112,51 +570,14 @@
     <div class="v5-section-head-line"></div>
   </div>
   <div class="feat-grid v5-fade-in-3" style="margin-bottom:32px">
-    <div class="feat-card g">
-      <div class="feat-icon">🔬</div>
-      <div class="feat-title">Drone Analyzer</div>
-      <div class="feat-desc">วิเคราะห์ PID · Filter · Motor · Power · TWR จากสเปค build</div>
-    </div>
-    <div class="feat-card b">
-      <div class="feat-icon">📊</div>
-      <div class="feat-title">Blackbox CSV Analyzer</div>
-      <div class="feat-desc">วิเคราะห์ flight log · PID quality · motor balance · battery sag</div>
-    </div>
-    <div class="feat-card a">
-      <div class="feat-icon">🩺</div>
-      <div class="feat-title">CLI Surgeon</div>
-      <div class="feat-desc">วิเคราะห์ diff all / dump ตรวจ filter, motor protocol, PID</div>
-    </div>
-    <div class="feat-card p">
-      <div class="feat-icon">💊</div>
-      <div class="feat-title">PID Symptom Advisor</div>
-      <div class="feat-desc">บอกอาการโดรน → รับคำแนะนำ PID fix ที่แม่นยำ</div>
-    </div>
-    <div class="feat-card r">
-      <div class="feat-icon">⚡</div>
-      <div class="feat-title">Quick Tune Pad</div>
-      <div class="feat-desc">เลือกอาการ → PID delta matrix + CLI พร้อม paste</div>
-    </div>
-    <div class="feat-card c">
-      <div class="feat-icon">⚙️</div>
-      <div class="feat-title">RPM Filter · Motor·Prop · ESC</div>
-      <div class="feat-desc">คำนวณ harmonic, แนะนำ motor/prop, ตรวจ ESC compatibility</div>
-    </div>
-    <div class="feat-card g">
-      <div class="feat-icon">🎮</div>
-      <div class="feat-title">FPV Training Simulator</div>
-      <div class="feat-desc">ฝึกบิน 3D ในเบราว์เซอร์ รองรับ Gamepad</div>
-    </div>
-    <div class="feat-card b">
-      <div class="feat-icon">📡</div>
-      <div class="feat-title">VTX Tools</div>
-      <div class="feat-desc">Band/Channel table · Range calculator · SmartAudio guide</div>
-    </div>
-    <div class="feat-card a">
-      <div class="feat-icon">🌐</div>
-      <div class="feat-title">Community Tools</div>
-      <div class="feat-desc">Build Card · Tuning Log · Config Leaderboard</div>
-    </div>
+    <div class="feat-card g"><div class="bar"></div><div class="feat-icon">🚁</div><div class="feat-title">Drone Analyzer</div><div class="feat-desc">วิเคราะห์สเปค build เพื่อประเมิน PID · Filter · TWR · Flight time</div></div>
+    <div class="feat-card b"><div class="bar"></div><div class="feat-icon">📊</div><div class="feat-title">Blackbox CSV Analyzer</div><div class="feat-desc">วิเคราะห์ flight log · oscillation · motor balance · battery sag</div></div>
+    <div class="feat-card a"><div class="bar"></div><div class="feat-icon">🩻</div><div class="feat-title">CLI Surgeon</div><div class="feat-desc">ตรวจ diff all / dump และสร้าง CLI แนะนำอย่างปลอดภัย</div></div>
+    <div class="feat-card p"><div class="bar"></div><div class="feat-icon">💊</div><div class="feat-title">PID Advisor</div><div class="feat-desc">บอกอาการโดรน → แปลงเป็นแนวทางจูนที่อ่านง่าย</div></div>
+    <div class="feat-card r"><div class="bar"></div><div class="feat-icon">⚡</div><div class="feat-title">Quick Tune Pad</div><div class="feat-desc">เลือกอาการแล้วได้ PID delta + CLI ทันที</div></div>
+    <div class="feat-card c"><div class="bar"></div><div class="feat-icon">⚙️</div><div class="feat-title">RPM Filter · Motor·Prop · ESC</div><div class="feat-desc">คำนวณ harmonic, แนะนำ motor/prop และตรวจความเข้ากันได้ของ ESC</div></div>
+    <div class="feat-card g"><div class="bar"></div><div class="feat-icon">📡</div><div class="feat-title">VTX Tools</div><div class="feat-desc">Band/Channel, Range calculator และ SmartAudio guide</div></div>
+    <div class="feat-card b"><div class="bar"></div><div class="feat-icon">🌐</div><div class="feat-title">Community Tools</div><div class="feat-desc">Build Card, Tuning Log และหน้าแชร์ค่าที่น่าสนใจ</div></div>
   </div>
 
   <!-- How to use -->
@@ -164,24 +585,39 @@
     <span class="v5-section-head-label">📖 วิธีใช้งาน</span>
     <div class="v5-section-head-line"></div>
   </div>
-  <div class="v5-card v5-fade-in-3" style="margin-bottom:24px">
-    <div class="v5-card-body">
-      <div style="display:flex;flex-direction:column;gap:14px">
-        {% for step, icon, title, desc in [
-          ('01', '⚙️', 'กรอกสเปคโดรน', 'เลือก Preset หรือกรอกขนาดเฟรม, น้ำหนัก, battery, motor KV และ prop'),
-          ('02', '🚀', 'กด ANALYZE', 'ระบบคำนวณ PID · Filter · TWR · Flight time · ESC sizing จาก physics model'),
-          ('03', '📋', 'Copy CLI', 'คัดลอก CLI output จาก Secret Sauce หรือ Full CLI section'),
-          ('04', '✅', 'Paste ใน Betaflight', 'เปิด Betaflight → CLI tab → paste → save → reboot → ทดสอบ hover')
-        ] %}
-        <div style="display:flex;align-items:flex-start;gap:14px">
-          <div style="font-family:var(--font-head);font-size:22px;font-weight:900;color:var(--muted);flex-shrink:0;width:36px;text-align:right">{{ step }}</div>
-          <div style="font-size:20px;flex-shrink:0">{{ icon }}</div>
-          <div>
-            <div style="font-weight:600;color:var(--text);margin-bottom:3px">{{ title }}</div>
-            <div style="font-size:13px;color:var(--text2)">{{ desc }}</div>
-          </div>
+  <div class="panel v5-fade-in-3" style="margin-bottom:24px">
+    <div class="copy" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:flex-start;gap:14px">
+        <div style="font-family:var(--font-d);font-size:22px;font-weight:900;color:var(--txt-3);flex-shrink:0;width:36px;text-align:right">01</div>
+        <div style="font-size:20px;flex-shrink:0">⚙️</div>
+        <div>
+          <div style="font-weight:800;color:var(--txt);margin-bottom:3px">กรอกสเปคโดรน</div>
+          <div style="font-size:13px;color:var(--txt-2)">เลือก preset หรือกรอกขนาดเฟรม, น้ำหนัก, battery, motor KV และ prop</div>
         </div>
-        {% endfor %}
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px">
+        <div style="font-family:var(--font-d);font-size:22px;font-weight:900;color:var(--txt-3);flex-shrink:0;width:36px;text-align:right">02</div>
+        <div style="font-size:20px;flex-shrink:0">🚀</div>
+        <div>
+          <div style="font-weight:800;color:var(--txt);margin-bottom:3px">กด ANALYZE</div>
+          <div style="font-size:13px;color:var(--txt-2)">ระบบคำนวณ PID, Filter, TWR, Flight time และ ESC sizing จากโมเดลจริง</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px">
+        <div style="font-family:var(--font-d);font-size:22px;font-weight:900;color:var(--txt-3);flex-shrink:0;width:36px;text-align:right">03</div>
+        <div style="font-size:20px;flex-shrink:0">📋</div>
+        <div>
+          <div style="font-weight:800;color:var(--txt);margin-bottom:3px">Copy CLI</div>
+          <div style="font-size:13px;color:var(--txt-2)">คัดลอกคำสั่งจาก Secret Sauce หรือ Full CLI section</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px">
+        <div style="font-family:var(--font-d);font-size:22px;font-weight:900;color:var(--txt-3);flex-shrink:0;width:36px;text-align:right">04</div>
+        <div style="font-size:20px;flex-shrink:0">✅</div>
+        <div>
+          <div style="font-weight:800;color:var(--txt);margin-bottom:3px">Paste ใน Betaflight</div>
+          <div style="font-size:13px;color:var(--txt-2)">เปิด CLI → paste → save → reboot → ทดสอบ hover</div>
+        </div>
       </div>
     </div>
   </div>
@@ -192,41 +628,38 @@
     <div class="v5-section-head-line"></div>
   </div>
   <div class="tech-grid v5-fade-in-4" style="margin-bottom:28px">
-    <div class="tech-item"><span class="tech-icon">🐍</span><div><div class="tech-name">Python</div><div class="tech-ver">3.11+</div></div></div>
-    <div class="tech-item"><span class="tech-icon">🌶️</span><div><div class="tech-name">Flask</div><div class="tech-ver">2.3.3</div></div></div>
-    <div class="tech-item"><span class="tech-icon">⚡</span><div><div class="tech-name">Gunicorn</div><div class="tech-ver">21.2.0</div></div></div>
-    <div class="tech-item"><span class="tech-icon">🎨</span><div><div class="tech-name">Jinja2</div><div class="tech-ver">3.1+</div></div></div>
-    <div class="tech-item"><span class="tech-icon">📊</span><div><div class="tech-name">Chart.js</div><div class="tech-ver">4.4.0</div></div></div>
+    <div class="tech-item"><span class="tech-icon">🐍</span><div><div class="tech-name">Python</div><div class="tech-ver">Core Engine</div></div></div>
+    <div class="tech-item"><span class="tech-icon">🌶️</span><div><div class="tech-name">Flask</div><div class="tech-ver">Web Framework</div></div></div>
+    <div class="tech-item"><span class="tech-icon">⚡</span><div><div class="tech-name">Gunicorn</div><div class="tech-ver">Deploy</div></div></div>
+    <div class="tech-item"><span class="tech-icon">🎨</span><div><div class="tech-name">Jinja2</div><div class="tech-ver">Templates</div></div></div>
+    <div class="tech-item"><span class="tech-icon">📊</span><div><div class="tech-name">Chart.js</div><div class="tech-ver">Visuals</div></div></div>
     <div class="tech-item"><span class="tech-icon">☁️</span><div><div class="tech-name">Render</div><div class="tech-ver">Hosting</div></div></div>
   </div>
 
   <!-- Disclaimer -->
   <div class="disclaimer v5-fade-in-4">
-    <div class="disclaimer-title">⚠️ คำเตือนสำคัญ</div>
+    <div class="disclaimer-title">⚠️ คำแนะนำสำคัญ</div>
     <div class="disclaimer-body">
-      ค่าแนะนำทั้งหมดเป็น <strong>จุดเริ่มต้น</strong> ที่ปลอดภัย — ไม่ใช่สูตรตายตัว อุปกรณ์, สภาพโดรน, การประกอบ และสไตล์การบินของแต่ละคนมีผลต่อค่าที่เหมาะสมเสมอ<br><br>
-      ทดสอบ hover ก่อนบินทุกครั้ง · ปรับ PID ทีละ 5 หน่วย · ใช้ Blackbox ยืนยันผลก่อน fine tune
+      ค่าแนะนำทุกอย่างเป็นจุดเริ่มต้นที่ปลอดภัย ไม่ใช่ค่าตายตัว อุปกรณ์ สภาพโดรน วิธีประกอบ และสไตล์การบินของแต่ละคนมีผลต่อค่าที่เหมาะสมเสมอ<br><br>
+      ควรทดสอบ hover ก่อนบินจริง · ปรับทีละน้อย · ใช้ Blackbox ยืนยันผลก่อน fine tune
     </div>
   </div>
 
-  <div class="v5-spacer-lg"></div>
+  <div class="footer-space"></div>
 
   <!-- Support -->
-  <div class="v5-card" style="text-align:center;margin-bottom:32px">
-    <div class="v5-card-body" style="padding:28px">
-      <div style="font-size:32px;margin-bottom:12px">☕</div>
-      <div style="font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--amber);margin-bottom:8px">สนับสนุนโปรเจกต์</div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.7">
-        OBIXConfig Doctor พัฒนาโดยนักบิน FPV เพื่อชุมชน — ฟรี 100%<br>
-        หากมีประโยชน์ ช่วยสนับสนุนค่ากาแฟได้เลย
-      </div>
-      <img src="{{ url_for('static', filename='img/support-qr.png') }}" alt="PromptPay QR"
-           style="width:140px;border-radius:12px;margin:0 auto;border:1px solid var(--border)">
-      <div style="margin-top:14px">
-        <a href="https://www.facebook.com/banmysanti/" target="_blank" rel="noopener" class="v5-btn v5-btn-secondary">
-          📘 OBIXConfig Lab
-        </a>
-      </div>
+  <div class="support-card v5-fade-in-4" style="margin-bottom:32px">
+    <div style="font-size:32px;margin-bottom:12px">☕</div>
+    <div class="support-title">สนับสนุนโปรเจกต์</div>
+    <div class="support-copy">
+      ConfigDoctor พัฒนาโดยนักบิน FPV เพื่อชุมชน — ฟรี 100%<br>
+      หากมีประโยชน์ ช่วยสนับสนุนค่ากาแฟได้เลย
+    </div>
+    <img src="{{ url_for('static', filename='img/support-qr.png') }}" alt="PromptPay QR" class="support-qr">
+    <div>
+      <a href="https://www.facebook.com/banmysanti/" target="_blank" rel="noopener" class="support-btn">
+        OBIX CONFIG LAB
+      </a>
     </div>
   </div>
 
