@@ -719,6 +719,7 @@ set gyro_lpf2_static_hz   = {{ analysis.filter.gyro_lpf2 or 0 }}
 set dterm_lpf1_static_hz  = {{ analysis.filter.dterm_lpf1 or 0 }}
 set dterm_lpf1_type       = {{ 'PT2' if _sy=='racing' else 'PT1' }}
 set dterm_lpf2_static_hz  = {{ analysis.filter.dterm_lpf2 or 0 }}
+<span class="cli-comment"># dyn_notch range: {{ 'ปรับตาม Motor KV ที่กรอกจริง' if analysis.filter.dyn_notch_source=='motor_kv' else 'ค่าเริ่มต้นตามคลาสโดรน — กรอก Motor KV เพื่อความแม่นยำสูงสุด' }}</span>
 set dyn_notch_count       = {{ analysis.filter.dyn_notch or 1 }}
 set dyn_notch_min_hz      = {{ analysis.filter.dyn_notch_min or 80 }}
 set dyn_notch_max_hz      = {{ analysis.filter.dyn_notch_max or 400 }}
