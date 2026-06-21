@@ -57,7 +57,7 @@ body::before{
 }
 .nav.scrolled{background:rgba(4,8,8,0.96);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,255,68,0.08)}
 .nav-logo{display:flex;align-items:center;text-decoration:none;line-height:0}
-.nav-logo-icon{height:48px;width:auto;max-width:min(360px, 52vw);display:block;object-fit:contain;filter:drop-shadow(0 0 10px rgba(0,255,255,.08))}
+.nav-logo-icon{height:56px;width:auto;max-width:min(420px, 56vw);display:block;object-fit:contain;filter:drop-shadow(0 0 12px rgba(0,255,255,.12))}
 .nav-logo-name{font-family:var(--font-t);font-size:22px;font-weight:800;color:#fff;line-height:1}
 .nav-logo-name span{color:var(--g)}
 .nav-logo-sub{font-family:var(--font-d);font-size:7px;letter-spacing:.2em;color:var(--g);margin-top:2px}
@@ -69,7 +69,7 @@ body::before{
 
 
 @media(max-width:600px){
-  .nav-logo-icon{height:36px;max-width:min(240px, 54vw)}
+  .nav-logo-icon{height:42px;max-width:min(290px, 60vw)}
 }
 
 .nav-menu-btn{
@@ -1018,31 +1018,16 @@ body.no-hero-video .hero-bg-video{display:none;}
   border:1.5px solid rgba(200,200,200,.18);
   color:#d0d0d0;
 }
-/* shimmer sweep on store buttons */
-.btn-store::after{
-  content:'';position:absolute;top:0;left:-70%;width:50%;height:100%;
-  background:linear-gradient(105deg,transparent,rgba(255,255,255,.07),transparent);
-  transform:skewX(-18deg);
-  animation:storeShimmer 3.5s ease-in-out infinite;
-}
-.btn-store-android::after{animation-delay:0s}
-.btn-store-ios::after{animation-delay:1.6s}
-@keyframes storeShimmer{0%,100%{left:-70%}60%{left:120%}}
+/* shimmer sweep removed for cleaner store buttons */
+.btn-store::after{content:none;}
+
 .btn-store-ico{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:26px;height:26px}
 .btn-store-text{display:flex;flex-direction:column;line-height:1}
 .btn-store-sup{font-size:8px;font-family:var(--font-d);letter-spacing:.12em;opacity:.65;margin-bottom:2px}
 .btn-store-name{font-size:12px;font-weight:800;font-family:var(--font-t);letter-spacing:-.01em}
 .btn-store-android .btn-store-name{color:#3ddc84}
 .btn-store-ios .btn-store-name{color:#f0f0f0}
-.soon-badge{
-  position:absolute;top:7px;right:8px;
-  font-family:var(--font-d);font-size:7px;letter-spacing:.1em;
-  padding:2px 7px;border-radius:4px;
-  background:rgba(255,185,0,.13);color:#ffb900;
-  border:1px solid rgba(255,185,0,.28);
-  animation:soonPulse 2.2s ease-in-out infinite;
-}
-@keyframes soonPulse{0%,100%{opacity:.7}50%{opacity:1}}
+
 
 
 /* ── ABOUT / INFO BLOCK ── */
@@ -1302,9 +1287,9 @@ footer{
 .hero-title-premium{
     display:flex;
     flex-direction:column;
-    gap:-10px;
+    gap:6px;
     font-weight:900;
-    line-height:.92;
+    line-height:1.04;
     font-size:clamp(3.4rem,9vw,6.5rem);
     color:#ffffff;
     perspective:900px;
@@ -1323,6 +1308,8 @@ footer{
     transform:perspective(900px) rotateX(55deg) translateY(34px) translateZ(-40px);
     animation:heroRise3D .9s cubic-bezier(.16,.84,.24,1) forwards;
     will-change:transform,opacity;
+    line-height:1.08;
+    padding:0.02em 0;
 }
 .hero-title-premium .line:nth-child(1){animation-delay:.12s}
 .hero-title-premium .line:nth-child(2){animation-delay:.26s}
@@ -1751,8 +1738,8 @@ footer{
     <!-- Primary action buttons -->
     <div class="hero-btns">
       <a class="btn-primary" href="/app">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2L11.5 7H16L12.5 10.5L14 16L9 13L4 16L5.5 10.5L2 7H6.5L9 2Z" fill="#000"/></svg>
-        ★ &nbsp;เริ่มการวิเคราะห์
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M6.2 4.6a1 1 0 0 1 1.55-.83l6.1 3.9a1 1 0 0 1 0 1.66l-6.1 3.9A1 1 0 0 1 6.2 12.4V4.6Z" fill="#04130c"/></svg>
+        เริ่มการวิเคราะห์
       </a>
       <a class="btn-outline" href="#tools">
         สำรวจคุณสมบัติ &nbsp;›
@@ -1785,7 +1772,7 @@ footer{
     <div class="hero-store-btns">
 
       <!-- Google Play / APK -->
-      <span class="btn-store btn-store-android">
+      <span class="btn-store btn-store-android" aria-label="Google Play coming soon">
         <div class="btn-store-ico">
           <!-- Android robot logo -->
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1813,13 +1800,12 @@ footer{
         </div>
         <div class="btn-store-text">
           <span class="btn-store-sup">COMING SOON ON</span>
-          <span class="btn-store-name">Play Store Android</span>
+          <span class="btn-store-name">Google Play</span>
         </div>
-        <div class="soon-badge">เร็วๆนี้</div>
       </span>
 
       <!-- Apple App Store -->
-      <span class="btn-store btn-store-ios">
+      <span class="btn-store btn-store-ios" aria-label="App Store coming soon">
         <div class="btn-store-ico">
           <!-- Apple logo -->
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1831,9 +1817,8 @@ footer{
         </div>
         <div class="btn-store-text">
           <span class="btn-store-sup">COMING SOON ON</span>
-          <span class="btn-store-name">App Store iOS</span>
+          <span class="btn-store-name">App Store</span>
         </div>
-        <div class="soon-badge">เร็วๆนี้</div>
       </span>
 
     </div>
