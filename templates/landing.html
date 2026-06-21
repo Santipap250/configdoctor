@@ -1290,8 +1290,144 @@ footer{
     transition: none !important;
   }
 }
+   
+/* ==========================
+   PREMIUM HERO TITLE
+========================== */
 
+.hero-title-premium{
+    display:flex;
+    flex-direction:column;
+    gap:-10px;
 
+    font-weight:900;
+    line-height:.92;
+
+    font-size:clamp(3.4rem,9vw,6.5rem);
+
+    color:#ffffff;
+
+    text-shadow:
+        0 0 15px rgba(255,255,255,.08),
+        0 0 40px rgba(0,255,150,.12);
+
+    animation:
+        heroFadeUp 1.2s ease forwards;
+}
+
+.hero-title-premium .line{
+    display:block;
+}
+
+.hero-gradient{
+
+    background:
+    linear-gradient(
+        90deg,
+        #00ff88,
+        #00ffd5,
+        #00aaff,
+        #8b5cf6,
+        #00ff88
+    );
+
+    background-size:400% 400%;
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+
+    animation:
+      gradientFlow 6s linear infinite,
+      glowPulse 2.5s ease-in-out infinite;
+
+    position:relative;
+}
+
+.hero-gradient::after{
+    content:"";
+    position:absolute;
+    inset:0;
+
+    background:inherit;
+
+    filter:blur(18px);
+
+    opacity:.45;
+
+    z-index:-1;
+}
+
+@keyframes gradientFlow{
+    0%{
+        background-position:0% 50%;
+    }
+    100%{
+        background-position:100% 50%;
+    }
+}
+
+@keyframes glowPulse{
+    0%,100%{
+        filter:brightness(1);
+    }
+
+    50%{
+        filter:brightness(1.3);
+    }
+}
+
+@keyframes heroFadeUp{
+    from{
+        opacity:0;
+        transform:
+            translateY(40px);
+    }
+
+    to{
+        opacity:1;
+        transform:
+            translateY(0);
+    }
+}
+   
+.hero-title-premium{
+    position:relative;
+    overflow:hidden;
+}
+
+.hero-title-premium::before{
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    left:-100%;
+
+    width:50%;
+    height:100%;
+
+    background:
+    linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.25),
+        transparent
+    );
+
+    animation:
+        scanHero 5s infinite;
+}
+
+@keyframes scanHero{
+    0%{
+        left:-100%;
+    }
+
+    100%{
+        left:150%;
+    }
+}
+   
 /* ── FADE SLIDE UP KEYFRAME ── */
 @keyframes fadeSlideUp{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
 </style>
@@ -1609,11 +1745,13 @@ footer{
       <span class="hero-badge-dot"></span>
       แพลตฟอร์มวินิจฉัย FPV
     </div>
-    <h1 class="hero-h1">
-      <span class="line1">ปรับจูน</span>
-      <span class="line2">อย่างแม่นยำ</span>
-      <span class="line3">บิน<span class="green hero-shine">นิ่งลื่น</span>กว่าเดิม</span>
-    </h1>
+    <h1 class="hero-title hero-title-premium">
+  <span class="line">ปรับจูน</span>
+  <span class="line">อย่างแม่นยำ</span>
+  <span class="line">
+    บิน<span class="hero-gradient">นิ่งลื่น</span>กว่าเดิม
+  </span>
+</h1>
     <div class="hero-rule"></div>
     <p class="hero-desc">ConfigDoctor อ่านอาการโดรนให้ขาด แปลงข้อมูลดิบเป็นคำวินิจฉัยที่แม่นยำ ก่อนปัญหาจะเกิดกลางอากาศ</p>
 
