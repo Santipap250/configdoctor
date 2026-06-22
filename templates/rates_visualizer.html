@@ -31,6 +31,205 @@ body{
 }
 
 /* ── Top Bar ── */
+.rv-chip,
+.rv-topbar-btn,
+.rv-menu-close,
+.rv-menu-link,
+.rv-menu-footer .rv-chip {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rv-menu-overlay{
+  position:fixed;
+  inset:0;
+  z-index:1200;
+  display:none;
+  align-items:flex-start;
+  justify-content:center;
+  padding:18px 14px;
+  background:rgba(3,5,10,.72);
+  backdrop-filter:blur(16px) saturate(120%);
+}
+.rv-menu-overlay.open{display:flex;}
+.rv-menu-panel{
+  width:min(1120px,100%);
+  margin-top:10px;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(180deg,rgba(8,13,24,.98),rgba(5,8,15,.98));
+  box-shadow:0 24px 80px rgba(0,0,0,.45), 0 0 0 1px rgba(0,232,122,.06) inset;
+  overflow:hidden;
+}
+.rv-menu-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  padding:16px 18px 12px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.rv-menu-title{
+  font-family:var(--font-d);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--roll);
+}
+.rv-menu-sub{
+  margin-top:6px;
+  color:var(--muted2);
+  font-size:.9rem;
+  max-width:720px;
+}
+.rv-menu-close{
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.03);
+  color:#e8eef9;
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  font-size:18px;
+  line-height:1;
+  transition:transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.rv-menu-close:hover{transform:translateY(-1px);border-color:rgba(0,232,122,.35);background:rgba(0,232,122,.06);}
+.rv-menu-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  padding:14px 18px 18px;
+}
+@media (max-width: 980px){.rv-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (max-width: 620px){.rv-menu-grid{grid-template-columns:1fr;}}
+.rv-menu-group{
+  min-width:0;
+  background:rgba(255,255,255,.02);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;
+  padding:12px;
+}
+.rv-menu-sec{
+  font-family:var(--font-d);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:10px;
+}
+.rv-menu-link{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  text-decoration:none;
+  padding:10px 11px;
+  border-radius:14px;
+  border:1px solid transparent;
+  color:var(--text);
+  transition:transform .16s ease, border-color .16s ease, background .16s ease;
+}
+.rv-menu-link + .rv-menu-link{margin-top:6px;}
+.rv-menu-link:hover{
+  transform:translateY(-1px);
+  background:rgba(255,255,255,.03);
+  border-color:rgba(0,232,122,.14);
+}
+.rv-menu-ico{
+  width:28px;
+  height:28px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+  background:rgba(0,232,122,.08);
+  border:1px solid rgba(0,232,122,.12);
+  font-size:14px;
+}
+.rv-menu-copy{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  min-width:0;
+  flex:1;
+}
+.rv-menu-name{
+  font-family:var(--font-d);
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.02em;
+  line-height:1.2;
+}
+.rv-menu-meta{
+  color:var(--muted2);
+  font-size:11px;
+  line-height:1.35;
+}
+.rv-menu-badge{
+  align-self:flex-start;
+  font-family:var(--font-d);
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  padding:4px 7px;
+  border-radius:999px;
+  color:var(--roll);
+  background:rgba(0,232,122,.08);
+  border:1px solid rgba(0,232,122,.18);
+}
+.rv-menu-footer{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:0 18px 18px;
+}
+.rv-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  text-decoration:none;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid rgba(0,232,122,.18);
+  background:rgba(0,232,122,.06);
+  color:var(--roll);
+  font-family:var(--font-d);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  transition:transform .16s ease, background .16s ease, border-color .16s ease;
+}
+.rv-chip:hover{transform:translateY(-1px);background:rgba(0,232,122,.1);border-color:rgba(0,232,122,.3);}
+.rv-topbar-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  text-decoration:none;
+}
+.rv-topbar-btn.menu{
+  min-width:88px;
+  justify-content:flex-start;
+}
+.rv-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--roll);
+  box-shadow:0 0 10px rgba(0,232,122,.8);
+}
+@media (max-width: 720px){
+  .rv-menu-overlay{padding:10px;}
+  .rv-menu-head{padding:14px;}
+  .rv-menu-grid{padding:12px 14px 14px;}
+  .rv-menu-footer{padding:0 14px 14px;}
+}
+
 
 
 
@@ -278,7 +477,7 @@ canvas#rv{width:100%;display:block;cursor:crosshair;}
       </div>
       <div class="rv-menu-group">
         <div class="rv-menu-sec">Tuning</div>
-        <a class="rv-menu-link" href="{{ url_for('cli_surgeon_page') }}"><span class="rv-menu-ico">🩻</span><span class="rv-menu-copy"><span class="rv-menu-name">CLI Surgeon</span><span class="rv-menu-meta">Validate diff all / dump and generate safe CLI</span></span></a>
+        <a class="rv-menu-link" href="{{ url_for('cli_surgeon') }}"><span class="rv-menu-ico">🩻</span><span class="rv-menu-copy"><span class="rv-menu-name">CLI Surgeon</span><span class="rv-menu-meta">Validate diff all / dump and generate safe CLI</span></span></a>
         <a class="rv-menu-link" href="{{ url_for('pid_advisor') }}"><span class="rv-menu-ico">🩺</span><span class="rv-menu-copy"><span class="rv-menu-name">PID Advisor</span><span class="rv-menu-meta">Symptom-based PID tuning guidance</span></span></a>
         <a class="rv-menu-link" href="{{ url_for('rates_visualizer') }}"><span class="rv-menu-ico">📈</span><span class="rv-menu-copy"><span class="rv-menu-name">Rates Visualizer</span><span class="rv-menu-meta">Stick response curves, presets and compare modes</span></span><span class="rv-menu-badge">open</span></a>
       </div>
@@ -300,7 +499,7 @@ canvas#rv{width:100%;display:block;cursor:crosshair;}
     <div class="rv-menu-footer">
       <a class="rv-chip" href="{{ url_for('index') }}">🚀 Start Analysis</a>
       <a class="rv-chip" href="{{ url_for('blackbox_page') }}">📊 Blackbox</a>
-      <a class="rv-chip" href="{{ url_for('cli_surgeon_page') }}">🩻 CLI</a>
+      <a class="rv-chip" href="{{ url_for('cli_surgeon') }}">🩻 CLI</a>
     </div>
   </div>
 </div>
@@ -312,7 +511,7 @@ canvas#rv{width:100%;display:block;cursor:crosshair;}
       <div class="rv-topbar-brand">
         <div class="rv-topbar-eyebrow">ConfigDoctor · Flight Computer</div>
         <div class="rv-topbar-title">Rates <em>Visualizer</em></div>
-        <div class="rv-topbar-sub">Precision curve lab for ACTUAL, BF legacy and KISS tuning</div>
+        <div class="rv-topbar-sub">Precision curve lab for ACTUAL, BF legacy, and KISS tuning</div>
       </div>
     </div>
     <div class="rv-topbar-right">
@@ -735,6 +934,10 @@ function kissRateAt(s, cfg){
   return Math.min(max, rate) * Math.sign(s || 1);
 }
 
+function actRate(s, rr, sr, er){ return actualRateAt(s, { rr, sr, er }); }
+function bfRate(s, br, bs, be){ return legacyRateAt(s, { br, bs, be }); }
+function ksRate(s, kr, ka){ return kissRateAt(s, { kr, ka }); }
+
 function getAxisRate(ax,s){
   const cfg = getAxisConfig(ax);
   if(rt==='actual') return actualRateAt(s,cfg);
@@ -1140,6 +1343,7 @@ function toggleMenu(open){
   el.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
   document.body.style.overflow = shouldOpen ? 'hidden' : '';
 }
+
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape') toggleMenu(false);
   if((e.key==='Enter' || e.key===' ') && e.target && e.target.matches('[role="button"]')){
@@ -1149,6 +1353,9 @@ document.addEventListener('keydown', e=>{
 });
 document.getElementById('rvMenu')?.addEventListener('click', e=>{
   if(e.target.id === 'rvMenu') toggleMenu(false);
+});
+document.querySelectorAll('.rv-menu-link, .rv-chip').forEach(el => {
+  el.addEventListener('click', () => toggleMenu(false));
 });
 /* ── Guide accordion ── */
 function tog(id){
