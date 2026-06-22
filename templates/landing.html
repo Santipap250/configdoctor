@@ -1264,8 +1264,8 @@ footer{
 
 @media(max-width:768px){
   body::before{opacity:.08;animation:none}
-  .hero-bg-video{display:none}
   .hero-bg{animation:none;transform:none}
+  .hero-bg-video{opacity:.96}
   .hero-scan-beam,.hero-cards,.hero-glow-orb{display:none}
   .hero-title-premium{
     font-size:clamp(2.9rem,12vw,4.5rem);
@@ -1674,10 +1674,10 @@ footer{
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg">
-    <video class="hero-bg-video" id="heroBgVideo" autoplay muted loop playsinline preload="auto"
+    <video class="hero-bg-video" id="heroBgVideo" autoplay muted loop playsinline preload="none"
       poster="{{ url_for('static', filename='img/hero-bg-poster.jpg') }}" aria-hidden="true">
-      <source src="{{ url_for('static', filename='video/hero-bg.webm') }}" type="video/webm">
-      <source src="{{ url_for('static', filename='video/hero-bg.mp4') }}" type="video/mp4">
+      <source data-src="{{ url_for('static', filename='video/hero-bg.webm') }}" type="video/webm">
+      <source data-src="{{ url_for('static', filename='video/hero-bg.mp4') }}" type="video/mp4">
     </video>
   </div>
   <div class="hero-radar"></div>
@@ -1936,20 +1936,35 @@ footer{
 </footer>   
    
 <script>
-/* ── Hero background video: skip only on data-saver/slow connection/reduced-motion ── */
+/* ── Hero background video: lazy-load only when the device/network can handle it ── */
 (function(){
   var v = document.getElementById('heroBgVideo');
   if(!v) return;
+
   var conn = navigator.connection || navigator.webkitConnection || navigator.mozConnection;
-  var saveData = conn && conn.saveData;
-  var slow = conn && /2g/.test(conn.effectiveType || '');
+  var saveData = !!(conn && conn.saveData);
+  var slow = !!(conn && /(^|[^0-9])2g/i.test(conn.effectiveType || ''));
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var smallScreen = window.matchMedia('(max-width: 768px)').matches;
-  if(saveData || slow || reduceMotion || smallScreen){
+
+  // Keep the poster only for reduced-motion, save-data, or very slow networks.
+  if(saveData || slow || reduceMotion){
     document.body.classList.add('no-hero-video');
-    return; // keep static poster/image, never fetch the video
+    return;
   }
-  v.play().catch(function(){ /* autoplay blocked by browser — poster image stays visible */ });
+
+  // Load the video only when it's allowed to run.
+  var sources = v.querySelectorAll('source[data-src]');
+  sources.forEach(function(s){
+    if(!s.getAttribute('src')) s.setAttribute('src', s.getAttribute('data-src'));
+  });
+
+  try { v.load(); } catch(e) {}
+  var playPromise = v.play();
+  if(playPromise && typeof playPromise.catch === 'function'){
+    playPromise.catch(function(){
+      // If autoplay is blocked, the poster remains visible.
+    });
+  }
 })();
 
 window.addEventListener('scroll', function(){
