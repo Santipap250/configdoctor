@@ -419,6 +419,7 @@ body::before{
 }
 .ai-card.claude::before{background:var(--purple)}
 .ai-card.chatgpt::before{background:var(--green)}
+.ai-card.deepseek::before{background:var(--blue)}
 .ai-card:hover{transform:translateY(-3px)}
 .ai-card.claude:hover{
   border-color:rgba(176,96,255,.26);
@@ -427,6 +428,10 @@ body::before{
 .ai-card.chatgpt:hover{
   border-color:rgba(0,255,68,.24);
   box-shadow:0 18px 36px rgba(0,0,0,.24), 0 0 20px rgba(0,255,68,.08);
+}
+.ai-card.deepseek:hover{
+  border-color:rgba(0,168,255,.26);
+  box-shadow:0 18px 36px rgba(0,0,0,.24), 0 0 20px rgba(0,168,255,.08);
 }
 .ai-logo-row{
   display:flex;
@@ -451,6 +456,10 @@ body::before{
   background:rgba(0,255,68,.08);
   border-color:rgba(0,255,68,.18);
 }
+.ai-card.deepseek .ai-logo{
+  background:rgba(0,168,255,.08);
+  border-color:rgba(0,168,255,.18);
+}
 .ai-name{
   font-family:var(--font-head);
   font-size:18px;
@@ -464,6 +473,7 @@ body::before{
 }
 .ai-card.claude .ai-maker{color:rgba(192,132,252,.8)}
 .ai-card.chatgpt .ai-maker{color:rgba(0,255,68,.7)}
+.ai-card.deepseek .ai-maker{color:rgba(0,168,255,.8)}
 .ai-role-badge{
   display:inline-flex;
   align-items:center;
@@ -486,6 +496,11 @@ body::before{
   background:rgba(0,255,68,.08);
   border:1px solid rgba(0,255,68,.16);
   color:#9fffc2;
+}
+.ai-card.deepseek .ai-role-badge{
+  background:rgba(0,168,255,.08);
+  border:1px solid rgba(0,168,255,.16);
+  color:#8fd9ff;
 }
 .ai-desc{
   font-size:13px;
@@ -516,6 +531,7 @@ body::before{
 }
 .ai-card.claude .ai-contrib-list li::before{color:#c084fc}
 .ai-card.chatgpt .ai-contrib-list li::before{color:var(--green)}
+.ai-card.deepseek .ai-contrib-list li::before{color:var(--blue)}
 
 /* Sensor project badge */
 .sensor-badge{
@@ -808,6 +824,32 @@ body::before{
         <li>ออกแบบ user journey สำหรับ flight quiz</li>
         <li>คำแนะนำ feature และ roadmap</li>
         <li>ช่วยเขียน tooltip และ help text</li>
+      </ul>
+    </div>
+
+    <!-- DeepSeek -->
+    <div class="ai-card deepseek">
+      <div class="ai-logo-row">
+        <div class="ai-logo">🐳</div>
+        <div>
+          <div class="ai-name">DeepSeek</div>
+          <div class="ai-maker">by DeepSeek AI</div>
+        </div>
+      </div>
+      <div class="ai-role-badge">
+        🧮 Algorithm &amp; Logic Advisor
+      </div>
+      <p class="ai-desc">
+        AI ผู้ช่วยด้านตรรกะการคำนวณ ช่วยตรวจสอบสมการฟิสิกส์
+        ปรับปรุง algorithm ของ analyzer engine และเสนอแนวทาง
+        optimization ให้แม่นยำและมีประสิทธิภาพสูงขึ้น
+      </p>
+      <ul class="ai-contrib-list">
+        <li>ตรวจสอบ &amp; ปรับปรุงสมการ TWR / Power Curve</li>
+        <li>ออกแบบ logic การคำนวณ RPM Filter ใหม่</li>
+        <li>วิเคราะห์ edge case ของสูตรคำนวณ PID</li>
+        <li>ปรับปรุงความแม่นยำของ Motor Thermal Model</li>
+        <li>คำแนะนำด้าน cost-efficient algorithm design</li>
       </ul>
     </div>
 
