@@ -5,13 +5,13 @@
 <title>ConfigDoctor — FPV Drone Diagnostic Platform</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% set og_title       = "ConfigDoctor — FPV Drone Diagnostic Platform" %}
-{% set og_description = "Analyze, optimize and unlock the full potential of your FPV drone. PID · Filter · Blackbox · CLI · Battery · Motor Thermal" %}
+{% set og_description = "แพลตฟอร์มวิเคราะห์และปรับจูนโดรน FPV แบบครบวงจร: PID, Filter, Blackbox, CLI, Battery และ Motor Thermal" %}
 {% set og_url         = "https://configdoctor.onrender.com/landing" %}
 {% set og_image       = "https://configdoctor.onrender.com/static/img/og-default.jpg" %}
 {% include "partials/og_tags.html" %}
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Sarabun:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800;900&family=Orbitron:wght@400;700;900&family=Sarabun:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════
    CONFIGDOCTOR — LANDING v9.0 (Motion Upgrade)
@@ -97,14 +97,14 @@ body::before{
   filter: blur(12px);
   opacity:.72;
   transform: translate3d(0,0,0);
-  animation:menuSmoke 5.8s ease-in-out infinite alternate;
+  animation:menuSmoke 8s ease-in-out infinite alternate;
   pointer-events:none;
 }
 .nav-menu-btn::after{
   content:''; position:absolute; inset:0;
   background:linear-gradient(110deg, transparent 18%, rgba(255,255,255,.18) 38%, transparent 58%);
   transform:translateX(-120%);
-  animation:menuSweep 4.8s ease-in-out infinite;
+  animation:menuSweep 8s ease-in-out infinite;
   pointer-events:none;
 }
 .nav-menu-btn:hover{
@@ -721,7 +721,7 @@ body.no-hero-video .hero-bg-video{display:none;}
   padding:10px 16px;min-width:140px;
   animation:floatCard 4s ease-in-out infinite;
   opacity:0;
-  animation:heroCardIn .6s cubic-bezier(.2,.8,.3,1) forwards, floatCard 4s ease-in-out infinite;
+  animation:heroCardIn .6s cubic-bezier(.2,.8,.3,1) forwards, floatCard 8s ease-in-out infinite;
 }
 .hcard:nth-child(1){animation-delay:.3s, .3s}
 .hcard:nth-child(2){animation-delay:.5s, .5s;min-width:160px}
@@ -1035,7 +1035,7 @@ body.no-hero-video .hero-bg-video{display:none;}
   height:180%;
   background:linear-gradient(110deg, transparent 35%, rgba(255,255,255,.10) 50%, transparent 65%);
   transform:skewX(-18deg);
-  animation:aboutSweep 7.5s ease-in-out infinite;
+  animation:aboutSweep 12s ease-in-out infinite;
   pointer-events:none;
 }
 .hero-about-head{
@@ -1261,6 +1261,45 @@ footer{
     transition: none !important;
   }
 }
+
+html.lite-motion body::before{
+  animation:none !important;
+  opacity:.12 !important;
+}
+html.lite-motion .hero-scan-beam,
+html.lite-motion .hero-bg-video,
+html.lite-motion .hero-cards,
+html.lite-motion .hero-glow-orb,
+html.lite-motion .hero-about::after,
+html.lite-motion .nav-menu-btn::before,
+html.lite-motion .nav-menu-btn::after,
+html.lite-motion .menu-smoke{
+  animation:none !important;
+}
+html.lite-motion .hero-bg-video{display:none !important;}
+html.lite-motion .hero-bg{transform:none !important; animation:none !important;}
+html.lite-motion .hero-tilt{transform:none !important; transition:none !important;}
+html.lite-motion .hero-title-premium .line{
+  animation:none !important;
+  opacity:1 !important;
+  transform:none !important;
+  filter:none !important;
+}
+html.lite-motion .hero-gradient::before{
+  animation:none !important;
+  display:none !important;
+}
+html.lite-motion .hero-gradient::after{
+  filter:blur(12px) !important;
+  opacity:.35 !important;
+}
+html.lite-motion .feat,
+html.lite-motion .stat-num,
+html.lite-motion .tool-card,
+html.lite-motion .hcard,
+html.lite-motion .hero-about{
+  transition:none !important;
+}
    
 /* ==========================
    PREMIUM HERO TITLE — v2 "WOW" UPGRADE
@@ -1274,17 +1313,18 @@ footer{
     display:flex;
     flex-direction:column;
     gap:2px;
+    font-family:'Kanit',var(--font-t);
     font-weight:900;
-    line-height:1;
-    font-size:clamp(3.25rem,8.6vw,6.1rem);
+    line-height:0.98;
+    font-size:clamp(3rem,8.4vw,6rem);
     color:#ffffff;
     perspective:900px;
     transform-style:preserve-3d;
     text-shadow:
-        0 1px 0 rgba(255,255,255,.25),
-        0 2px 0 rgba(200,255,230,.12),
-        0 8px 18px rgba(0,0,0,.45),
-        0 0 40px rgba(0,255,150,.14);
+        0 1px 0 rgba(255,255,255,.18),
+        0 2px 0 rgba(200,255,230,.10),
+        0 8px 18px rgba(0,0,0,.42),
+        0 0 34px rgba(0,255,150,.12);
 }
 
 .hero-title-premium .line{
@@ -1302,8 +1342,8 @@ footer{
 .hero-title-premium .line:nth-child(3){animation-delay:.40s}
 
 @keyframes heroRise3D{
-  0%{   opacity:0;   transform:perspective(900px) rotateX(55deg) translateY(34px) translateZ(-40px); filter:blur(6px);}
-  60%{  opacity:1;   transform:perspective(900px) rotateX(-4deg) translateY(-3px)  translateZ(6px);   filter:blur(0);}
+  0%{   opacity:0;   transform:perspective(900px) rotateX(50deg) translateY(28px) translateZ(-36px); filter:blur(5px);}
+  62%{  opacity:1;   transform:perspective(900px) rotateX(-3deg) translateY(-2px)  translateZ(5px);   filter:blur(0);}
   100%{ opacity:1;   transform:perspective(900px) rotateX(0deg)  translateY(0)     translateZ(0);}
 }
 
@@ -1312,8 +1352,8 @@ footer{
   position:absolute;border-radius:50%;filter:blur(50px);pointer-events:none;z-index:0;
   opacity:.55;mix-blend-mode:screen;
 }
-.hero-glow-orb.o1{width:260px;height:260px;left:-60px;top:0;background:radial-gradient(circle,rgba(0,255,150,.35),transparent 70%);animation:orbDrift1 9s ease-in-out infinite;}
-.hero-glow-orb.o2{width:200px;height:200px;left:30%;top:60%;background:radial-gradient(circle,rgba(0,200,255,.28),transparent 70%);animation:orbDrift2 11s ease-in-out infinite;}
+.hero-glow-orb.o1{width:260px;height:260px;left:-60px;top:0;background:radial-gradient(circle,rgba(0,255,150,.35),transparent 70%);animation:orbDrift1 14s ease-in-out infinite;}
+.hero-glow-orb.o2{width:200px;height:200px;left:30%;top:60%;background:radial-gradient(circle,rgba(0,200,255,.28),transparent 70%);animation:orbDrift2 16s ease-in-out infinite;}
 @keyframes orbDrift1{0%,100%{transform:translate(0,0)}50%{transform:translate(24px,18px)}}
 @keyframes orbDrift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-20px,-14px)}}
 
@@ -1325,7 +1365,7 @@ footer{
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
     background-clip:text;
-    animation:gradientFlow 6s linear infinite, glowPulse 2.5s ease-in-out infinite;
+    animation:gradientFlow 10s linear infinite, glowPulse 4.5s ease-in-out infinite;
     text-shadow:none;
 }
 /* Soft blurred glow duplicate sitting behind the gradient word — gives it
@@ -1345,7 +1385,7 @@ footer{
     position:absolute;inset:0;left:0;
     color:#00ffe1;mix-blend-mode:screen;opacity:0;
     -webkit-text-fill-color:#00ffe1;
-    animation:glitchFlicker 2.6s ease-out 1;
+    animation:glitchFlicker 3.6s ease-out 1;
     pointer-events:none;
 }
 @keyframes glitchFlicker{
@@ -1365,7 +1405,7 @@ footer{
 .hero-title-premium::before{
     content:"";position:absolute;top:0;left:-100%;width:50%;height:100%;
     background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
-    animation:scanHero 5s infinite;
+    animation:scanHero 9s infinite;
 }
 
 /* Subtle mouse-parallax tilt wrapper (JS toggles this class + sets
@@ -1397,6 +1437,16 @@ footer{
 </style>
 </head>
 <body>
+<script>
+(function(){
+  try{
+    var mqReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var mqMobile = window.matchMedia && window.matchMedia('(max-width: 900px)').matches;
+    var saveData = !!(navigator.connection && navigator.connection.saveData);
+    if(mqReduce || mqMobile || saveData){ document.documentElement.classList.add('lite-motion'); }
+  }catch(e){}
+})();
+</script>
 
 <!-- GLOBAL ELEMENTS -->
 <div class="hero-scan-beam"></div>
@@ -1439,16 +1489,16 @@ footer{
 
       <section class="mn-featured">
         <div class="mn-featured-copy">
-          <div class="mn-kicker">Featured tool</div>
+          <div class="mn-kicker">เครื่องมือเด่น</div>
           <div class="mn-featured-title">Drone Analyzer</div>
           <div class="mn-featured-desc">วิเคราะห์ PID · Filter · Motor · Flight time แบบครบวงจร พร้อมจุดเริ่มต้นที่ดีที่สุดสำหรับการจูน</div>
         </div>
-        <a class="mn-featured-cta" href="/app" onclick="closeMob()">Start</a>
+        <a class="mn-featured-cta" href="/app" onclick="closeMob()">เริ่มต้น</a>
       </section>
 
       <div class="mn-group">
         <div class="mn-group-head">
-          <div class="mn-section-title">Analyze</div>
+          <div class="mn-section-title">วิเคราะห์</div>
           <div class="mn-count">05</div>
         </div>
 
@@ -1498,7 +1548,7 @@ footer{
 
       <div class="mn-group">
         <div class="mn-group-head">
-          <div class="mn-section-title">Optimize</div>
+          <div class="mn-section-title">ปรับจูน</div>
           <div class="mn-count">07</div>
         </div>
 
@@ -1561,7 +1611,7 @@ footer{
 
       <div class="mn-group">
         <div class="mn-group-head">
-          <div class="mn-section-title">Tools · Community</div>
+          <div class="mn-section-title">เครื่องมือ · ชุมชน</div>
           <div class="mn-count">09</div>
         </div>
 
@@ -1632,16 +1682,16 @@ footer{
         <a class="mn-link" href="/team" onclick="closeMob()">
           <span class="mn-ico">👥</span>
           <span class="mn-copy">
-            <span class="mn-title">Team</span>
-            <span class="mn-meta">ผู้พัฒนาโปรเจกต์และผู้ร่วมสร้าง</span>
+            <span class="mn-title">Team / ทีม</span>
+            <span class="mn-meta">ทีมพัฒนาโปรเจกต์และผู้ร่วมสร้าง</span>
           </span>
         </a>
       </div>
     </div>
 
     <div class="mob-nav-footer">
-      <a class="mob-chip" href="/app" onclick="closeMob()">🚀 Start Analysis</a>
-      <a class="mob-chip" href="https://www.facebook.com/banmysanti" target="_blank" rel="noopener noreferrer">📣 OBIX CONFIG LAB</a>
+      <a class="mob-chip" href="/app" onclick="closeMob()">🚀 เริ่มต้น Analysis</a>
+      <a class="mob-chip" href="https://www.facebook.com/banmysanti" target="_blank" rel="noopener noreferrer">📣 OBIX Config Lab</a>
       <a class="mob-chip" href="/downloads" onclick="closeMob()">🗂️ Files</a>
     </div>
   </div>
@@ -1712,14 +1762,17 @@ footer{
     <h1 class="hero-title hero-title-premium hero-tilt" id="heroTitleTilt" style="position:relative">
   <span class="hero-glow-orb o1" aria-hidden="true"></span>
   <span class="hero-glow-orb o2" aria-hidden="true"></span>
-  <span class="line">TUNE</span>
-  <span class="line">SMARTER</span>
+  <span class="line">อ่านอาการโดรน</span>
+  <span class="line">ให้ขาด</span>
   <span class="line">
-   FLY<span class="hero-gradient" data-text="BETTER">BETTER.</span>
+    ปรับจูนอย่างแม่นยำ
+  </span>
+  <span class="line">
+    บิน<span class="hero-gradient" data-text="นิ่งลื่น">นิ่งลื่น</span>กว่าเดิม
   </span>
 </h1>
     <div class="hero-rule"></div>
-    <p class="hero-desc">ConfigDoctor อ่านอาการโดรนให้ขาด แปลงข้อมูลดิบเป็นคำวินิจฉัยที่แม่นยำ ก่อนปัญหาจะลุกลามกลางอากาศ</p>
+    <p class="hero-desc">ConfigDoctor อ่านอาการโดรนและข้อมูลบินจริงให้ชัด เปลี่ยนข้อมูลดิบเป็นคำวินิจฉัยที่แม่นยำ ก่อนอาการสั่นจะลุกลามกลางอากาศ</p>
 
     <!-- Primary action buttons -->
     <div class="hero-btns">
@@ -1728,7 +1781,7 @@ footer{
         เริ่มการวิเคราะห์
       </a>
       <a class="btn-outline" href="#tools">
-        สำรวจคุณสมบัติ &nbsp;›
+        ดูคุณสมบัติทั้งหมด &nbsp;›
       </a>
     </div>
 
@@ -1741,7 +1794,7 @@ footer{
             <path d="M2 16c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </div>
-        ผู้พัฒนาโปรเจค
+        ทีมพัฒนาโปรเจกต์
       </a>
       <a class="btn-fb" href="https://www.facebook.com/banmysanti" target="_blank" rel="noopener noreferrer">
         <div class="btn-dev-ico">
@@ -1750,7 +1803,7 @@ footer{
             <path d="M16 8h-2a1 1 0 0 0-1 1v2h3l-.5 3H13v7h-3v-7H8v-3h2V9a4 4 0 0 1 4-4h2v3z" fill="#60a5fa"/>
           </svg>
         </div>
-        OBIX CONFIG LAB ↗
+        OBIX Config Lab ↗
       </a>
     </div>
 
@@ -1758,7 +1811,7 @@ footer{
     <div class="hero-store-btns">
 
       <!-- Google Play / APK -->
-      <span class="btn-store btn-store-android" aria-label="Google Play coming soon" aria-disabled="true">
+      <span class="btn-store btn-store-android" aria-label="Play Store Android coming soon" aria-disabled="true">
         <div class="btn-store-ico">
           <!-- Android robot logo -->
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1786,12 +1839,12 @@ footer{
         </div>
         <div class="btn-store-text">
           <span class="soon-badge">เร็ว ๆ นี้</span>
-          <span class="btn-store-name">Google Play</span>
+          <span class="btn-store-name">Play Store Android</span>
         </div>
       </span>
 
       <!-- Apple App Store -->
-      <span class="btn-store btn-store-ios" aria-label="App Store coming soon" aria-disabled="true">
+      <span class="btn-store btn-store-ios" aria-label="App Store iOS coming soon" aria-disabled="true">
         <div class="btn-store-ico">
           <!-- Apple logo -->
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1803,7 +1856,7 @@ footer{
         </div>
         <div class="btn-store-text">
           <span class="soon-badge">เร็ว ๆ นี้</span>
-          <span class="btn-store-name">App Store</span>
+          <span class="btn-store-name">App Store iOS</span>
         </div>
       </span>
 
@@ -1812,15 +1865,15 @@ footer{
 
 
   <section class="hero-about reveal" aria-labelledby="aboutConfigDoctor">
-    <div class="hero-about-head" id="aboutConfigDoctor">เกี่ยวกับ Config Doctor</div>
+    <div class="hero-about-head" id="aboutConfigDoctor">เกี่ยวกับ ConfigDoctor</div>
     <p class="hero-about-copy">
-      Config Doctor คือแพลตฟอร์มวิเคราะห์โดรน FPV ที่ช่วยอ่านอาการจาก diff all, Blackbox และสเปคของลำบิน
+      ConfigDoctor คือแพลตฟอร์มวิเคราะห์โดรน FPV ที่ช่วยอ่านอาการจาก diff all, Blackbox และสเปคลำบิน
       เพื่อสรุปผลให้เข้าใจง่าย พร้อมแนวทางจูนที่ปลอดภัย ใช้ได้จริง และดูเป็นมืออาชีพ
     </p>
     <div class="hero-about-grid" role="list" aria-label="คุณสมบัติของเว็บไซต์">
-      <span class="hero-about-chip" role="listitem">วิเคราะห์ PID · Filter · RPM</span>
-      <span class="hero-about-chip" role="listitem">เช็ค Motor · ESC · Battery</span>
-      <span class="hero-about-chip" role="listitem">ใช้งานง่ายบนมือถือ</span>
+      <span class="hero-about-chip" role="listitem">วิเคราะห์ PID · Filter · Blackbox</span>
+      <span class="hero-about-chip" role="listitem">เช็ก Motor · ESC · Battery</span>
+      <span class="hero-about-chip" role="listitem">ใช้งานลื่นบนมือถือ</span>
     </div>
   </section>
 
@@ -1981,6 +2034,14 @@ document.addEventListener('keydown', function(e){
   }
 });
 
+var heroVideo = document.getElementById('heroBgVideo');
+if(heroVideo && document.documentElement.classList.contains('lite-motion')){
+  try{ heroVideo.pause(); }catch(e){}
+  heroVideo.removeAttribute('autoplay');
+  heroVideo.removeAttribute('loop');
+  heroVideo.preload = 'none';
+}
+
 /* ── Scroll reveal (all .reveal + feature strip + stats) ── */
 (function(){
   var obs = new IntersectionObserver(function(entries){
@@ -2026,10 +2087,10 @@ document.addEventListener('keydown', function(e){
 /* ── Parallax hero bg on scroll ── */
 (function(){
   var bg = document.querySelector('.hero-bg');
-  if(!bg) return;
+  if(!bg || document.documentElement.classList.contains('lite-motion')) return;
   window.addEventListener('scroll', function(){
     var y = window.scrollY;
-    bg.style.transform = 'translateY(' + (y * 0.22) + 'px) scale(1.06)';
+    bg.style.transform = 'translateY(' + (y * 0.14) + 'px) scale(1.03)';
   }, {passive:true});
 })();
 
