@@ -4,11 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rates Visualizer — OBIXConfig Doctor</title>
-{% set og_title       = "Rates Visualizer — OBIXConfig Doctor" %}
-{% set og_description = "ปรับและดู stick response curve แบบ real-time รองรับ ACTUAL / BF / KISS — แยก Roll Pitch Yaw ครบ" %}
-{% set og_url         = url_for("rates_visualizer", _external=True) %}
-{% include "partials/og_tags.html" %}
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
 
@@ -31,6 +26,33 @@ body{
 }
 
 /* ── Top Bar ── */
+.rv-topbar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 18px;
+  background:rgba(3,5,10,0.92);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);
+  position:sticky;
+  top:0;
+  z-index:100;
+  flex-wrap:wrap;
+}
+.rv-topbar-left{display:flex;align-items:center;gap:14px;min-width:0;}
+.rv-topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.rv-topbar-brand{min-width:0;}
+.rv-topbar-eyebrow{font-family:var(--font-d);font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.rv-topbar-title{font-family:var(--font-d);font-size:18px;font-weight:700;letter-spacing:.04em;color:#f0f6ff;line-height:1.1;}
+.rv-topbar-title em{font-style:normal;color:var(--roll);}
+.rv-topbar-sub{font-size:.78rem;color:var(--muted2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rv-topbar-chip{
+  display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;
+  font-family:var(--font-d);font-size:10px;font-weight:700;letter-spacing:.08em;
+  color:var(--roll);background:rgba(0,232,122,0.08);border:1px solid rgba(0,232,122,0.2);
+}
+
 .rv-chip,
 .rv-topbar-btn,
 .rv-menu-close,
@@ -40,200 +62,71 @@ body{
 }
 
 .rv-menu-overlay{
-  position:fixed;
-  inset:0;
-  z-index:1200;
-  display:none;
-  align-items:flex-start;
-  justify-content:center;
+  position:fixed;inset:0;z-index:1200;display:none;
+  align-items:flex-start;justify-content:center;
   padding:18px 14px;
   background:rgba(3,5,10,.72);
   backdrop-filter:blur(16px) saturate(120%);
 }
 .rv-menu-overlay.open{display:flex;}
 .rv-menu-panel{
-  width:min(1120px,100%);
-  margin-top:10px;
-  border-radius:20px;
+  width:min(1120px,100%);margin-top:10px;border-radius:20px;
   border:1px solid rgba(255,255,255,.08);
   background:linear-gradient(180deg,rgba(8,13,24,.98),rgba(5,8,15,.98));
   box-shadow:0 24px 80px rgba(0,0,0,.45), 0 0 0 1px rgba(0,232,122,.06) inset;
   overflow:hidden;
 }
 .rv-menu-head{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:16px;
-  padding:16px 18px 12px;
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:16px;padding:16px 18px 12px;
   border-bottom:1px solid rgba(255,255,255,.06);
 }
-.rv-menu-title{
-  font-family:var(--font-d);
-  font-size:12px;
-  font-weight:700;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:var(--roll);
-}
-.rv-menu-sub{
-  margin-top:6px;
-  color:var(--muted2);
-  font-size:.9rem;
-  max-width:720px;
-}
+.rv-menu-title{font-family:var(--font-d);font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--roll);}
+.rv-menu-sub{margin-top:6px;color:var(--muted2);font-size:.9rem;max-width:720px;}
 .rv-menu-close{
-  border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.03);
-  color:#e8eef9;
-  width:40px;
-  height:40px;
-  border-radius:12px;
-  display:grid;
-  place-items:center;
-  cursor:pointer;
-  font-size:18px;
-  line-height:1;
+  border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:#e8eef9;
+  width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+  cursor:pointer;font-size:18px;line-height:1;
   transition:transform .18s ease, border-color .18s ease, background .18s ease;
 }
 .rv-menu-close:hover{transform:translateY(-1px);border-color:rgba(0,232,122,.35);background:rgba(0,232,122,.06);}
-.rv-menu-grid{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:12px;
-  padding:14px 18px 18px;
-}
+.rv-menu-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:14px 18px 18px;}
 @media (max-width: 980px){.rv-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media (max-width: 620px){.rv-menu-grid{grid-template-columns:1fr;}}
-.rv-menu-group{
-  min-width:0;
-  background:rgba(255,255,255,.02);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:16px;
-  padding:12px;
-}
-.rv-menu-sec{
-  font-family:var(--font-d);
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:var(--muted);
-  margin-bottom:10px;
-}
+.rv-menu-group{min-width:0;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:12px;}
+.rv-menu-sec{font-family:var(--font-d);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 .rv-menu-link{
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  text-decoration:none;
-  padding:10px 11px;
-  border-radius:14px;
-  border:1px solid transparent;
-  color:var(--text);
+  display:flex;align-items:flex-start;gap:10px;text-decoration:none;
+  padding:10px 11px;border-radius:14px;border:1px solid transparent;color:var(--text);
   transition:transform .16s ease, border-color .16s ease, background .16s ease;
 }
 .rv-menu-link + .rv-menu-link{margin-top:6px;}
-.rv-menu-link:hover{
-  transform:translateY(-1px);
-  background:rgba(255,255,255,.03);
-  border-color:rgba(0,232,122,.14);
-}
-.rv-menu-ico{
-  width:28px;
-  height:28px;
-  border-radius:10px;
-  display:grid;
-  place-items:center;
-  flex-shrink:0;
-  background:rgba(0,232,122,.08);
-  border:1px solid rgba(0,232,122,.12);
-  font-size:14px;
-}
-.rv-menu-copy{
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-  min-width:0;
-  flex:1;
-}
-.rv-menu-name{
-  font-family:var(--font-d);
-  font-size:13px;
-  font-weight:700;
-  letter-spacing:.02em;
-  line-height:1.2;
-}
-.rv-menu-meta{
-  color:var(--muted2);
-  font-size:11px;
-  line-height:1.35;
-}
-.rv-menu-badge{
-  align-self:flex-start;
-  font-family:var(--font-d);
-  font-size:9px;
-  font-weight:700;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  padding:4px 7px;
-  border-radius:999px;
-  color:var(--roll);
-  background:rgba(0,232,122,.08);
-  border:1px solid rgba(0,232,122,.18);
-}
-.rv-menu-footer{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  padding:0 18px 18px;
-}
+.rv-menu-link:hover{transform:translateY(-1px);background:rgba(255,255,255,.03);border-color:rgba(0,232,122,.14);}
+.rv-menu-ico{width:28px;height:28px;border-radius:10px;display:grid;place-items:center;flex-shrink:0;background:rgba(0,232,122,.08);border:1px solid rgba(0,232,122,.12);font-size:14px;}
+.rv-menu-copy{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
+.rv-menu-name{font-family:var(--font-d);font-size:13px;font-weight:700;letter-spacing:.02em;line-height:1.2;}
+.rv-menu-meta{color:var(--muted2);font-size:11px;line-height:1.35;}
+.rv-menu-badge{align-self:flex-start;font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 7px;border-radius:999px;color:var(--roll);background:rgba(0,232,122,.08);border:1px solid rgba(0,232,122,.18);}
+.rv-menu-footer{display:flex;flex-wrap:wrap;gap:8px;padding:0 18px 18px;}
 .rv-chip{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  text-decoration:none;
-  padding:10px 14px;
-  border-radius:999px;
-  border:1px solid rgba(0,232,122,.18);
-  background:rgba(0,232,122,.06);
-  color:var(--roll);
-  font-family:var(--font-d);
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:.08em;
-  text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+  padding:10px 14px;border-radius:999px;border:1px solid rgba(0,232,122,.18);
+  background:rgba(0,232,122,.06);color:var(--roll);font-family:var(--font-d);
+  font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
   transition:transform .16s ease, background .16s ease, border-color .16s ease;
 }
 .rv-chip:hover{transform:translateY(-1px);background:rgba(0,232,122,.1);border-color:rgba(0,232,122,.3);}
-.rv-topbar-btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  text-decoration:none;
-}
-.rv-topbar-btn.menu{
-  min-width:88px;
-  justify-content:flex-start;
-}
-.rv-dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:var(--roll);
-  box-shadow:0 0 10px rgba(0,232,122,.8);
-}
+.rv-topbar-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:none;border:1px solid rgba(255,255,255,0.1);color:var(--muted2);padding:6px 12px;border-radius:8px;cursor:pointer;font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:.06em;transition:all .18s;}
+.rv-topbar-btn:hover{border-color:rgba(0,232,122,.3);color:var(--roll);}
+.rv-topbar-btn.menu{min-width:88px;justify-content:flex-start;}
+.rv-dot{width:8px;height:8px;border-radius:50%;background:var(--roll);box-shadow:0 0 10px rgba(0,232,122,.8);}
 @media (max-width: 720px){
   .rv-menu-overlay{padding:10px;}
   .rv-menu-head{padding:14px;}
   .rv-menu-grid{padding:12px 14px 14px;}
   .rv-menu-footer{padding:0 14px 14px;}
+  .rv-topbar-sub{display:none;}
 }
-
-
-
-
-
 
 @keyframes pulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 16px rgba(0,232,122,0.25)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
@@ -324,6 +217,42 @@ input[type=range].yr::-webkit-slider-thumb{background:var(--yaw);box-shadow:0 0 
   box-shadow:0 0 8px rgba(255,255,255,.4);}
 .plabel{font-family:var(--font-d);font-size:12px;font-weight:700;letter-spacing:.04em;min-width:86px;text-align:right;color:#fff;}
 
+/* ── Intel Card ── */
+.intel-card{
+  margin-top:10px;background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;
+}
+.intel-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 12px;border-bottom:1px solid var(--border);
+}
+.intel-title{
+  font-family:var(--font-d);font-size:10px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+}
+.intel-score{
+  font-family:var(--font-m);font-size:13px;font-weight:700;color:var(--roll);
+}
+.intel-main{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 12px;
+}
+.intel-pill{
+  background:rgba(255,255,255,0.03);border:1px solid var(--border);
+  border-radius:8px;padding:7px 10px;
+}
+.intel-pill-lbl{
+  font-family:var(--font-d);font-size:9px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;
+}
+.intel-pill-val{
+  font-family:var(--font-d);font-size:13px;font-weight:700;color:var(--text);
+}
+.intel-desc{
+  padding:8px 12px 10px;font-size:.8rem;color:var(--muted2);line-height:1.55;
+  border-top:1px solid var(--border);
+}
+.intel-pick{color:var(--roll);font-size:.78rem;}
+
 /* ── Presets ── */
 .prow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
 .pbtn{padding:6px 4px;text-align:center;background:var(--bg2);border:1px solid var(--border);
@@ -353,7 +282,7 @@ input[type=range].yr::-webkit-slider-thumb{background:var(--yaw);box-shadow:0 0 
 .import-btn:hover{background:rgba(74,158,255,.18);}
 
 /* ── Canvas card ── */
-.ccard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;position:sticky;top:60px;}
+.ccard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;position:sticky;top:72px;}
 .chead{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;border-bottom:1px solid var(--border);}
 .chead-l{display:flex;align-items:center;gap:10px;}
 .ctitle{font-family:var(--font-d);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
@@ -454,13 +383,30 @@ canvas#rv{width:100%;display:block;cursor:crosshair;}
   .main-grid{grid-template-columns:1fr;}
 }
 </style>
-{% set nav_page = "rates" %}
 </head>
 <body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
 
-<div class="rv-menu-overlay" id="rvMenu" aria-hidden="true" aria-label="Rates visualizer menu">
+<!-- ── TOP BAR ── -->
+<div class="rv-topbar">
+  <div class="rv-topbar-left">
+    <a class="rv-topbar-btn" href="#" aria-label="Back to landing">← BACK</a>
+    <div class="rv-topbar-brand">
+      <div class="rv-topbar-eyebrow">ConfigDoctor · Flight Computer</div>
+      <div class="rv-topbar-title">Rates <em>Visualizer</em></div>
+      <div class="rv-topbar-sub">Precision curve lab for ACTUAL, BF legacy, and KISS tuning</div>
+    </div>
+  </div>
+  <div class="rv-topbar-right">
+    <div class="rv-topbar-chip">v5.4 Smart Curve</div>
+    <button class="rv-topbar-btn menu" type="button" onclick="toggleMenu(true)" aria-label="Open menu">
+      <span class="rv-dot"></span>
+      MENU
+    </button>
+  </div>
+</div>
+
+<!-- ── NAV MENU ── -->
+<div class="rv-menu-overlay" id="rvMenu" aria-hidden="true">
   <div class="rv-menu-panel">
     <div class="rv-menu-head">
       <div>
@@ -472,58 +418,36 @@ canvas#rv{width:100%;display:block;cursor:crosshair;}
     <div class="rv-menu-grid">
       <div class="rv-menu-group">
         <div class="rv-menu-sec">Analyze</div>
-        <a class="rv-menu-link" href="{{ url_for('index') }}"><span class="rv-menu-ico">🚀</span><span class="rv-menu-copy"><span class="rv-menu-name">Drone Analyzer</span><span class="rv-menu-meta">Analyze PID · Filter · Motor · Flight time</span></span><span class="rv-menu-badge">core</span></a>
-        <a class="rv-menu-link" href="{{ url_for('blackbox_page') }}"><span class="rv-menu-ico">📊</span><span class="rv-menu-copy"><span class="rv-menu-name">Blackbox CSV Analyzer</span><span class="rv-menu-meta">Decode logs, oscillation and battery sag</span></span><span class="rv-menu-badge">hot</span></a>
+        <a class="rv-menu-link" href="#"><span class="rv-menu-ico">🚀</span><span class="rv-menu-copy"><span class="rv-menu-name">Drone Analyzer</span><span class="rv-menu-meta">Analyze PID · Filter · Motor · Flight time</span></span><span class="rv-menu-badge">core</span></a>
+        <a class="rv-menu-link" href="#"><span class="rv-menu-ico">📊</span><span class="rv-menu-copy"><span class="rv-menu-name">Blackbox CSV Analyzer</span><span class="rv-menu-meta">Decode logs, oscillation and battery sag</span></span><span class="rv-menu-badge">hot</span></a>
       </div>
       <div class="rv-menu-group">
         <div class="rv-menu-sec">Tuning</div>
-        <a class="rv-menu-link" href="{{ url_for('cli_surgeon') }}"><span class="rv-menu-ico">🩻</span><span class="rv-menu-copy"><span class="rv-menu-name">CLI Surgeon</span><span class="rv-menu-meta">Validate diff all / dump and generate safe CLI</span></span></a>
-        <a class="rv-menu-link" href="{{ url_for('pid_advisor') }}"><span class="rv-menu-ico">🩺</span><span class="rv-menu-copy"><span class="rv-menu-name">PID Advisor</span><span class="rv-menu-meta">Symptom-based PID tuning guidance</span></span></a>
-        <a class="rv-menu-link" href="{{ url_for('rates_visualizer') }}"><span class="rv-menu-ico">📈</span><span class="rv-menu-copy"><span class="rv-menu-name">Rates Visualizer</span><span class="rv-menu-meta">Stick response curves, presets and compare modes</span></span><span class="rv-menu-badge">open</span></a>
+        <a class="rv-menu-link" href="#"><span class="rv-menu-ico">🩻</span><span class="rv-menu-copy"><span class="rv-menu-name">CLI Surgeon</span><span class="rv-menu-meta">Validate diff all / dump and generate safe CLI</span></span></a>
+        <a class="rv-menu-link" href="#"><span class="rv-menu-ico">🩺</span><span class="rv-menu-copy"><span class="rv-menu-name">PID Advisor</span><span class="rv-menu-meta">Symptom-based PID tuning guidance</span></span></a>
+        <a class="rv-menu-link" href="#"><span class="rv-menu-ico">📈</span><span class="rv-menu-copy"><span class="rv-menu-name">Rates Visualizer</span><span class="rv-menu-meta">Stick response curves, presets and compare modes</span></span><span class="rv-menu-badge">open</span></a>
       </div>
       <div class="rv-menu-group">
         <div class="rv-menu-sec">Optimize</div>
-        <a class="rv-menu-link" href="{{ url_for('rpm_filter') }}"><span class="rv-menu-ico">⚙️</span><span class="rv-menu-copy"><span class="rv-menu-name">RPM Filter Calculator</span><span class="rv-menu-meta">Harmonics and filter recommendations</span></span></a>
-        <a class="rv-menu-link" href="{{ url_for('motor_prop') }}"><span class="rv-menu-ico">🧭</span><span class="rv-menu-copy"><span class="rv-menu-name">Motor × Prop Recommender</span><span class="rv-menu-meta">Match motors and props to the build</span></span></a>
-        <a class="rv-menu-link" href="{{ url_for('battery_health') }}"><span class="rv-menu-ico">🔋</span><span class="rv-menu-copy"><span class="rv-menu-name">Battery Health</span><span class="rv-menu-meta">Efficiency, sag and safe cell range</span></span></a>
-        <a class="rv-menu-link" href="{{ url_for('motor_thermal') }}"><span class="rv-menu-ico">🌡️</span><span class="rv-menu-copy"><span class="rv-menu-name">Motor Thermal</span><span class="rv-menu-meta">Estimate heat risk under load</span></span></a>
+        <a class="rv-menu-link" href="#"><span class="rv-menu-ico">⚙️</span><span class="rv-menu-copy"><span class="rv-menu-name">RPM Filter Calculator</span><span class="rv-menu-meta">Harmonics and filter recommendations</span></span></a>
+        <a class="rv-menu-link" href="#"><span class="rv-menu-ico">🧭</span><span class="rv-menu-copy"><span class="rv-menu-name">Motor × Prop Recommender</span><span class="rv-menu-meta">Match motors and props to the build</span></span></a>
+        <a class="rv-menu-link" href="#"><span class="rv-menu-ico">🔋</span><span class="rv-menu-copy"><span class="rv-menu-name">Battery Health</span><span class="rv-menu-meta">Efficiency, sag and safe cell range</span></span></a>
       </div>
       <div class="rv-menu-group">
         <div class="rv-menu-sec">Community</div>
-        <a class="rv-menu-link" href="{{ url_for('landing') }}"><span class="rv-menu-ico">🏠</span><span class="rv-menu-copy"><span class="rv-menu-name">Landing</span><span class="rv-menu-meta">Back to the main platform</span></span></a>
-        <a class="rv-menu-link" href="{{ url_for('about') }}"><span class="rv-menu-ico">ℹ️</span><span class="rv-menu-copy"><span class="rv-menu-name">About</span><span class="rv-menu-meta">Project story and current status</span></span></a>
-        <a class="rv-menu-link" href="{{ url_for('changelog') }}"><span class="rv-menu-ico">🧾</span><span class="rv-menu-copy"><span class="rv-menu-name">Changelog</span><span class="rv-menu-meta">Version history and release notes</span></span></a>
-        <a class="rv-menu-link" href="{{ url_for('team') }}"><span class="rv-menu-ico">👥</span><span class="rv-menu-copy"><span class="rv-menu-name">Team</span><span class="rv-menu-meta">Creators and AI partners</span></span></a>
+        <a class="rv-menu-link" href="#"><span class="rv-menu-ico">🏠</span><span class="rv-menu-copy"><span class="rv-menu-name">Landing</span><span class="rv-menu-meta">Back to the main platform</span></span></a>
+        <a class="rv-menu-link" href="#"><span class="rv-menu-ico">ℹ️</span><span class="rv-menu-copy"><span class="rv-menu-name">About</span><span class="rv-menu-meta">Project story and current status</span></span></a>
       </div>
     </div>
     <div class="rv-menu-footer">
-      <a class="rv-chip" href="{{ url_for('index') }}">🚀 Start Analysis</a>
-      <a class="rv-chip" href="{{ url_for('blackbox_page') }}">📊 Blackbox</a>
-      <a class="rv-chip" href="{{ url_for('cli_surgeon') }}">🩻 CLI</a>
+      <a class="rv-chip" href="#">🚀 Start Analysis</a>
+      <a class="rv-chip" href="#">📊 Blackbox</a>
+      <a class="rv-chip" href="#">🩻 CLI</a>
     </div>
   </div>
 </div>
 
-<div class="wrap" style="padding-top:76px;">
-  <div class="rv-topbar">
-    <div class="rv-topbar-left">
-      <a class="rv-topbar-btn" href="{{ url_for('landing') }}" aria-label="Back to landing">BACK</a>
-      <div class="rv-topbar-brand">
-        <div class="rv-topbar-eyebrow">ConfigDoctor · Flight Computer</div>
-        <div class="rv-topbar-title">Rates <em>Visualizer</em></div>
-        <div class="rv-topbar-sub">Precision curve lab for ACTUAL, BF legacy, and KISS tuning</div>
-      </div>
-    </div>
-    <div class="rv-topbar-right">
-      <div class="rv-topbar-chip">v5.4 Smart Curve</div>
-      <button class="rv-topbar-btn menu" type="button" onclick="toggleMenu(true)" aria-label="Open menu">
-        <span class="rv-dot"></span>
-        MENU
-      </button>
-    </div>
-  </div>
-
-
+<div class="wrap">
   <div class="hero">
     <div class="hero-ey"><span class="hdot"></span> FPV FLIGHT COMPUTER</div>
     <h1>Stick Response <em>Visualizer</em></h1>
@@ -704,10 +628,7 @@ canvas#rv{width:100%;display:block;cursor:crosshair;}
         </div>
         <div class="psec">
           <div class="sec-title">📥 Import จาก CLI Paste</div>
-          <textarea class="import-ta" id="impta" placeholder="วาง diff all หรือ CLI dump ที่นี่
-set roll_rc_rate = 120
-set roll_super_rate = 70
-set roll_expo = 15 ..."></textarea>
+          <textarea class="import-ta" id="impta" placeholder="วาง diff all หรือ CLI dump ที่นี่&#10;set roll_rc_rate = 120&#10;set roll_super_rate = 70&#10;set roll_expo = 15 ..."></textarea>
           <button class="import-btn" onclick="parseCLI()">⚡ Parse &amp; Load</button>
         </div>
       </div>
@@ -878,7 +799,6 @@ const profiles = {
 const COL = {roll:'#00e87a',pitch:'#4a9eff',yaw:'#ff9718'};
 const GLW = {roll:'rgba(0,232,122,',pitch:'rgba(74,158,255,',yaw:'rgba(255,151,24,'};
 
-
 /* ── Rate Math ── */
 const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
 
@@ -889,23 +809,18 @@ function expoBlend(x, expo){
   return e * smooth + (1 - e) * t;
 }
 
-function getAxisConfig(ax){
-  return profiles[ax] || profiles.roll;
-}
+function getAxisConfig(ax){ return profiles[ax] || profiles.roll; }
 
 function actualCenterDeg(cfg){ return cfg.rr * 100; }
 function actualMaxDeg(cfg){ return clamp(actualCenterDeg(cfg) * (1 + cfg.sr * 7.0), actualCenterDeg(cfg), 1998); }
 
 function legacyCenterDeg(cfg){ return cfg.br * 100; }
 function legacyMaxDeg(cfg){
-  // Legacy BF is a touch more aggressive than ACTUAL at the same slider values.
   return clamp(legacyCenterDeg(cfg) * (1 + cfg.bs * 7.6 + cfg.br * 0.15), legacyCenterDeg(cfg), 1998);
 }
 
 function kissCenterDeg(cfg){ return cfg.kr; }
-function kissMaxDeg(cfg){
-  return clamp(cfg.kr + cfg.ka * 2200, cfg.kr, 1998);
-}
+function kissMaxDeg(cfg){ return clamp(cfg.kr + cfg.ka * 2200, cfg.kr, 1998); }
 
 function actualRateAt(s, cfg){
   const x = clamp(Math.abs(s), 0, 1);
@@ -954,14 +869,12 @@ function getAxisSnapshot(ax){
   const mid = getAxisRate(ax, 0.5);
   const q1 = getAxisRate(ax, 0.25);
   const q3 = getAxisRate(ax, 0.75);
-  const centerSlope = getAxisRate(ax, 0.08) / 0.08;
-  const shape = clamp((maxDeg - mid) / Math.max(maxDeg, 1) * 100, 0, 100);
   const expoVal = mode==='kiss' ? cfg.ka : mode==='actual' ? cfg.er : cfg.be;
-  return {cfg, centerDeg, maxDeg, mid, q1, q3, centerSlope, shape, expoVal};
+  return {cfg, centerDeg, maxDeg, mid, q1, q3, expoVal};
 }
 
 function classifyRate(snapshot){
-  const { maxDeg, expoVal, centerSlope } = snapshot;
+  const { maxDeg, expoVal } = snapshot;
   let style = 'Balanced';
   if(maxDeg < 330) style = 'Cinematic';
   else if(maxDeg < 480) style = 'Smooth';
@@ -983,11 +896,10 @@ function classifyRate(snapshot){
   else if(maxDeg > target + 120) advice = 'ลด Super Rate ทีละ 0.05 ถ้ารู้สึกว่าปลาย stick แรงเกินไป';
   else if(expoVal > 0.32) advice = 'Expo ค่อนข้างสูง ลองลดทีละ 0.05 ถ้าอยากได้คมขึ้น';
   else if(expoVal < 0.08) advice = 'Curve ค่อนข้างตรง เหมาะ race หรือผู้บินที่คุมละเอียด';
-  return {style, curve, target, advice, score:Math.round(shapeScore)};
+  return {style, curve, advice, score:Math.round(shapeScore)};
 }
 
 /* ── setAxis ── */
-
 function setAxis(ax){
   saveSl(); curAx=ax; loadSl(ax);
   document.querySelectorAll('.atab').forEach(t=>{
@@ -1070,7 +982,7 @@ function updateIntelligence(){
   document.getElementById('pneedle').style.left = needlePct + '%';
   document.getElementById('plabel').textContent = info.style;
   document.getElementById('intelScore').textContent = info.score + '%';
-  document.getElementById('intelStyle').innerHTML = `<span>${info.style}</span>`;
+  document.getElementById('intelStyle').textContent = info.style;
   document.getElementById('intelShape').textContent = info.curve;
   document.getElementById('intelCenter').textContent = center + ' deg/s';
   document.getElementById('intelMax').textContent = max + ' deg/s';
@@ -1134,7 +1046,6 @@ function parseCLI(){
     else if(t.includes('kiss')) setRT('kiss');
     else setRT('bf');
   }
-
   for(const ax of['roll','pitch','yaw']){
     const p=profiles[ax];
     const rc=g(`${ax}_rc_rate`), sr=g(`${ax}_super_rate`) ?? g(`${ax}_srate`), ex=g(`${ax}_expo`);
@@ -1200,8 +1111,7 @@ function draw(){
   const cv=document.getElementById('rv');if(!cv)return;
   const rc=cv.getBoundingClientRect();
   const W=Math.max(Math.round(rc.width),300);
-  const precision = true;
-  const H=Math.round(W*(precision ? 0.64 : 0.60));
+  const H=Math.round(W*0.64);
   cv.width=W;cv.height=H;
   const ctx=cv.getContext('2d');
   const PL=50,PR=16,PT=16,PB=42;
@@ -1275,7 +1185,6 @@ function draw(){
     const pts=[];
     for(let i=0;i<=280;i++){const s=i/280;pts.push({x:tx(s),y:ty(getAxisRate(ax,s))});}
 
-    // Fill
     if(isCur){
       const grad=ctx.createLinearGradient(0,PT,0,H-PB);
       grad.addColorStop(0,gl+'0.22)');grad.addColorStop(1,gl+'0.0)');
@@ -1285,18 +1194,15 @@ function draw(){
       ctx.lineTo(tx(1),H-PB);ctx.closePath();ctx.fill();
     }
 
-    // Glow
     ctx.save();ctx.globalAlpha=alpha*0.35;ctx.shadowColor=col;ctx.shadowBlur=14;
     ctx.strokeStyle=col;ctx.lineWidth=lw+3;
     ctx.beginPath();pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));ctx.stroke();
     ctx.restore();
 
-    // Main
     ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.shadowColor=col;ctx.shadowBlur=5;
     ctx.beginPath();pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));ctx.stroke();
     ctx.restore();
 
-    // Markers (current axis only)
     if(isCur){
       for(const pct of[0.25,0.5,0.75]){
         const r=getAxisRate(ax,pct);
@@ -1323,7 +1229,6 @@ CV.addEventListener('mousemove',e=>{
   const W=CV.width,PL=50;
   const raw=(e.clientX-rc.left)*(W/rc.width);
   const s=Math.max(0,Math.min(1,(raw-PL)/(W-PL-16)));
-  const snap=getAxisSnapshot(curAx);
   document.getElementById('tts').textContent=`Stick: ${Math.round(s*100)}% · ${curAx.toUpperCase()}`;
   document.getElementById('ttv').textContent=`${Math.round(getRate(s))} deg/s`;
   document.getElementById('ttv').style.color=COL[curAx];
@@ -1333,7 +1238,6 @@ CV.addEventListener('mousemove',e=>{
   TIP.style.left=lx+'px';TIP.style.top=ly+'px';
 });
 CV.addEventListener('mouseleave',()=>{TIP.style.display='none';});
-
 
 function toggleMenu(open){
   const el=document.getElementById('rvMenu');
@@ -1357,6 +1261,7 @@ document.getElementById('rvMenu')?.addEventListener('click', e=>{
 document.querySelectorAll('.rv-menu-link, .rv-chip').forEach(el => {
   el.addEventListener('click', () => toggleMenu(false));
 });
+
 /* ── Guide accordion ── */
 function tog(id){
   const el=document.getElementById('g-'+id);
@@ -1379,12 +1284,8 @@ let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(draw
 
 /* ── Init ── */
 window.addEventListener('load',()=>{
-  setTimeout(()=>{
-    loadSl('roll');
-    update();
-  },60);
+  setTimeout(()=>{ loadSl('roll'); update(); },60);
 });
 </script>
-{% include "partials/footer_nav.html" %}
 </body>
 </html>
