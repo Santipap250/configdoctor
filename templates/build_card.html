@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 {% set og_title = "Build Card Generator — OBIXConfig Doctor" %}
 {% set og_description = "สร้างรูปสเปคโดรนสวยๆ แชร์ Facebook · LINE · Instagram ได้เลย" %}
-{% set og_url = "https://configdoctor.onrender.com/build-card" %}
+{% set og_url = BASE_URL ~ '/build-card' %}
 {% include "partials/og_tags.html" %}
 <link rel="icon" href="{{ url_for('static',filename='favicon.ico') }}">
 {% set nav_page = "build_card" %}
@@ -210,7 +210,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-t);min-height
   <div class="share-tips">
     <h3>💡 วิธีแชร์</h3>
     <div class="tip-list">
-      <div class="tip"><span class="ico">📘</span><span><strong>Facebook:</strong> Download PNG → โพสต์รูป → caption ใส่ link configdoctor.onrender.com</span></div>
+      <div class="tip"><span class="ico">📘</span><span><strong>Facebook:</strong> Download PNG → โพสต์รูป → caption ใส่ link {{ BASE_URL | replace('https://', '') | replace('http://', '') }}</span></div>
       <div class="tip"><span class="ico">💚</span><span><strong>LINE:</strong> Download → แชร์ใน group ตรงๆ รูปขนาด 1200×628 ไม่ crop</span></div>
       <div class="tip"><span class="ico">📸</span><span><strong>Instagram:</strong> ปรับ crop เป็น 1:1 หรือ 4:5 ก่อนโพสต์</span></div>
       <div class="tip"><span class="ico">🔗</span><span><strong>Discord:</strong> Drag & drop ไฟล์ PNG ใส่ channel ได้เลย</span></div>
@@ -292,7 +292,7 @@ function drawCard(){
   // URL
   ctx.font='11px JetBrains Mono,monospace';
   ctx.fillStyle='rgba(200,216,232,0.4)'; ctx.letterSpacing='0px';
-  ctx.fillText('configdoctor.onrender.com',28,52);
+  ctx.fillText('{{ BASE_URL | replace("https://", "") | replace("http://", "") }}',28,52);
   // Date
   const dt=new Date();
   const ds=`${dt.getDate().toString().padStart(2,'0')}/${(dt.getMonth()+1).toString().padStart(2,'0')}/${dt.getFullYear()+543}`;

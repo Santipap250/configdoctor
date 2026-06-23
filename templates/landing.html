@@ -6,8 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% set og_title       = "ConfigDoctor — FPV Drone Diagnostic Platform" %}
 {% set og_description = "Analyze, optimize and unlock the full potential of your FPV drone. PID · Filter · Blackbox · CLI · Battery · Motor Thermal" %}
-{% set og_url         = "https://configdoctor.vercel.app/landing" %}
-{% set og_image       = "https://configdoctor.vercel.app/static/img/og-default.jpg" %}
+{% set og_url         = BASE_URL ~ '/landing' %}
+{% set og_image       = BASE_URL ~ '/static/img/og-default.jpg' %}
 {% include "partials/og_tags.html" %}
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -501,6 +501,12 @@ body::before{
 .mob-nav.open .mn-group:nth-of-type(3) .mn-link:nth-of-type(7){animation-delay:.76s}
 .mob-nav.open .mn-group:nth-of-type(3) .mn-link:nth-of-type(8){animation-delay:.82s}
 .mob-nav.open .mn-group:nth-of-type(3) .mn-link:nth-of-type(9){animation-delay:.88s}
+.mob-nav.open .mn-group:nth-of-type(3) .mn-link:nth-of-type(10){animation-delay:.94s}
+.mob-nav.open .mn-group:nth-of-type(3) .mn-link:nth-of-type(11){animation-delay:1.00s}
+.mob-nav.open .mn-group:nth-of-type(3) .mn-link:nth-of-type(12){animation-delay:1.06s}
+.mob-nav.open .mn-group:nth-of-type(3) .mn-link:nth-of-type(13){animation-delay:1.12s}
+.mob-nav.open .mn-group:nth-of-type(3) .mn-link:nth-of-type(14){animation-delay:1.18s}
+.mob-nav.open .mn-group:nth-of-type(3) .mn-link:nth-of-type(15){animation-delay:1.24s}
 .mn-link:hover::before{ opacity:1; }
 .mn-link:hover::after{
   opacity:1;
@@ -1620,11 +1626,53 @@ footer{
           </span>
         </a>
 
+        <a class="mn-link" href="/osd" onclick="closeMob()">
+          <span class="mn-ico">🖥️</span>
+          <span class="mn-copy">
+            <span class="mn-title">OSD Designer</span>
+            <span class="mn-meta">ออกแบบ On-Screen Display</span>
+          </span>
+        </a>
+        <a class="mn-link" href="/cli-comparator" onclick="closeMob()">
+          <span class="mn-ico">⚖️</span>
+          <span class="mn-copy">
+            <span class="mn-title">CLI Comparator</span>
+            <span class="mn-meta">เปรียบเทียบ 2 CLI dump</span>
+          </span>
+        </a>
         <a class="mn-link" href="/vtx" onclick="closeMob()">
           <span class="mn-ico">📡</span>
           <span class="mn-copy">
             <span class="mn-title">VTX Hub</span>
             <span class="mn-meta">รวมเครื่องมือเกี่ยวกับ VTX, Range, SmartAudio</span>
+          </span>
+        </a>
+        <a class="mn-link" href="/vtx-range" onclick="closeMob()">
+          <span class="mn-ico">🏞️</span>
+          <span class="mn-copy">
+            <span class="mn-title">VTX Range</span>
+            <span class="mn-meta">ประมาณระยะสัญญาณ VTX</span>
+          </span>
+        </a>
+        <a class="mn-link" href="/vtx-smartaudio" onclick="closeMob()">
+          <span class="mn-ico">🎙️</span>
+          <span class="mn-copy">
+            <span class="mn-title">SmartAudio</span>
+            <span class="mn-meta">คำสั่ง SmartAudio CLI</span>
+          </span>
+        </a>
+        <a class="mn-link" href="/flight-quiz" onclick="closeMob()">
+          <span class="mn-ico">🎯</span>
+          <span class="mn-copy">
+            <span class="mn-title">Flight Style Quiz</span>
+            <span class="mn-meta">ตอบ 5 ข้อ → ได้ rates แนะนำ</span>
+          </span>
+        </a>
+        <a class="mn-link" href="/fpv-trainer" onclick="closeMob()">
+          <span class="mn-ico">🎮</span>
+          <span class="mn-copy">
+            <span class="mn-title">FPV Simulator NEO</span>
+            <span class="mn-meta">ซิม 3D · Race mode · ฝึกทักษะ</span>
           </span>
         </a>
 

@@ -6,7 +6,7 @@
 <noscript><meta http-equiv="refresh" content="0;url=/landing"></noscript>
 {% set og_title = "OBIXConfig Doctor v5 Pro" %}
 {% set og_description = "FPV Drone Configuration & Tuning Tool — v5 Pro" %}
-{% set og_url = "https://configdoctor.onrender.com" %}
+{% set og_url = BASE_URL %}
 {% include "partials/og_tags.html" %}
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -525,7 +525,7 @@ body {
 <!-- Status bar bottom -->
 <div class="status-bar">
   <div class="status-bar-item">SYS ONLINE</div>
-  <div class="status-bar-item">configdoctor.onrender.com</div>
+  <div class="status-bar-item">{{ BASE_URL | replace('https://', '') | replace('http://', '') }}</div>
   <div class="status-bar-item" id="sysTime">--:--:--</div>
 </div>
 
