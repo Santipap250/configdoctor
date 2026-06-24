@@ -1202,6 +1202,252 @@ body.no-hero-video .hero-bg-video{display:none;}
 .stat-num.shown{opacity:1;transform:scale(1)}
 .stat-lbl{font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.05em}
 
+/* ── SUPPORT / DONATION ── */
+.support-section{
+  padding: 42px clamp(16px,5vw,60px) 58px;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(0,255,68,.06), transparent 22%),
+    radial-gradient(circle at 82% 20%, rgba(0,168,255,.04), transparent 18%),
+    linear-gradient(180deg, #040808 0%, #030606 100%);
+}
+.support-shell{
+  max-width:1100px;
+  margin:0 auto;
+  position:relative;
+  overflow:hidden;
+  padding:24px;
+  border-radius:28px;
+  border:1px solid rgba(0,255,68,.12);
+  background:
+    linear-gradient(180deg, rgba(8,14,12,.94), rgba(4,8,10,.88));
+  box-shadow:
+    0 18px 44px rgba(0,0,0,.24),
+    inset 0 0 0 1px rgba(255,255,255,.03);
+}
+.support-shell::before{
+  content:'';
+  position:absolute;
+  inset:-1px;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(0,255,68,.12), transparent 28%),
+    radial-gradient(circle at 88% 10%, rgba(0,168,255,.08), transparent 24%);
+  pointer-events:none;
+  opacity:.9;
+}
+.support-head{
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:18px;
+}
+.support-kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-family:var(--font-d);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.22em;
+  color:var(--g);
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+.support-kicker::before{
+  content:'';
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--g);
+  box-shadow:0 0 12px rgba(0,255,68,.45);
+}
+.support-title{
+  font-family:var(--font-t);
+  font-size:clamp(24px,4vw,34px);
+  font-weight:900;
+  line-height:1.08;
+  color:#fff;
+  margin:0;
+}
+.support-sub{
+  margin-top:10px;
+  max-width:720px;
+  font-size:14px;
+  line-height:1.75;
+  color:rgba(255,255,255,.68);
+}
+.support-badge{
+  flex-shrink:0;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid rgba(0,255,68,.18);
+  background:rgba(0,255,68,.07);
+  color:#c9ffd9;
+  font-family:var(--font-d);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+}
+.support-grid{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:18px;
+  align-items:center;
+}
+.support-qr-card{
+  position:relative;
+  overflow:hidden;
+  background:rgba(255,255,255,.96);
+  border-radius:22px;
+  padding:16px;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 16px 30px rgba(0,0,0,.22);
+}
+.support-qr{
+  display:block;
+  width:100%;
+  max-width:240px;
+  aspect-ratio:1/1;
+  object-fit:contain;
+  margin:0 auto;
+  border-radius:16px;
+}
+.support-qr-caption{
+  margin-top:12px;
+  text-align:center;
+  color:#0a1720;
+  font-weight:800;
+  font-size:12px;
+  letter-spacing:.04em;
+}
+.support-qr-note{
+  text-align:center;
+  font-size:11px;
+  color:#4b5d6a;
+  margin-top:6px;
+}
+.support-info{
+  display:grid;
+  gap:12px;
+}
+.support-card-row{
+  padding:14px 16px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.03);
+}
+.support-label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+  font-family:var(--font-d);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--g);
+}
+.support-label::before{
+  content:'•';
+  color:var(--g);
+}
+.support-card-row p{
+  margin:0;
+  color:rgba(255,255,255,.74);
+  line-height:1.7;
+  font-size:13px;
+}
+.support-quick{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:4px;
+}
+.support-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-height:46px;
+  padding:10px 16px;
+  border-radius:14px;
+  text-decoration:none;
+  border:1px solid transparent;
+  font-family:var(--font-t);
+  font-size:13px;
+  font-weight:800;
+  transition:transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease, color .2s ease;
+}
+.support-btn:hover{ transform:translateY(-2px); }
+.support-btn-primary{
+  background:linear-gradient(135deg, #0dff7a 0%, #7cff5a 48%, #8ff3ff 100%);
+  color:#04130c;
+  box-shadow:0 12px 28px rgba(0,255,136,.18);
+}
+.support-btn-outline{
+  background:linear-gradient(180deg, rgba(12,16,20,.92), rgba(8,12,16,.76));
+  color:#fff;
+  border-color:rgba(0,255,68,.18);
+}
+.support-btn-outline:hover{
+  border-color:rgba(0,255,68,.34);
+  box-shadow:0 10px 24px rgba(0,0,0,.18), 0 0 18px rgba(0,255,68,.08);
+}
+.support-foot{
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:16px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.support-foot-copy{
+  color:rgba(255,255,255,.56);
+  font-size:12px;
+  line-height:1.7;
+  max-width:680px;
+}
+@media(max-width:900px){
+  .support-grid{
+    grid-template-columns:1fr;
+  }
+  .support-head{
+    flex-direction:column;
+  }
+}
+@media(max-width:600px){
+  .support-section{
+    padding: 34px 16px 48px;
+  }
+  .support-shell{
+    padding:18px;
+    border-radius:22px;
+  }
+  .support-qr-card{
+    padding:14px;
+  }
+  .support-quick{
+    flex-direction:column;
+  }
+  .support-btn{
+    width:100%;
+  }
+}
+
 /* ── FOOTER ── */
 footer{
   padding:24px clamp(16px,5vw,60px);
@@ -1426,6 +1672,7 @@ footer{
 </style>
 </head>
 <body>
+<div id="top"></div>
 
 <!-- GLOBAL ELEMENTS -->
 <div class="hero-scan-beam"></div>
@@ -1968,6 +2215,75 @@ footer{
     <a class="tool-card" href="/loop-analyzer"><div class="tool-icon">🔁</div><div class="tool-name">Loop Analyzer</div><div class="tool-hint">หน่วงจาก Stick → Prop</div></a>
     <a class="tool-card" href="/fpv-trainer"><div class="tool-icon">🎮</div><div class="tool-name">FPV Simulator NEO</div><div class="tool-hint">ซิม 3D · Race mode</div><span class="tool-badge tb-gold">GAME</span></a>
     <a class="tool-card" href="/quick-tune"><div class="tool-icon">⚡</div><div class="tool-name">Quick Tune Pad</div><div class="tool-hint">อาการ → PID delta + CLI</div><span class="tool-badge tb-gold">NEW</span></a>
+  </div>
+</section>
+
+<!-- ── SUPPORT ── -->
+<section class="support-section" id="support">
+  <div class="support-shell reveal">
+    <div class="support-head">
+      <div>
+        <div class="support-kicker">Support Project</div>
+        <h2 class="support-title">สนับสนุน ConfigDoctor</h2>
+        <p class="support-sub">
+          ถ้าโปรเจกต์นี้ช่วยคุณได้ ไม่ว่าจะเป็นการจูน PID, วิเคราะห์แบล็คบ็อกซ์,
+          หรือเตรียมโดรนก่อนบิน คุณสามารถช่วยสนับสนุนเพื่อให้เราพัฒนาเครื่องมือ FPV ดี ๆ ต่อได้
+        </p>
+      </div>
+      <div class="support-badge">💚 Thank you</div>
+    </div>
+
+    <div class="support-grid">
+      <div class="support-qr-card">
+        <img
+          class="support-qr"
+          src="{{ url_for('static', filename='img/configdoctor-support-qr.webp') }}"
+          alt="PromptPay QR code สำหรับสนับสนุนโปรเจกต์ ConfigDoctor"
+          loading="lazy"
+        >
+        <div class="support-qr-caption">สแกน QR เพื่อโอนเข้าบัญชี</div>
+        <div class="support-qr-note">PromptPay · รองรับทุกแอปธนาคาร</div>
+      </div>
+
+      <div class="support-info">
+        <div class="support-card-row">
+          <div class="support-label">วิธีสนับสนุน</div>
+          <p>
+            เปิดแอปธนาคาร แล้วสแกน QR ด้านซ้ายเพื่อโอนเข้าบัญชี
+            ชื่อผู้รับ: <strong>นาย สันติภาพ สงมัรักษ์</strong>
+          </p>
+        </div>
+
+        <div class="support-card-row">
+          <div class="support-label">นำไปใช้ทำอะไร</div>
+          <p>
+            เงินสนับสนุนจะช่วยพัฒนาฟีเจอร์ใหม่ ๆ, ค่าโฮสต์, ปรับปรุง UI/UX,
+            และทำให้ ConfigDoctor ใช้งานได้ลื่นและเสถียรมากขึ้น
+          </p>
+        </div>
+
+        <div class="support-card-row">
+          <div class="support-label">ขอบคุณจริง ๆ</div>
+          <p>
+            ทุกการสนับสนุนมีความหมายมาก และช่วยให้โปรเจกต์นี้เดินหน้าต่อได้
+            สำหรับชุมชน FPV 🇹🇭
+          </p>
+        </div>
+
+        <div class="support-quick">
+          <a class="support-btn support-btn-primary" href="/app">🚀 เริ่มใช้งาน</a>
+          <a class="support-btn support-btn-outline" href="/team">👥 ดูทีมผู้พัฒนา</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="support-foot">
+      <div class="support-foot-copy">
+        หากสแกน QR ไม่ได้ ให้เปิดภาพเต็มแล้วบันทึกไฟล์ไว้ในเครื่องก่อน
+        หรือใช้แอปธนาคารที่รองรับการสแกน PromptPay โดยตรง
+      </div>
+      <a class="support-btn support-btn-outline" href="#top">⬆ กลับขึ้นด้านบน</a>
+    </div>
   </div>
 </section>
 
