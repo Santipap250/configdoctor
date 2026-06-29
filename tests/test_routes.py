@@ -42,6 +42,7 @@ class TestGetRoutes:
         "/leaderboard",
         "/military-uas",
         "/fpv",
+        "/fpv-gear",
         "/healthz",
         "/ping",
         "/sitemap.xml",
