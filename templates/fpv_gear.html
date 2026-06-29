@@ -1,0 +1,173 @@
+{% from "components/affiliate_card.html" import render_affiliate_card, affiliate_card_styles %}
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>FPV Gear Guide — OBIXConfig Doctor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Sarabun:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#10c47a;--gold:#f1b65a;--blue:#58a6ff;--red:#f87171;
+  --orange:#fb923c;--teal:#2dd4bf;--purple:#a78bfa;
+  --bg:#06090b;--card:#0b0f14;--card2:#0e1318;
+  --border:rgba(255,255,255,.07);--muted:#6b7f90;--text:#dde7ef;
+  --font-th:'Sarabun',sans-serif;--font-en:'Orbitron',monospace;--mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-th);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(88,166,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(88,166,255,.025) 1px,transparent 1px);
+  background-size:44px 44px;pointer-events:none;z-index:0}
+
+.page-wrap{position:relative;max-width:1080px;margin:0 auto;padding:100px 24px 80px;z-index:1}
+
+.back-bar{display:flex;align-items:center;gap:10px;margin-bottom:44px;flex-wrap:wrap}
+.back-link{display:inline-flex;align-items:center;gap:7px;font-size:.8rem;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:7px 15px;border-radius:8px;transition:all .2s;font-family:var(--font-en);letter-spacing:.06em}
+.back-link:hover{color:var(--text);border-color:rgba(88,166,255,.3);background:rgba(88,166,255,.04)}
+.page-badge{font-family:var(--font-en);font-size:.65rem;font-weight:700;letter-spacing:.14em;padding:5px 14px;border-radius:30px;background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.3);color:var(--blue)}
+
+.hero{margin-bottom:28px}
+.hero-eyebrow{font-family:var(--font-en);font-size:.65rem;font-weight:700;letter-spacing:.18em;color:rgba(88,166,255,.65);margin-bottom:12px;display:flex;align-items:center;gap:8px;text-transform:uppercase}
+.hero-eyebrow::before{content:'';display:block;width:24px;height:2px;background:var(--blue);border-radius:2px}
+.hero-title{font-family:var(--font-en);font-size:clamp(1.7rem,3.8vw,2.8rem);font-weight:900;color:#fff;line-height:1.1;margin-bottom:14px}
+.hero-title .hl{color:var(--blue)}
+.hero-sub{font-size:.95rem;color:var(--muted);line-height:1.8;max-width:680px;margin-bottom:16px}
+
+.disclaimer-bar{display:flex;align-items:flex-start;gap:10px;background:rgba(241,182,90,.05);border:1px solid rgba(241,182,90,.18);border-radius:12px;padding:12px 16px;font-size:.78rem;color:rgba(221,231,239,.7);line-height:1.65;max-width:760px}
+.disclaimer-bar b{color:var(--gold)}
+.disclaimer-bar .en{opacity:.65}
+
+.context-card{background:rgba(88,166,255,.05);border:1px solid rgba(88,166,255,.18);border-radius:14px;padding:18px 20px;margin:28px 0;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.context-card.empty{background:rgba(255,255,255,.025);border-color:var(--border)}
+.context-ic{font-size:1.7rem;flex-shrink:0}
+.context-body{flex:1;min-width:220px}
+.context-title{font-family:var(--font-en);font-size:.74rem;font-weight:700;color:var(--blue);margin-bottom:4px;letter-spacing:.02em}
+.context-card.empty .context-title{color:var(--text)}
+.context-sub{font-size:.82rem;color:var(--muted);line-height:1.55}
+.context-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.ctx-chip{font-family:var(--mono);font-size:.7rem;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;padding:3px 11px;color:var(--text)}
+.context-cta{flex-shrink:0}
+
+.btn-gear{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;
+  background:linear-gradient(135deg,var(--blue) 0%,#3b82f6 100%);
+  color:#04111f;font-family:var(--font-en);font-size:.76rem;font-weight:700;
+  letter-spacing:.07em;border-radius:11px;text-decoration:none;white-space:nowrap;
+  transition:all .2s;box-shadow:0 4px 20px rgba(88,166,255,.18)}
+.btn-gear:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(88,166,255,.3)}
+
+.section-block{margin-bottom:32px}
+.section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.section-ic{font-size:1.25rem;flex-shrink:0}
+.section-title{font-family:var(--font-en);font-size:.9rem;font-weight:700;color:var(--text);letter-spacing:.01em}
+.section-note{font-size:.76rem;color:var(--muted);margin-top:2px}
+
+@media(max-width:560px){
+  .page-wrap{padding:90px 16px 60px}
+  .context-card{flex-direction:column;align-items:flex-start}
+}
+</style>
+{{ affiliate_card_styles() }}
+{% set og_title       = "FPV Gear Guide — OBIXConfig Doctor" %}
+{% set og_description = "แนะนำมอเตอร์ เฟรม ใบพัด ESC แบต เครื่องชาร์จ goggles และเสาอากาศ ตามผลวิเคราะห์โดรนของคุณ หรือเลือกชุดเริ่มต้นสำหรับมือใหม่" %}
+{% set og_url         = BASE_URL ~ '/fpv-gear' %}
+{% set nav_page = "fpv_gear" %}
+{% include "partials/og_tags.html" %}
+</head>
+<body>
+{% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
+
+<div class="page-wrap">
+
+  <div class="back-bar">
+    <a class="back-link" href="/app">← ANALYZER</a>
+    <a class="back-link" href="/fpv">📖 FPV HUB</a>
+    <span class="page-badge">🛒 GEAR GUIDE</span>
+  </div>
+
+  <div class="hero">
+    <div class="hero-eyebrow">Engineering-fit Recommendations</div>
+    <h1 class="hero-title">FPV <span class="hl">Gear</span> Guide</h1>
+    <p class="hero-sub">แนะนำมอเตอร์ · เฟรม · ใบพัด · ESC · แบต · เครื่องชาร์จ · goggles · เสาอากาศ — คัดจากความเข้ากันได้ทางวิศวกรรมกับคลาส/สไตล์การบินของโดรนคุณ ไม่ใช่จากสปอนเซอร์หรือโฆษณา</p>
+    {% if gear_disclaimer and (gear_disclaimer.th or gear_disclaimer.en) %}
+    <div class="disclaimer-bar">
+      <span>⚠️</span>
+      <span><b>หมายเหตุ:</b> {{ gear_disclaimer.th }}{% if gear_disclaimer.en %} <span class="en">({{ gear_disclaimer.en }})</span>{% endif %}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if gear_by_category %}
+
+    <div class="context-card">
+      <div class="context-ic">🎯</div>
+      <div class="context-body">
+        <div class="context-title">แนะนำตามผลวิเคราะห์ของคุณ</div>
+        <div class="context-sub">อุปกรณ์ด้านล่างคัดมาจาก class / style ที่ส่งมาจากหน้าวิเคราะห์โดรน</div>
+        <div class="context-chips">
+          {% if drone_class %}<span class="ctx-chip">class: {{ drone_class }}</span>{% endif %}
+          {% if style %}<span class="ctx-chip">style: {{ style }}</span>{% endif %}
+          {% if size_inch %}<span class="ctx-chip">size: {{ size_inch }}"</span>{% endif %}
+        </div>
+      </div>
+      <div class="context-cta"><a class="btn-gear" href="/app">🔬 วิเคราะห์ใหม่</a></div>
+    </div>
+
+    {% for cat in category_order %}
+      {% set items = gear_by_category.get(cat) %}
+      {% if items %}
+      {% set meta = categories.get(cat, {}) %}
+      <div class="section-block">
+        <div class="section-head">
+          <span class="section-ic">{{ meta.icon or '🔧' }}</span>
+          <div>
+            <div class="section-title">{{ meta.label_th or cat }}</div>
+            <div class="section-note">{{ items|length }} รายการที่เข้ากับสเปคของคุณ</div>
+          </div>
+        </div>
+        <div class="gear-grid">
+          {% for p in items %}{{ render_affiliate_card(p, category_label=meta.label_th) }}{% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+
+  {% else %}
+
+    <div class="context-card empty">
+      <div class="context-ic">🧰</div>
+      <div class="context-body">
+        <div class="context-title">ยังไม่มีผลวิเคราะห์ — แนะนำชุดเริ่มต้นให้ก่อน</div>
+        <div class="context-sub">ไปวิเคราะห์โดรนของคุณที่ Drone Analyzer แล้วกดลิงก์ "แนะนำอุปกรณ์" จากผลลัพธ์ เพื่อรับคำแนะนำที่ตรงสเปคยิ่งขึ้น</div>
+      </div>
+      <div class="context-cta"><a class="btn-gear" href="/app">🔬 ไปวิเคราะห์โดรน</a></div>
+    </div>
+
+    {% for kit in starter_kits %}
+      <div class="section-block">
+        <div class="section-head">
+          <span class="section-ic">🧰</span>
+          <div>
+            <div class="section-title">{{ kit.title_th }}</div>
+            {% if kit.note_th %}<div class="section-note">{{ kit.note_th }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="gear-grid">
+          {% for p in kit.products %}{{ render_affiliate_card(p, category_label=categories.get(p.category, {}).label_th) }}{% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+
+  {% endif %}
+
+</div><!-- /page-wrap -->
+
+{% include "partials/footer_nav.html" %}
+</body>
+</html>
