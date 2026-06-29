@@ -66,6 +66,7 @@
 {% elif nav_page == 'fpv_trainer'      %}{% set nav_label = 'FPV SIM' %}
 {% elif nav_page == 'flight_quiz'      %}{% set nav_label = 'FLIGHT QUIZ' %}
 {% elif nav_page == 'fpv'              %}{% set nav_label = 'FPV HUB' %}
+{% elif nav_page == 'fpv_gear'         %}{% set nav_label = 'GEAR GUIDE' %}
 {% else                                %}{% set nav_label = 'DRONE ANALYZER' %}
 {% endif %}
 
@@ -481,6 +482,9 @@ body.light .on-dfoot-ver{color:#059669;}
     <a class="on-dlink {% if nav_page=='fpv' %}on-act{% endif %}" href="/fpv" data-search="fpv hub knowledge ความรู้ โดรน บทความ">
       <span class="on-ico g">📖</span><span class="on-dbody"><span class="on-dtitle"><span class="on-th">FPV Knowledge Hub</span><span class="on-en">FPV Knowledge Hub</span></span><span class="on-dmeta on-th">รวมบทความ &amp; เครื่องมือทั้งหมด</span><span class="on-dmeta on-en">All articles &amp; tools in one place</span></span>
     </a>
+    <a class="on-dlink {% if nav_page=='fpv_gear' %}on-act{% endif %}" href="/fpv-gear" data-search="fpv gear guide affiliate มอเตอร์ เฟรม ใบพัด แนะนำอุปกรณ์">
+      <span class="on-ico b">🛒</span><span class="on-dbody"><span class="on-dtitle"><span class="on-th">FPV Gear Guide</span><span class="on-en">FPV Gear Guide</span></span><span class="on-dmeta on-th">แนะนำอุปกรณ์ตาม class/style</span><span class="on-dmeta on-en">Parts matched to class &amp; style</span></span><span class="on-pill nw">NEW</span>
+    </a>
     <a class="on-dlink {% if nav_page=='downloads' %}on-act{% endif %}" href="/downloads" data-search="downloads diff dump files ไฟล์ config">
       <span class="on-ico">📁</span><span class="on-dbody"><span class="on-dtitle"><span class="on-th">ไฟล์ DIFF &amp; DUMP</span><span class="on-en">DIFF &amp; DUMP Files</span></span><span class="on-dmeta on-th">รวม CLI config สำเร็จรูป</span><span class="on-dmeta on-en">Ready-to-use CLI configs</span></span>
     </a>
@@ -578,6 +582,7 @@ body.light .on-dfoot-ver{color:#059669;}
         <a class="on-dd-item {% if nav_page=='leaderboard' %}on-dd-act{% endif %}" href="/leaderboard"><span class="on-dd-ico">🏆</span><span class="on-dd-body"><span class="on-dd-label">Config Leaderboard</span><span class="on-dd-hint">Vote · rank · copy</span></span><span class="on-dd-badge ddb-new">NEW</span></a>
         <a class="on-dd-item {% if nav_page=='military_uas' %}on-dd-act{% endif %}" href="/military-uas"><span class="on-dd-ico">🎖️</span><span class="on-dd-body"><span class="on-dd-label">Military UAS</span><span class="on-dd-hint">Tactical analysis</span></span></a>
         <a class="on-dd-item {% if nav_page=='fpv' %}on-dd-act{% endif %}" href="/fpv"><span class="on-dd-ico">📖</span><span class="on-dd-body"><span class="on-dd-label">FPV Knowledge Hub</span><span class="on-dd-hint">All articles &amp; tools</span></span></a>
+        <a class="on-dd-item {% if nav_page=='fpv_gear' %}on-dd-act{% endif %}" href="/fpv-gear"><span class="on-dd-ico">🛒</span><span class="on-dd-body"><span class="on-dd-label">FPV Gear Guide</span><span class="on-dd-hint">Parts by class &amp; style</span></span><span class="on-dd-badge ddb-new">NEW</span></a>
         <a class="on-dd-item {% if nav_page=='downloads' %}on-dd-act{% endif %}" href="/downloads"><span class="on-dd-ico">📁</span><span class="on-dd-body"><span class="on-dd-label">Downloads</span><span class="on-dd-hint">DIFF &amp; DUMP files</span></span></a>
         <a class="on-dd-item {% if nav_page=='about' %}on-dd-act{% endif %}" href="/about"><span class="on-dd-ico">ℹ️</span><span class="on-dd-body"><span class="on-dd-label">About</span><span class="on-dd-hint">Project info</span></span></a>
         <a class="on-dd-item {% if nav_page=='changelog' %}on-dd-act{% endif %}" href="/changelog"><span class="on-dd-ico">📝</span><span class="on-dd-body"><span class="on-dd-label">Changelog</span><span class="on-dd-hint">Update history</span></span></a>
