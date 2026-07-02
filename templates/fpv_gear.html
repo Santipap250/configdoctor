@@ -1,173 +1,692 @@
-{% from "components/affiliate_card.html" import render_affiliate_card, affiliate_card_styles %}
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>FPV Gear Guide — OBIXConfig Doctor</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FPV Gear Shop — ConfigDoctor</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Sarabun:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  --green:#10c47a;--gold:#f1b65a;--blue:#58a6ff;--red:#f87171;
-  --orange:#fb923c;--teal:#2dd4bf;--purple:#a78bfa;
-  --bg:#06090b;--card:#0b0f14;--card2:#0e1318;
-  --border:rgba(255,255,255,.07);--muted:#6b7f90;--text:#dde7ef;
-  --font-th:'Sarabun',sans-serif;--font-en:'Orbitron',monospace;--mono:'JetBrains Mono',monospace;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--font-th);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
-body::before{content:'';position:fixed;inset:0;
-  background-image:linear-gradient(rgba(88,166,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(88,166,255,.025) 1px,transparent 1px);
-  background-size:44px 44px;pointer-events:none;z-index:0}
-
-.page-wrap{position:relative;max-width:1080px;margin:0 auto;padding:100px 24px 80px;z-index:1}
-
-.back-bar{display:flex;align-items:center;gap:10px;margin-bottom:44px;flex-wrap:wrap}
-.back-link{display:inline-flex;align-items:center;gap:7px;font-size:.8rem;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:7px 15px;border-radius:8px;transition:all .2s;font-family:var(--font-en);letter-spacing:.06em}
-.back-link:hover{color:var(--text);border-color:rgba(88,166,255,.3);background:rgba(88,166,255,.04)}
-.page-badge{font-family:var(--font-en);font-size:.65rem;font-weight:700;letter-spacing:.14em;padding:5px 14px;border-radius:30px;background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.3);color:var(--blue)}
-
-.hero{margin-bottom:28px}
-.hero-eyebrow{font-family:var(--font-en);font-size:.65rem;font-weight:700;letter-spacing:.18em;color:rgba(88,166,255,.65);margin-bottom:12px;display:flex;align-items:center;gap:8px;text-transform:uppercase}
-.hero-eyebrow::before{content:'';display:block;width:24px;height:2px;background:var(--blue);border-radius:2px}
-.hero-title{font-family:var(--font-en);font-size:clamp(1.7rem,3.8vw,2.8rem);font-weight:900;color:#fff;line-height:1.1;margin-bottom:14px}
-.hero-title .hl{color:var(--blue)}
-.hero-sub{font-size:.95rem;color:var(--muted);line-height:1.8;max-width:680px;margin-bottom:16px}
-
-.disclaimer-bar{display:flex;align-items:flex-start;gap:10px;background:rgba(241,182,90,.05);border:1px solid rgba(241,182,90,.18);border-radius:12px;padding:12px 16px;font-size:.78rem;color:rgba(221,231,239,.7);line-height:1.65;max-width:760px}
-.disclaimer-bar b{color:var(--gold)}
-.disclaimer-bar .en{opacity:.65}
-
-.context-card{background:rgba(88,166,255,.05);border:1px solid rgba(88,166,255,.18);border-radius:14px;padding:18px 20px;margin:28px 0;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.context-card.empty{background:rgba(255,255,255,.025);border-color:var(--border)}
-.context-ic{font-size:1.7rem;flex-shrink:0}
-.context-body{flex:1;min-width:220px}
-.context-title{font-family:var(--font-en);font-size:.74rem;font-weight:700;color:var(--blue);margin-bottom:4px;letter-spacing:.02em}
-.context-card.empty .context-title{color:var(--text)}
-.context-sub{font-size:.82rem;color:var(--muted);line-height:1.55}
-.context-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
-.ctx-chip{font-family:var(--mono);font-size:.7rem;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;padding:3px 11px;color:var(--text)}
-.context-cta{flex-shrink:0}
-
-.btn-gear{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;
-  background:linear-gradient(135deg,var(--blue) 0%,#3b82f6 100%);
-  color:#04111f;font-family:var(--font-en);font-size:.76rem;font-weight:700;
-  letter-spacing:.07em;border-radius:11px;text-decoration:none;white-space:nowrap;
-  transition:all .2s;box-shadow:0 4px 20px rgba(88,166,255,.18)}
-.btn-gear:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(88,166,255,.3)}
-
-.section-block{margin-bottom:32px}
-.section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.section-ic{font-size:1.25rem;flex-shrink:0}
-.section-title{font-family:var(--font-en);font-size:.9rem;font-weight:700;color:var(--text);letter-spacing:.01em}
-.section-note{font-size:.76rem;color:var(--muted);margin-top:2px}
-
-@media(max-width:560px){
-  .page-wrap{padding:90px 16px 60px}
-  .context-card{flex-direction:column;align-items:flex-start}
-}
-</style>
-{{ affiliate_card_styles() }}
-{% set og_title       = "FPV Gear Guide — OBIXConfig Doctor" %}
-{% set og_description = "แนะนำมอเตอร์ เฟรม ใบพัด ESC แบต เครื่องชาร์จ goggles และเสาอากาศ ตามผลวิเคราะห์โดรนของคุณ หรือเลือกชุดเริ่มต้นสำหรับมือใหม่" %}
-{% set og_url         = BASE_URL ~ '/fpv-gear' %}
+{% set og_title = "FPV Gear Shop — ConfigDoctor" %}
+{% set og_description = "ร้านค้า FPV อุปกรณ์แนะนำโดย ConfigDoctor — มอเตอร์ เฟรม ใบพัด ESC แบต goggles คัดจากความเข้ากันได้ทางวิศวกรรม" %}
+{% set og_url = BASE_URL ~ '/fpv-gear' %}
 {% set nav_page = "fpv_gear" %}
 {% include "partials/og_tags.html" %}
+<style>
+/* ── RESET & ROOT ─────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#030609;
+  --s0:#060b10;
+  --s1:#0a1018;
+  --s2:#0e1520;
+  --border:rgba(255,255,255,.07);
+  --border2:rgba(255,255,255,.04);
+  --text:#cde4f0;
+  --muted:#4a6878;
+  --muted2:#2a4050;
+  --gold:#ffc947;
+  --buy:#00e87a;
+  --buy-dark:#00a855;
+  --cyan:#00d4ff;
+  --fn:'Sarabun',sans-serif;
+  --fd:'Orbitron',monospace;
+  --fm:'JetBrains Mono',monospace;
+  /* category accent colours */
+  --c-motors:#ff6b35;
+  --c-frames:#4da6ff;
+  --c-props:#00e5ff;
+  --c-escs:#ffd700;
+  --c-batteries:#00e87a;
+  --c-chargers:#b980ff;
+  --c-goggles:#ff4da6;
+  --c-antennas:#00d4c8;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--fn);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ── GRID BACKGROUND ──────────────────────────────────── */
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,200,255,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,200,255,.018) 1px,transparent 1px);
+  background-size:52px 52px;pointer-events:none;z-index:0}
+
+/* ── HERO STRIP ───────────────────────────────────────── */
+.shop-hero{position:relative;z-index:2;
+  background:linear-gradient(180deg,rgba(0,180,255,.06),transparent);
+  border-bottom:1px solid rgba(0,180,255,.12);
+  padding:80px 24px 28px}
+.hero-inner{max-width:1200px;margin:0 auto;display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;justify-content:space-between}
+.hero-left{}
+.shop-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--fd);font-size:9px;font-weight:700;letter-spacing:.2em;color:var(--cyan);text-transform:uppercase;margin-bottom:10px}
+.shop-eyebrow span.dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.shop-h1{font-family:var(--fd);font-size:clamp(22px,4vw,32px);font-weight:900;color:#fff;line-height:1.1;margin-bottom:8px}
+.shop-h1 .hl{color:var(--cyan)}
+.shop-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:520px}
+.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0}
+.context-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;
+  background:rgba(0,232,122,.08);border:1px solid rgba(0,232,122,.22);font-size:12px;color:#6fffc2}
+.context-pill.none{background:rgba(255,255,255,.04);border-color:var(--border);color:var(--muted)}
+.context-pill strong{color:#fff}
+.disclaimer-strip{font-size:10.5px;color:var(--muted);border-left:2px solid rgba(255,201,71,.3);padding-left:10px;line-height:1.6;max-width:400px;text-align:right}
+
+/* ── LAYOUT ────────────────────────────────────────────── */
+.shop-body{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:28px 24px 80px;display:grid;grid-template-columns:220px 1fr;gap:28px}
+@media(max-width:900px){.shop-body{grid-template-columns:1fr;padding:20px 16px 60px}}
+
+/* ── SIDEBAR ───────────────────────────────────────────── */
+.shop-sidebar{position:sticky;top:20px;height:fit-content;display:flex;flex-direction:column;gap:16px}
+@media(max-width:900px){.shop-sidebar{position:static}}
+.sidebar-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.sidebar-head{padding:12px 16px;border-bottom:1px solid var(--border2);font-family:var(--fd);font-size:8.5px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+.cat-nav{padding:8px 0}
+.cat-nav a{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:12.5px;color:var(--muted);text-decoration:none;transition:all .15s;border-left:2px solid transparent}
+.cat-nav a:hover,.cat-nav a.active{color:var(--text);border-left-color:var(--cyan);background:rgba(0,212,255,.05)}
+.cat-nav a .ci{width:18px;text-align:center;font-size:14px}
+.cat-nav a .cc{flex:1}
+.cat-nav a .cn{font-size:10px;color:var(--muted2);margin-left:auto;font-family:var(--fm)}
+
+/* mobile cat pills */
+.mob-cats{display:none;overflow-x:auto;gap:8px;padding:0 0 8px;scrollbar-width:none}
+.mob-cats::-webkit-scrollbar{display:none}
+@media(max-width:900px){.mob-cats{display:flex}.shop-sidebar .sidebar-card{display:none}}
+.mob-cat-pill{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:999px;border:1px solid var(--border);font-size:12px;color:var(--muted);white-space:nowrap;text-decoration:none;flex-shrink:0;transition:all .15s}
+.mob-cat-pill:hover{border-color:rgba(0,212,255,.3);color:var(--text);background:rgba(0,212,255,.05)}
+
+/* wishlist sidebar */
+.wishlist-empty{padding:16px;font-size:12px;color:var(--muted);text-align:center;line-height:1.8}
+.wishlist-items{padding:8px}
+.wl-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;font-size:11.5px;background:var(--s2);margin-bottom:5px;cursor:pointer;border:1px solid var(--border2)}
+.wl-item:hover{border-color:rgba(255,70,80,.3)}
+.wl-item .wi-name{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--text)}
+.wl-item .wi-price{color:var(--gold);font-family:var(--fm);font-size:10px;white-space:nowrap}
+.wl-item .wi-rm{color:var(--muted);font-size:13px;flex-shrink:0;line-height:1;border:none;background:none;cursor:pointer}
+.wl-item .wi-rm:hover{color:#ff4466}
+.wl-clear{width:100%;margin:4px 8px 8px;width:calc(100% - 16px);padding:7px;border-radius:8px;border:1px solid rgba(255,70,80,.2);background:rgba(255,70,80,.06);color:#ff8090;font-size:11px;cursor:pointer;transition:.15s}
+.wl-clear:hover{background:rgba(255,70,80,.12)}
+
+/* ── MAIN FEED ─────────────────────────────────────────── */
+.shop-feed{}
+.cat-section{margin-bottom:44px;scroll-margin-top:80px}
+.cat-section-head{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.cat-icon-big{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.cat-title-wrap{}
+.cat-title{font-family:var(--fd);font-size:14px;font-weight:700;color:#fff}
+.cat-count{font-size:11px;color:var(--muted);margin-top:2px}
+.cat-match-badge{margin-left:auto;flex-shrink:0;font-family:var(--fd);font-size:8px;letter-spacing:.1em;padding:4px 10px;border-radius:999px;background:rgba(0,232,122,.1);border:1px solid rgba(0,232,122,.25);color:#6fffc2}
+
+/* ── PRODUCT GRID ──────────────────────────────────────── */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+@media(max-width:640px){.product-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:420px){.product-grid{grid-template-columns:1fr}}
+
+/* ── PRODUCT CARD ──────────────────────────────────────── */
+.p-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .15s,transform .15s,box-shadow .15s;position:relative}
+.p-card:hover{border-color:rgba(0,200,255,.22);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.p-card.matched{border-color:rgba(0,232,122,.22);box-shadow:0 0 0 1px rgba(0,232,122,.08) inset}
+.p-card.matched:hover{border-color:rgba(0,232,122,.4)}
+
+/* receipt strip */
+.card-strip{height:3px;width:100%}
+
+/* card top */
+.card-top{padding:12px 14px 0;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.card-cat-pill{font-family:var(--fd);font-size:8px;letter-spacing:.06em;font-weight:700;padding:3px 9px;border-radius:999px;border:1px solid currentColor}
+.badge-pill{font-family:var(--fd);font-size:7.5px;letter-spacing:.08em;font-weight:900;padding:3px 8px;border-radius:999px}
+.badge-POPULAR{background:rgba(0,212,255,.12);color:var(--cyan);border:1px solid rgba(0,212,255,.25)}
+.badge-PRO{background:rgba(255,107,53,.12);color:#ff6b35;border:1px solid rgba(255,107,53,.25)}
+.badge-RACE{background:rgba(255,70,80,.1);color:#ff4466;border:1px solid rgba(255,70,80,.25)}
+.badge-TOP\ PICK,.badge-TOP_PICK{background:rgba(255,201,71,.12);color:var(--gold);border:1px solid rgba(255,201,71,.3)}
+.badge-BEST\ VALUE,.badge-BEST_VALUE{background:rgba(0,232,122,.1);color:var(--buy);border:1px solid rgba(0,232,122,.25)}
+.badge-SMOOTH{background:rgba(185,128,255,.1);color:#b980ff;border:1px solid rgba(185,128,255,.25)}
+.badge-LONG\ RANGE,.badge-LONG_RANGE{background:rgba(77,166,255,.1);color:#4da6ff;border:1px solid rgba(77,166,255,.25)}
+.badge-CINE{background:rgba(255,74,166,.1);color:#ff4da6;border:1px solid rgba(255,74,166,.25)}
+.badge-EFFICIENT{background:rgba(0,212,200,.1);color:#00d4c8;border:1px solid rgba(0,212,200,.25)}
+.badge-HD{background:rgba(185,128,255,.1);color:#b980ff;border:1px solid rgba(185,128,255,.25)}
+.badge-BEGINNER{background:rgba(0,232,122,.08);color:#6fffc2;border:1px solid rgba(0,232,122,.2)}
+.matched-badge{background:rgba(0,232,122,.1);color:#6fffc2;font-family:var(--fd);font-size:7px;letter-spacing:.1em;padding:3px 8px;border-radius:999px;border:1px solid rgba(0,232,122,.25)}
+
+/* card icon area */
+.card-icon-area{padding:14px 14px 8px;display:flex;align-items:center;gap:12px}
+.card-big-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.card-name-block{}
+.card-name{font-family:var(--fn);font-size:13.5px;font-weight:700;color:#e8f4ff;line-height:1.3}
+.card-spec{font-family:var(--fm);font-size:11px;color:var(--cyan);margin-top:3px;letter-spacing:.02em}
+
+/* stars */
+.card-stars{padding:0 14px 6px;display:flex;align-items:center;gap:6px}
+.stars-row{display:flex;gap:1px}
+.star{font-size:11px;line-height:1}
+.star.full{color:#ffc947}
+.star.half{color:#ffc947;opacity:.6}
+.star.empty{color:var(--muted2)}
+.rating-num{font-family:var(--fm);font-size:11px;color:var(--gold);font-weight:600}
+.rating-cnt{font-size:10px;color:var(--muted)}
+
+/* desc */
+.card-desc{padding:0 14px 8px;font-size:12px;color:var(--muted);line-height:1.65}
+
+/* why pill */
+.card-why{margin:0 14px 10px;display:flex;align-items:flex-start;gap:6px;background:rgba(0,232,122,.06);border:1px solid rgba(0,232,122,.15);border-radius:8px;padding:7px 10px;font-size:11px;color:#6fffc2;line-height:1.5}
+
+/* tags */
+.card-tags{padding:0 14px 10px;display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:9.5px;padding:2px 8px;border-radius:999px;border:1px solid var(--border);color:var(--muted);background:var(--border2)}
+
+/* price strip */
+.card-price-row{margin:0 14px 12px;display:flex;align-items:center;justify-content:space-between}
+.price-val{font-family:var(--fm);font-size:15px;font-weight:700;color:var(--gold)}
+.price-label{font-size:10px;color:var(--muted)}
+
+/* ── BUY SECTION ────────────────────────────────────────── */
+.card-buy{margin-top:auto;padding:12px 14px;background:var(--s0);border-top:1px solid var(--border2)}
+.buy-label{font-family:var(--fd);font-size:8px;letter-spacing:.14em;color:var(--muted);margin-bottom:8px;text-transform:uppercase}
+.buy-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}
+.buy-btn{display:flex;align-items:center;justify-content:center;gap:5px;padding:9px 8px;border-radius:10px;font-family:var(--fn);font-size:12px;font-weight:700;text-decoration:none;transition:all .15s;cursor:pointer;border:none}
+.buy-shopee{background:rgba(238,77,45,.12);border:1px solid rgba(238,77,45,.25);color:#ff7f5e}
+.buy-shopee:hover{background:rgba(238,77,45,.22);border-color:rgba(238,77,45,.5);transform:translateY(-1px)}
+.buy-lazada{background:rgba(0,102,204,.12);border:1px solid rgba(0,102,204,.25);color:#5ba4ff}
+.buy-lazada:hover{background:rgba(0,102,204,.2);border-color:rgba(0,102,204,.5);transform:translateY(-1px)}
+.buy-ali{grid-column:1/-1;background:rgba(255,107,0,.1);border:1px solid rgba(255,107,0,.22);color:#ff9c5e}
+.buy-ali:hover{background:rgba(255,107,0,.18);transform:translateY(-1px)}
+.buy-save{width:100%;margin-top:4px;padding:8px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11.5px;font-family:var(--fn);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.buy-save:hover{border-color:rgba(255,201,71,.3);color:var(--gold);background:rgba(255,201,71,.05)}
+.buy-save.saved{border-color:rgba(255,201,71,.4);color:var(--gold);background:rgba(255,201,71,.08)}
+.buy-save .save-ic{font-size:14px;line-height:1}
+
+/* ── STARTER KITS SECTION ──────────────────────────────── */
+.kits-section{margin-top:12px}
+.kits-head{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.kits-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.kit-tab{padding:8px 16px;border-radius:999px;border:1px solid var(--border);background:var(--s1);color:var(--muted);font-size:12px;cursor:pointer;transition:all .15s}
+.kit-tab:hover,.kit-tab.active{border-color:rgba(0,212,255,.3);color:var(--cyan);background:rgba(0,212,255,.06)}
+.kit-panel{display:none}
+.kit-panel.active{display:block}
+.kit-note{font-size:12.5px;color:var(--muted);margin-bottom:16px;padding:10px 14px;background:var(--s1);border-radius:10px;border:1px solid var(--border)}
+.kit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+/* kit product card (compact) */
+.kit-card{background:var(--s1);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:.15s}
+.kit-card:hover{border-color:rgba(0,212,255,.2);transform:translateY(-1px)}
+.kit-card .card-strip{height:2px}
+.kit-card-body{padding:12px}
+.kit-card-cat{font-family:var(--fd);font-size:7.5px;letter-spacing:.1em;color:var(--muted);margin-bottom:4px}
+.kit-card-name{font-size:12.5px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:4px}
+.kit-card-spec{font-family:var(--fm);font-size:10px;color:var(--cyan);margin-bottom:8px}
+.kit-card-price{font-family:var(--fm);font-size:12px;color:var(--gold);font-weight:700;margin-bottom:10px}
+.kit-buy-btns{display:flex;gap:5px}
+.kit-buy-btn{flex:1;padding:7px 6px;border-radius:8px;font-size:10.5px;font-family:var(--fn);font-weight:700;text-decoration:none;text-align:center;transition:.15s;cursor:pointer;border:none}
+.kit-buy-btn:hover{transform:translateY(-1px)}
+
+/* ── WISHLIST FLOAT (mobile) ─────────────────────────── */
+.wl-float{position:fixed;bottom:24px;right:20px;z-index:100;display:none}
+@media(max-width:900px){.wl-float{display:block}}
+.wl-float-btn{display:flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;background:#0a1a12;border:1px solid rgba(0,232,122,.3);color:var(--buy);font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:.2s}
+.wl-float-btn:hover{background:#0e2018;transform:translateY(-2px)}
+.wl-count-badge{background:var(--buy);color:#021a0c;border-radius:999px;min-width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;padding:0 6px}
+
+/* ── BACK BAR ────────────────────────────────────────── */
+.back-bar{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:0 24px;display:flex;gap:8px;flex-wrap:wrap}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:8px;font-family:var(--fd);letter-spacing:.06em;transition:.15s}
+.back-link:hover{color:var(--text);border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.04)}
+
+/* ── SCROLLBAR ───────────────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:3px}
+
+/* ── ANIMATIONS ──────────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.cat-section{animation:fadeUp .35s ease both}
+.cat-section:nth-child(2){animation-delay:.05s}
+.cat-section:nth-child(3){animation-delay:.10s}
+.cat-section:nth-child(4){animation-delay:.15s}
+.cat-section:nth-child(5){animation-delay:.20s}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
+
 {% include "partials/nav.html" %}
 {% include "partials/page_actions.html" %}
 
-<div class="page-wrap">
+{% set cat_colors = {
+  'motors':    '#ff6b35',
+  'frames':    '#4da6ff',
+  'props':     '#00e5ff',
+  'escs':      '#ffd700',
+  'batteries': '#00e87a',
+  'chargers':  '#b980ff',
+  'goggles':   '#ff4da6',
+  'antennas':  '#00d4c8'
+} %}
+{% set cat_icons = {
+  'motors':    '⚙️',
+  'frames':    '🛠️',
+  'props':     '🌀',
+  'escs':      '⚡',
+  'batteries': '🔋',
+  'chargers':  '🔌',
+  'goggles':   '🥽',
+  'antennas':  '📡'
+} %}
+{% set cat_labels = {
+  'motors':    'มอเตอร์',
+  'frames':    'เฟรม',
+  'props':     'ใบพัด',
+  'escs':      'ESC',
+  'batteries': 'แบตเตอรี่',
+  'chargers':  'เครื่องชาร์จ',
+  'goggles':   'FPV Goggles',
+  'antennas':  'เสาอากาศ'
+} %}
 
-  <div class="back-bar">
-    <a class="back-link" href="/app">← ANALYZER</a>
-    <a class="back-link" href="/fpv">📖 FPV HUB</a>
-    <span class="page-badge">🛒 GEAR GUIDE</span>
-  </div>
-
-  <div class="hero">
-    <div class="hero-eyebrow">Engineering-fit Recommendations</div>
-    <h1 class="hero-title">FPV <span class="hl">Gear</span> Guide</h1>
-    <p class="hero-sub">แนะนำมอเตอร์ · เฟรม · ใบพัด · ESC · แบต · เครื่องชาร์จ · goggles · เสาอากาศ — คัดจากความเข้ากันได้ทางวิศวกรรมกับคลาส/สไตล์การบินของโดรนคุณ ไม่ใช่จากสปอนเซอร์หรือโฆษณา</p>
-    {% if gear_disclaimer and (gear_disclaimer.th or gear_disclaimer.en) %}
-    <div class="disclaimer-bar">
-      <span>⚠️</span>
-      <span><b>หมายเหตุ:</b> {{ gear_disclaimer.th }}{% if gear_disclaimer.en %} <span class="en">({{ gear_disclaimer.en }})</span>{% endif %}</span>
+<!-- hero -->
+<div class="shop-hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="shop-eyebrow"><span class="dot"></span>CONFIGDOCTOR · GEAR SHOP</div>
+      <h1 class="shop-h1">FPV <span class="hl">Gear</span> Shop</h1>
+      <p class="shop-sub">อุปกรณ์ FPV คัดโดย ConfigDoctor จากความเข้ากันได้ทางวิศวกรรม — ไม่ใช่โฆษณา คลิกเพื่อสั่งซื้อผ่าน Shopee · Lazada · AliExpress</p>
     </div>
-    {% endif %}
-  </div>
-
-  {% if gear_by_category %}
-
-    <div class="context-card">
-      <div class="context-ic">🎯</div>
-      <div class="context-body">
-        <div class="context-title">แนะนำตามผลวิเคราะห์ของคุณ</div>
-        <div class="context-sub">อุปกรณ์ด้านล่างคัดมาจาก class / style ที่ส่งมาจากหน้าวิเคราะห์โดรน</div>
-        <div class="context-chips">
-          {% if drone_class %}<span class="ctx-chip">class: {{ drone_class }}</span>{% endif %}
-          {% if style %}<span class="ctx-chip">style: {{ style }}</span>{% endif %}
-          {% if size_inch %}<span class="ctx-chip">size: {{ size_inch }}"</span>{% endif %}
-        </div>
+    <div class="hero-right">
+      {% if drone_class or style %}
+      <div class="context-pill">
+        🎯 <span>แนะนำสำหรับ <strong>{{ drone_class or 'freestyle' }}</strong>{% if style %} · {{ style }}{% endif %}{% if size_inch %} · {{ size_inch }}"{% endif %}</span>
+        <span style="opacity:.5">·</span>
+        <a href="/fpv-gear" style="color:rgba(111,255,194,.6);font-size:10px;text-decoration:none">ดูทั้งหมด</a>
       </div>
-      <div class="context-cta"><a class="btn-gear" href="/app">🔬 วิเคราะห์ใหม่</a></div>
+      {% else %}
+      <div class="context-pill none">🛒 ดูสินค้าทั้งหมด 35 รายการ</div>
+      {% endif %}
+      {% if gear_disclaimer and gear_disclaimer.th %}
+      <div class="disclaimer-strip">⚠️ {{ gear_disclaimer.th[:90] }}…</div>
+      {% endif %}
     </div>
+  </div>
+</div>
+
+<!-- nav padding -->
+<div style="height:16px"></div>
+<div class="back-bar">
+  <a class="back-link" href="/app">← Analyzer</a>
+  <a class="back-link" href="/fpv">📖 FPV Hub</a>
+</div>
+<div style="height:16px"></div>
+
+<!-- mobile category pills -->
+<div style="position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 24px 4px">
+  <div class="mob-cats">
+    {% for cat in category_order %}
+    {% set meta = categories.get(cat, {}) %}
+    <a class="mob-cat-pill" href="#cat-{{ cat }}" style="border-color:rgba({{ cat_colors.get(cat,'#888')[1:3] | int(base=16) }},{{ cat_colors.get(cat,'#888')[3:5] | int(base=16) }},{{ cat_colors.get(cat,'#888')[5:7] | int(base=16) }},.18)">
+      {{ cat_icons.get(cat,'•') }} {{ cat_labels.get(cat, cat) }}
+    </a>
+    {% endfor %}
+    <a class="mob-cat-pill" href="#kits">🧰 ชุดเริ่มต้น</a>
+  </div>
+</div>
+
+<!-- main layout -->
+<div class="shop-body">
+
+  <!-- SIDEBAR -->
+  <aside class="shop-sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-head">หมวดหมู่</div>
+      <nav class="cat-nav" id="catNav">
+        {% for cat in category_order %}
+        {% set items = all_by_category.get(cat, []) %}
+        {% set color = cat_colors.get(cat, '#888') %}
+        <a href="#cat-{{ cat }}" data-cat="{{ cat }}" style="--cc:{{ color }}">
+          <span class="ci">{{ cat_icons.get(cat, '•') }}</span>
+          <span class="cc">{{ cat_labels.get(cat, cat) }}</span>
+          <span class="cn">{{ items|length }}</span>
+        </a>
+        {% endfor %}
+        <a href="#kits">
+          <span class="ci">🧰</span>
+          <span class="cc">ชุดเริ่มต้น</span>
+          <span class="cn">{{ starter_kits|length }}</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- wishlist panel -->
+    <div class="sidebar-card">
+      <div class="sidebar-head">บันทึกไว้ <span id="wlSideCount" style="color:var(--gold)"></span></div>
+      <div id="wlSideBody">
+        <div class="wishlist-empty" id="wlEmpty">ยังไม่มีสินค้าที่บันทึก<br><span style="font-size:11px">กดหัวใจที่การ์ดสินค้า</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN FEED -->
+  <main class="shop-feed">
 
     {% for cat in category_order %}
-      {% set items = gear_by_category.get(cat) %}
-      {% if items %}
-      {% set meta = categories.get(cat, {}) %}
-      <div class="section-block">
-        <div class="section-head">
-          <span class="section-ic">{{ meta.icon or '🔧' }}</span>
-          <div>
-            <div class="section-title">{{ meta.label_th or cat }}</div>
-            <div class="section-note">{{ items|length }} รายการที่เข้ากับสเปคของคุณ</div>
+    {% set items = all_by_category.get(cat, []) %}
+    {% if items %}
+    {% set color = cat_colors.get(cat, '#888') %}
+    {% set matched_in_cat = items | selectattr('id', 'in', matched_ids) | list %}
+
+    <section class="cat-section" id="cat-{{ cat }}">
+      <div class="cat-section-head">
+        <div class="cat-icon-big" style="background:{{ color }}18;border:1px solid {{ color }}30">
+          {{ cat_icons.get(cat, '•') }}
+        </div>
+        <div class="cat-title-wrap">
+          <div class="cat-title" style="color:{{ color }}">{{ cat_labels.get(cat, cat) }}</div>
+          <div class="cat-count">{{ items|length }} รายการ{% if matched_in_cat %} · {{ matched_in_cat|length }} ตรงกับบิลด์คุณ{% endif %}</div>
+        </div>
+        {% if matched_in_cat %}
+        <div class="cat-match-badge">✓ {{ matched_in_cat|length }} MATCHED</div>
+        {% endif %}
+      </div>
+
+      <div class="product-grid">
+        {% for p in items %}
+        {% set is_matched = p.id in matched_ids %}
+        {% set color = cat_colors.get(p.category, '#888') %}
+        {% set badge = p.get('badge') %}
+        <div class="p-card {% if is_matched %}matched{% endif %}"
+             data-id="{{ p.id }}"
+             data-name="{{ p.name }}"
+             data-price="{{ p.price_range or '' }}"
+             data-search="{{ p.get('search_name', p.name) }}"
+             data-cat="{{ p.category }}">
+
+          <div class="card-strip" style="background:linear-gradient(90deg,{{ color }},{{ color }}66)"></div>
+
+          <div class="card-top">
+            <span class="card-cat-pill" style="color:{{ color }};border-color:{{ color }}44;background:{{ color }}0f">
+              {{ cat_icons.get(p.category,'•') }} {{ cat_labels.get(p.category, p.category) }}
+            </span>
+            {% if is_matched %}<span class="matched-badge">✓ MATCHED</span>
+            {% elif badge %}<span class="badge-pill badge-{{ badge | replace(' ','\ ') }}">{{ badge }}</span>
+            {% endif %}
+          </div>
+
+          <div class="card-icon-area">
+            <div class="card-big-icon" style="background:{{ color }}12;border:1px solid {{ color }}25">
+              <span style="font-size:22px">{{ cat_icons.get(p.category,'🔧') }}</span>
+            </div>
+            <div class="card-name-block">
+              <div class="card-name">{{ p.name }}</div>
+              {% if p.get('key_spec') %}
+              <div class="card-spec">{{ p.key_spec }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          {% set r = p.get('rating', 0) %}
+          {% set rc = p.get('rating_count', 0) %}
+          {% if r %}
+          <div class="card-stars">
+            <div class="stars-row">
+              {% for i in range(1,6) %}
+                {% if r >= i %}<span class="star full">★</span>
+                {% elif r >= i - 0.5 %}<span class="star half">★</span>
+                {% else %}<span class="star empty">★</span>{% endif %}
+              {% endfor %}
+            </div>
+            <span class="rating-num">{{ "%.1f"|format(r) }}</span>
+            <span class="rating-cnt">({{ rc }} รีวิว)</span>
+          </div>
+          {% endif %}
+
+          {% if p.short_description %}
+          <div class="card-desc">{{ p.short_description }}</div>
+          {% endif %}
+
+          {% if is_matched %}
+          <div class="card-why">
+            🛠️ <span>เข้ากับบิลด์ {{ drone_class }}{% if style %} · {{ style }}{% endif %}</span>
+          </div>
+          {% endif %}
+
+          {% if p.compatibility_tags %}
+          <div class="card-tags">
+            {% for t in p.compatibility_tags %}<span class="tag">{{ t }}</span>{% endfor %}
+          </div>
+          {% endif %}
+
+          {% if p.price_range %}
+          <div class="card-price-row">
+            <span class="price-val">{{ p.price_range }}</span>
+            <span class="price-label">ราคาโดยประมาณ</span>
+          </div>
+          {% endif %}
+
+          <div class="card-buy">
+            <div class="buy-label">ซื้อได้ที่</div>
+            <div class="buy-btns">
+              <a class="buy-btn buy-shopee" href="#" data-platform="shopee" target="_blank" rel="nofollow sponsored noopener">
+                🛒 Shopee
+              </a>
+              <a class="buy-btn buy-lazada" href="#" data-platform="lazada" target="_blank" rel="nofollow sponsored noopener">
+                📦 Lazada
+              </a>
+              <a class="buy-btn buy-ali" href="#" data-platform="ali" target="_blank" rel="nofollow sponsored noopener">
+                🌐 AliExpress
+              </a>
+            </div>
+            <button class="buy-save" data-action="save">
+              <span class="save-ic">♡</span> บันทึกไว้ดูทีหลัง
+            </button>
           </div>
         </div>
-        <div class="gear-grid">
-          {% for p in items %}{{ render_affiliate_card(p, category_label=meta.label_th) }}{% endfor %}
-        </div>
+        {% endfor %}
       </div>
-      {% endif %}
+    </section>
+    {% endif %}
     {% endfor %}
 
-  {% else %}
-
-    <div class="context-card empty">
-      <div class="context-ic">🧰</div>
-      <div class="context-body">
-        <div class="context-title">ยังไม่มีผลวิเคราะห์ — แนะนำชุดเริ่มต้นให้ก่อน</div>
-        <div class="context-sub">ไปวิเคราะห์โดรนของคุณที่ Drone Analyzer แล้วกดลิงก์ "แนะนำอุปกรณ์" จากผลลัพธ์ เพื่อรับคำแนะนำที่ตรงสเปคยิ่งขึ้น</div>
+    <!-- ── STARTER KITS ── -->
+    {% if starter_kits %}
+    <section class="kits-section" id="kits">
+      <div class="kits-head">
+        <div class="cat-icon-big" style="background:rgba(255,201,71,.1);border:1px solid rgba(255,201,71,.2)">🧰</div>
+        <div class="cat-title-wrap">
+          <div class="cat-title" style="color:var(--gold)">ชุดเริ่มต้น (Starter Kits)</div>
+          <div class="cat-count">{{ starter_kits|length }} ชุดบิลด์สำเร็จ — เลือกสั่งซื้อรายชิ้นได้เลย</div>
+        </div>
       </div>
-      <div class="context-cta"><a class="btn-gear" href="/app">🔬 ไปวิเคราะห์โดรน</a></div>
-    </div>
 
-    {% for kit in starter_kits %}
-      <div class="section-block">
-        <div class="section-head">
-          <span class="section-ic">🧰</span>
-          <div>
-            <div class="section-title">{{ kit.title_th }}</div>
-            {% if kit.note_th %}<div class="section-note">{{ kit.note_th }}</div>{% endif %}
+      <div class="kits-tabs">
+        {% for kit in starter_kits %}
+        <button class="kit-tab {% if loop.first %}active{% endif %}" data-kit="{{ kit.id }}">
+          {{ kit.title_en }}
+        </button>
+        {% endfor %}
+      </div>
+
+      {% for kit in starter_kits %}
+      <div class="kit-panel {% if loop.first %}active{% endif %}" id="kit-{{ kit.id }}">
+        <div class="kit-note">{{ kit.note_th }}</div>
+        <div class="kit-grid">
+          {% for p in kit.products %}
+          {% set color = cat_colors.get(p.category, '#888') %}
+          <div class="kit-card"
+               data-id="{{ p.id }}"
+               data-name="{{ p.name }}"
+               data-price="{{ p.price_range or '' }}"
+               data-search="{{ p.get('search_name', p.name) }}">
+            <div class="card-strip" style="background:{{ color }}"></div>
+            <div class="kit-card-body">
+              <div class="kit-card-cat">{{ cat_icons.get(p.category,'') }} {{ cat_labels.get(p.category,'') }}</div>
+              <div class="kit-card-name">{{ p.name }}</div>
+              {% if p.get('key_spec') %}<div class="kit-card-spec">{{ p.key_spec }}</div>{% endif %}
+              {% if p.price_range %}<div class="kit-card-price">{{ p.price_range }}</div>{% endif %}
+              <div class="kit-buy-btns">
+                <a class="kit-buy-btn buy-shopee" href="#" data-platform="shopee" target="_blank" rel="nofollow noopener" style="font-size:10.5px">🛒 Shopee</a>
+                <a class="kit-buy-btn buy-lazada" href="#" data-platform="lazada" target="_blank" rel="nofollow noopener" style="font-size:10.5px">📦 Lazada</a>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="gear-grid">
-          {% for p in kit.products %}{{ render_affiliate_card(p, category_label=categories.get(p.category, {}).label_th) }}{% endfor %}
+          {% endfor %}
         </div>
       </div>
-    {% endfor %}
+      {% endfor %}
+    </section>
+    {% endif %}
 
-  {% endif %}
+  </main>
+</div><!-- /shop-body -->
 
-</div><!-- /page-wrap -->
+<!-- mobile wishlist float -->
+<div class="wl-float">
+  <button class="wl-float-btn" id="wlFloatBtn">
+    🛒 บันทึกไว้ <span class="wl-count-badge" id="wlFloatCount">0</span>
+  </button>
+</div>
 
 {% include "partials/footer_nav.html" %}
+
+<script>
+(function(){
+  const SHOP_URLS = {
+    shopee:  q => 'https://shopee.co.th/search?keyword=' + encodeURIComponent(q),
+    lazada:  q => 'https://www.lazada.co.th/catalog/?q=' + encodeURIComponent(q),
+    ali:     q => 'https://www.aliexpress.com/wholesale?SearchText=' + encodeURIComponent(q)
+  };
+
+  // ── wire buy buttons ─────────────────────────────────
+  document.querySelectorAll('[data-platform]').forEach(btn => {
+    const card = btn.closest('[data-search]');
+    if (!card) return;
+    const q = card.dataset.search || card.dataset.name || '';
+    const platform = btn.dataset.platform;
+    if (SHOP_URLS[platform]) btn.href = SHOP_URLS[platform](q);
+  });
+
+  // ── wishlist (localStorage) ───────────────────────────
+  const WL_KEY = 'cd_fpv_wishlist';
+  function loadWL(){ try{ return JSON.parse(localStorage.getItem(WL_KEY)||'[]'); }catch(e){ return []; } }
+  function saveWL(list){ try{ localStorage.setItem(WL_KEY, JSON.stringify(list)); }catch(e){} }
+
+  function renderWL(){
+    const list = loadWL();
+    const count = list.length;
+    // sidebar count
+    const sc = document.getElementById('wlSideCount');
+    if(sc) sc.textContent = count ? '(' + count + ')' : '';
+    // float badge
+    const fc = document.getElementById('wlFloatCount');
+    if(fc) fc.textContent = count;
+    const floatBtn = document.getElementById('wlFloatBtn');
+    if(floatBtn) floatBtn.style.display = count ? 'flex' : 'none';
+    // empty state
+    const empty = document.getElementById('wlEmpty');
+    if(empty) empty.style.display = count ? 'none' : 'block';
+    // sidebar list
+    const body = document.getElementById('wlSideBody');
+    if(body){
+      // remove old items (keep empty div)
+      body.querySelectorAll('.wl-item').forEach(e=>e.remove());
+      if(body.querySelector('.wl-clear')) body.querySelector('.wl-clear').remove();
+      if(count){
+        list.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'wl-item';
+          div.innerHTML = '<span class="wi-name">' + item.name + '</span>'
+            + (item.price ? '<span class="wi-price">' + item.price + '</span>' : '')
+            + '<button class="wi-rm" data-id="' + item.id + '" title="ลบ">✕</button>';
+          body.appendChild(div);
+        });
+        const clrBtn = document.createElement('button');
+        clrBtn.className = 'wl-clear';
+        clrBtn.textContent = 'ล้างทั้งหมด';
+        clrBtn.onclick = () => { saveWL([]); renderWL(); updateSaveBtns(); };
+        body.appendChild(clrBtn);
+        body.querySelectorAll('.wi-rm').forEach(btn => {
+          btn.addEventListener('click', e => {
+            const id = btn.dataset.id;
+            saveWL(loadWL().filter(x=>x.id!==id));
+            renderWL(); updateSaveBtns();
+          });
+        });
+      }
+    }
+  }
+
+  function updateSaveBtns(){
+    const list = loadWL();
+    const ids = new Set(list.map(x=>x.id));
+    document.querySelectorAll('[data-action="save"]').forEach(btn => {
+      const card = btn.closest('[data-id]');
+      if(!card) return;
+      const id = card.dataset.id;
+      const saved = ids.has(id);
+      btn.classList.toggle('saved', saved);
+      btn.innerHTML = saved
+        ? '<span class="save-ic">♥</span> บันทึกแล้ว'
+        : '<span class="save-ic">♡</span> บันทึกไว้ดูทีหลัง';
+    });
+  }
+
+  document.querySelectorAll('[data-action="save"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('[data-id]');
+      if(!card) return;
+      const id = card.dataset.id;
+      const name = card.dataset.name;
+      const price = card.dataset.price;
+      let list = loadWL();
+      const idx = list.findIndex(x=>x.id===id);
+      if(idx>=0) list.splice(idx,1);
+      else list.push({id, name, price});
+      saveWL(list);
+      renderWL();
+      updateSaveBtns();
+    });
+  });
+
+  // float → scroll to wishlist sidebar
+  const floatBtn = document.getElementById('wlFloatBtn');
+  if(floatBtn) floatBtn.addEventListener('click', () => {
+    const sb = document.querySelector('.shop-sidebar');
+    if(sb) sb.scrollIntoView({behavior:'smooth'});
+  });
+
+  renderWL();
+  updateSaveBtns();
+
+  // ── category tab highlight on scroll ─────────────────
+  const navLinks = document.querySelectorAll('#catNav a[data-cat]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        const id = entry.target.id;
+        const cat = id.replace('cat-','');
+        navLinks.forEach(a => a.classList.toggle('active', a.dataset.cat===cat));
+      }
+    });
+  }, {rootMargin:'-40% 0px -55% 0px'});
+  document.querySelectorAll('.cat-section').forEach(s => observer.observe(s));
+
+  // ── starter kit tabs ─────────────────────────────────
+  document.querySelectorAll('.kit-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.kit-tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.kit-panel').forEach(p=>p.classList.remove('active'));
+      tab.classList.add('active');
+      const panel = document.getElementById('kit-' + tab.dataset.kit);
+      if(panel) panel.classList.add('active');
+    });
+  });
+
+  // ── wire kit buy buttons ──────────────────────────────
+  document.querySelectorAll('.kit-card [data-platform]').forEach(btn => {
+    const card = btn.closest('[data-search]');
+    if(!card) return;
+    const q = card.dataset.search || card.dataset.name || '';
+    const platform = btn.dataset.platform;
+    if(SHOP_URLS[platform]) btn.href = SHOP_URLS[platform](q);
+  });
+
+})();
+</script>
 </body>
 </html>
