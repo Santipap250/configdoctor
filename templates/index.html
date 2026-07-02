@@ -11,6 +11,7 @@
 {% include "partials/og_tags.html" %}
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════
@@ -651,7 +652,7 @@ pre::-webkit-scrollbar-thumb{background:rgba(0,255,68,.2);border-radius:2px}
       <div class="cli-title">CLI COMMANDS — พร้อมวาง Betaflight</div>
       <div class="cli-sub">{{ _sy|capitalize }} · {{ _sz }}" · BF{{ _bfv }} · paste → Enter → save</div>
     </div>
-    <button class="cli-copy" onclick="cpEl('fullcli');toast('✓ คัดลอกแล้ว!')">📋 คัดลอกทั้งหมด</button>
+    <button type="button" class="cli-copy" onclick="cpEl('fullcli');toast('✓ คัดลอกแล้ว!')">📋 คัดลอกทั้งหมด</button>
   </div>
   <pre class="cli" id="fullcli"><span class="cli-comment"># ════════════════════════════════════════
 # ConfigDoctor — {{ _sz }}" {{ _cls|capitalize }} · {{ _cells }}S{{ _vnom|round(1) }}V

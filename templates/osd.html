@@ -10,6 +10,7 @@
 {% set nav_page       = "osd" %}
 {% include "partials/og_tags.html" %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Sarabun:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -372,33 +373,33 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   <!-- Toolbar -->
   <div class="toolbar">
     <div class="mode-row" id="modeRow">
-      <button class="mdbtn active" data-mode="analog" onclick="switchMode(this)">ANALOG 30×13</button>
-      <button class="mdbtn" data-mode="hd" onclick="switchMode(this)">HD 53×20</button>
+      <button type="button" class="mdbtn active" data-mode="analog" onclick="switchMode(this)">ANALOG 30×13</button>
+      <button type="button" class="mdbtn" data-mode="hd" onclick="switchMode(this)">HD 53×20</button>
     </div>
     <span class="tsep"></span>
-    <button class="tbtn ghost" id="btnGrid" onclick="toggleGrid()">⊞ Grid</button>
-    <button class="tbtn ghost" id="btnBg" onclick="cycleBg()">🌅 BG</button>
-    <button class="tbtn ghost" id="btnLive" onclick="toggleLive()">● Live</button>
+    <button type="button" class="tbtn ghost" id="btnGrid" onclick="toggleGrid()">⊞ Grid</button>
+    <button type="button" class="tbtn ghost" id="btnBg" onclick="cycleBg()">🌅 BG</button>
+    <button type="button" class="tbtn ghost" id="btnLive" onclick="toggleLive()">● Live</button>
     <span class="tsep"></span>
-    <button class="tbtn ghost" onclick="undoAct()" title="Ctrl+Z">↩ Undo</button>
-    <button class="tbtn ghost" onclick="centerAll()">⊡ Center</button>
-    <button class="tbtn ghost" onclick="snapToGrid()">⌗ Snap</button>
-    <button class="tbtn r" onclick="clearCanvas()">🗑 Clear</button>
+    <button type="button" class="tbtn ghost" onclick="undoAct()" title="Ctrl+Z">↩ Undo</button>
+    <button type="button" class="tbtn ghost" onclick="centerAll()">⊡ Center</button>
+    <button type="button" class="tbtn ghost" onclick="snapToGrid()">⌗ Snap</button>
+    <button type="button" class="tbtn r" onclick="clearCanvas()">🗑 Clear</button>
     <span class="tsep"></span>
-    <button class="tbtn a" onclick="exportCLI()">💾 Export CLI</button>
-    <button class="tbtn b" onclick="exportJSON()">📤 JSON</button>
+    <button type="button" class="tbtn a" onclick="exportCLI()">💾 Export CLI</button>
+    <button type="button" class="tbtn b" onclick="exportJSON()">📤 JSON</button>
     <label class="tbtn ghost" style="cursor:pointer">📂 Load JSON<input type="file" accept=".json" style="display:none" onchange="loadJSON(event)"></label>
   </div>
 
   <!-- Preset bar -->
   <div class="pbar">
     <span class="pbar-lbl">Presets:</span>
-    <button class="ppill pp-r" onclick="applyPreset('Racing',this)">🏁 Racing</button>
-    <button class="ppill pp-f" onclick="applyPreset('Freestyle',this)">🎮 Freestyle</button>
-    <button class="ppill pp-l" onclick="applyPreset('LongRange',this)">🌍 Long Range</button>
-    <button class="ppill pp-c" onclick="applyPreset('Cine',this)">🎥 Cine</button>
-    <button class="ppill pp-m" onclick="applyPreset('Minimal',this)">⬡ Minimal</button>
-    <button class="ppill pp-w" onclick="applyPreset('Whoop',this)">🐝 Whoop</button>
+    <button type="button" class="ppill pp-r" onclick="applyPreset('Racing',this)">🏁 Racing</button>
+    <button type="button" class="ppill pp-f" onclick="applyPreset('Freestyle',this)">🎮 Freestyle</button>
+    <button type="button" class="ppill pp-l" onclick="applyPreset('LongRange',this)">🌍 Long Range</button>
+    <button type="button" class="ppill pp-c" onclick="applyPreset('Cine',this)">🎥 Cine</button>
+    <button type="button" class="ppill pp-m" onclick="applyPreset('Minimal',this)">⬡ Minimal</button>
+    <button type="button" class="ppill pp-w" onclick="applyPreset('Whoop',this)">🐝 Whoop</button>
   </div>
 
   <!-- FPV Screen -->
@@ -467,8 +468,8 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     <div class="cli-head">
       <span class="cli-title">📋 Betaflight CLI Output</span>
       <div class="cli-acts">
-        <button class="cbtn cp" onclick="copyCLI()">⎘ Copy</button>
-        <button class="cbtn dl" onclick="exportCLI()">💾 Save</button>
+        <button type="button" class="cbtn cp" onclick="copyCLI()">⎘ Copy</button>
+        <button type="button" class="cbtn dl" onclick="exportCLI()">💾 Save</button>
       </div>
     </div>
     <div class="cli-body" id="cliOut">
@@ -933,7 +934,7 @@ function renderProps(){
     <label class="plabel">CLI Position Value</label>
     <div class="pval">
       <span>${pos} <span style="color:var(--muted2);font-size:9px">(0x${pos.toString(16).toUpperCase()})</span></span>
-      <button onclick="navigator.clipboard.writeText('${pos}').then(()=>toast('✓ Copied ${pos}'))"
+      <button type="button" onclick="navigator.clipboard.writeText('${pos}').then(()=>toast('✓ Copied ${pos}'))"
         style="background:none;border:1px solid var(--border);border-radius:4px;color:var(--muted2);font-size:10px;cursor:pointer;padding:2px 7px">⎘</button>
     </div>
     <!-- Color -->
@@ -953,8 +954,8 @@ function renderProps(){
     <div class="mock-preview" style="color:${el.color}">${def.mock}</div>
     <!-- Actions -->
     <div class="pbtns">
-      <button class="pbtn" style="background:rgba(255,68,85,.07);border-color:rgba(255,68,85,.22);color:var(--red)" onclick="delEl('${el.id}')">🗑 Delete</button>
-      <button class="pbtn" style="background:rgba(0,255,136,.07);border-color:rgba(0,255,136,.22);color:var(--green)" onclick="cloneEl('${el.id}')">⎘ Clone</button>
+      <button type="button" class="pbtn" style="background:rgba(255,68,85,.07);border-color:rgba(255,68,85,.22);color:var(--red)" onclick="delEl('${el.id}')">🗑 Delete</button>
+      <button type="button" class="pbtn" style="background:rgba(0,255,136,.07);border-color:rgba(0,255,136,.22);color:var(--green)" onclick="cloneEl('${el.id}')">⎘ Clone</button>
     </div>
   </div>`;
 }

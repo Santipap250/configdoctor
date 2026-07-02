@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
 {% set nav_page = "bf_wizard" %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════════
@@ -497,23 +498,23 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
     <div class="frow">
       <div class="flabel">สไตล์การบิน</div>
       <div class="pill-row" id="pg_style">
-        <button class="pbtn sel" data-v="freestyle">Freestyle</button>
-        <button class="pbtn" data-v="racing">Racing</button>
-        <button class="pbtn" data-v="cinematic">Cinematic</button>
-        <button class="pbtn" data-v="longrange">Long Range</button>
-        <button class="pbtn" data-v="proximity">Proximity</button>
+        <button type="button" class="pbtn sel" data-v="freestyle">Freestyle</button>
+        <button type="button" class="pbtn" data-v="racing">Racing</button>
+        <button type="button" class="pbtn" data-v="cinematic">Cinematic</button>
+        <button type="button" class="pbtn" data-v="longrange">Long Range</button>
+        <button type="button" class="pbtn" data-v="proximity">Proximity</button>
       </div>
       <div class="fhint" id="styleHint">Freestyle: trick, powerloop, split-S — สมดุลระหว่าง P/D สูง + FF</div>
     </div>
     <div class="frow">
       <div class="flabel">Battery cells</div>
       <div class="pill-row" id="pg_cells">
-        <button class="pbtn" data-v="2">2S</button>
-        <button class="pbtn" data-v="3">3S</button>
-        <button class="pbtn sel" data-v="4">4S</button>
-        <button class="pbtn" data-v="5">5S</button>
-        <button class="pbtn" data-v="6">6S</button>
-        <button class="pbtn" data-v="8">8S</button>
+        <button type="button" class="pbtn" data-v="2">2S</button>
+        <button type="button" class="pbtn" data-v="3">3S</button>
+        <button type="button" class="pbtn sel" data-v="4">4S</button>
+        <button type="button" class="pbtn" data-v="5">5S</button>
+        <button type="button" class="pbtn" data-v="6">6S</button>
+        <button type="button" class="pbtn" data-v="8">8S</button>
       </div>
     </div>
   </div>
@@ -530,18 +531,18 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
     <div class="frow">
       <div class="flabel">FC Processor</div>
       <div class="pill-row" id="pg_fc">
-        <button class="pbtn" data-v="F4">F4</button>
-        <button class="pbtn sel-b sel" data-v="F7">F7</button>
-        <button class="pbtn" data-v="H7">H7</button>
+        <button type="button" class="pbtn" data-v="F4">F4</button>
+        <button type="button" class="pbtn sel-b sel" data-v="F7">F7</button>
+        <button type="button" class="pbtn" data-v="H7">H7</button>
       </div>
       <div class="fhint">F7/H7 รองรับ looptime 8kHz เหมาะ DSHOT600 + RPM filter</div>
     </div>
     <div class="frow">
       <div class="flabel">Betaflight Version</div>
       <div class="pill-row" id="pg_bfver">
-        <button class="pbtn" data-v="4.3">BF 4.3</button>
-        <button class="pbtn sel" data-v="4.4">BF 4.4</button>
-        <button class="pbtn" data-v="4.5">BF 4.5</button>
+        <button type="button" class="pbtn" data-v="4.3">BF 4.3</button>
+        <button type="button" class="pbtn sel" data-v="4.4">BF 4.4</button>
+        <button type="button" class="pbtn" data-v="4.5">BF 4.5</button>
       </div>
       <div class="fhint">BF 4.5 ใช้ syntax filter ใหม่ — wizard จะปรับ command ให้อัตโนมัติ</div>
     </div>
@@ -551,10 +552,10 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
     <div class="frow">
       <div class="flabel">ESC Protocol</div>
       <div class="pill-row" id="pg_esc">
-        <button class="pbtn" data-v="DSHOT150">D150</button>
-        <button class="pbtn" data-v="DSHOT300">D300</button>
-        <button class="pbtn sel" data-v="DSHOT600">D600 ⭐</button>
-        <button class="pbtn" data-v="PROSHOT1000">PROSHOT</button>
+        <button type="button" class="pbtn" data-v="DSHOT150">D150</button>
+        <button type="button" class="pbtn" data-v="DSHOT300">D300</button>
+        <button type="button" class="pbtn sel" data-v="DSHOT600">D600 ⭐</button>
+        <button type="button" class="pbtn" data-v="PROSHOT1000">PROSHOT</button>
       </div>
       <div class="fhint">DSHOT600 แนะนำสำหรับ ESC สมัยใหม่ ใช้ร่วมกับ Bidir DSHOT ได้</div>
     </div>
@@ -580,10 +581,10 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
     <div class="frow">
       <div class="flabel">Motor Poles</div>
       <div class="pill-row" id="pg_poles">
-        <button class="pbtn" data-v="12">12</button>
-        <button class="pbtn sel" data-v="14">14 ⭐</button>
-        <button class="pbtn" data-v="16">16</button>
-        <button class="pbtn" data-v="18">18</button>
+        <button type="button" class="pbtn" data-v="12">12</button>
+        <button type="button" class="pbtn sel" data-v="14">14 ⭐</button>
+        <button type="button" class="pbtn" data-v="16">16</button>
+        <button type="button" class="pbtn" data-v="18">18</button>
       </div>
       <div class="fhint">Motor 5\" ส่วนใหญ่ = 14 poles · Micro อาจใช้ 12 · นับแม่เหล็กใน bell ÷ 2</div>
     </div>
@@ -598,21 +599,21 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
     <div class="frow">
       <div class="flabel">Receiver System</div>
       <div class="pill-row" id="pg_rx">
-        <button class="pbtn sel" data-v="ELRS">ELRS 2.4G</button>
-        <button class="pbtn" data-v="ELRS900">ELRS 900M</button>
-        <button class="pbtn" data-v="CRSF">TBS Crossfire</button>
-        <button class="pbtn" data-v="SBUS">SBUS</button>
-        <button class="pbtn" data-v="PPM">PPM</button>
+        <button type="button" class="pbtn sel" data-v="ELRS">ELRS 2.4G</button>
+        <button type="button" class="pbtn" data-v="ELRS900">ELRS 900M</button>
+        <button type="button" class="pbtn" data-v="CRSF">TBS Crossfire</button>
+        <button type="button" class="pbtn" data-v="SBUS">SBUS</button>
+        <button type="button" class="pbtn" data-v="PPM">PPM</button>
       </div>
     </div>
     <div class="frow">
       <div class="flabel">Video System</div>
       <div class="pill-row" id="pg_vtx">
-        <button class="pbtn sel" data-v="analog">Analog</button>
-        <button class="pbtn" data-v="dji_o3">DJI O3</button>
-        <button class="pbtn" data-v="dji_o4">DJI O4</button>
-        <button class="pbtn" data-v="hdzero">HDZero</button>
-        <button class="pbtn" data-v="avatar">Avatar HD</button>
+        <button type="button" class="pbtn sel" data-v="analog">Analog</button>
+        <button type="button" class="pbtn" data-v="dji_o3">DJI O3</button>
+        <button type="button" class="pbtn" data-v="dji_o4">DJI O4</button>
+        <button type="button" class="pbtn" data-v="hdzero">HDZero</button>
+        <button type="button" class="pbtn" data-v="avatar">Avatar HD</button>
       </div>
     </div>
   </div>
@@ -632,10 +633,10 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
       <div class="fhint">Conservative 0.75× → Stock 1.0× → Slightly Hot 1.2× → Aggressive 1.4×</div>
     </div>
     <div class="pill-row" id="pg_pidpre">
-      <button class="pbtn" data-v="75">🐢 Conservative</button>
-      <button class="pbtn sel" data-v="100">⚖️ Stock</button>
-      <button class="pbtn" data-v="115">🔥 Slightly Hot</button>
-      <button class="pbtn" data-v="135">💥 Aggressive</button>
+      <button type="button" class="pbtn" data-v="75">🐢 Conservative</button>
+      <button type="button" class="pbtn sel" data-v="100">⚖️ Stock</button>
+      <button type="button" class="pbtn" data-v="115">🔥 Slightly Hot</button>
+      <button type="button" class="pbtn" data-v="135">💥 Aggressive</button>
     </div>
   </div>
   <div class="scard">
@@ -691,20 +692,20 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
     <div class="card-head">📋 RATES TYPE & PROFILE</div>
     <div class="frow">
       <div class="pill-row" id="pg_rtype">
-        <button class="pbtn sel" data-v="ACTUAL">ACTUAL (แนะนำ)</button>
-        <button class="pbtn" data-v="BETAFLIGHT">BETAFLIGHT</button>
-        <button class="pbtn" data-v="KISS">KISS</button>
+        <button type="button" class="pbtn sel" data-v="ACTUAL">ACTUAL (แนะนำ)</button>
+        <button type="button" class="pbtn" data-v="BETAFLIGHT">BETAFLIGHT</button>
+        <button type="button" class="pbtn" data-v="KISS">KISS</button>
       </div>
       <div class="fhint">ACTUAL type ใช้ RC Rate เป็น max deg/s โดยตรง ปรับใจง่ายกว่า</div>
     </div>
     <div class="frow">
       <div class="flabel">Rates Preset</div>
       <div class="pill-row" id="pg_ratepre">
-        <button class="pbtn" data-v="beginner">🐢 Beginner</button>
-        <button class="pbtn" data-v="cine">🎬 Cine</button>
-        <button class="pbtn sel" data-v="freestyle">✈️ Freestyle</button>
-        <button class="pbtn" data-v="race">⚡ Race</button>
-        <button class="pbtn" data-v="lr">🗺️ Long Range</button>
+        <button type="button" class="pbtn" data-v="beginner">🐢 Beginner</button>
+        <button type="button" class="pbtn" data-v="cine">🎬 Cine</button>
+        <button type="button" class="pbtn sel" data-v="freestyle">✈️ Freestyle</button>
+        <button type="button" class="pbtn" data-v="race">⚡ Race</button>
+        <button type="button" class="pbtn" data-v="lr">🗺️ Long Range</button>
       </div>
     </div>
   </div>
@@ -755,8 +756,8 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
     <div class="frow">
       <div class="flabel">Gyro LPF1 Type</div>
       <div class="pill-row" id="pg_glpf1t">
-        <button class="pbtn sel" data-v="PT1">PT1 (เร็ว)</button>
-        <button class="pbtn" data-v="BIQUAD">BIQUAD (ชัน)</button>
+        <button type="button" class="pbtn sel" data-v="PT1">PT1 (เร็ว)</button>
+        <button type="button" class="pbtn" data-v="BIQUAD">BIQUAD (ชัน)</button>
       </div>
       <div class="fhint">PT1: latency ต่ำกว่า เหมาะ racing · BIQUAD: rolloff ชันกว่า เหมาะ freestyle</div>
     </div>
@@ -775,8 +776,8 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
     <div class="frow">
       <div class="flabel">D-term LPF1 Type</div>
       <div class="pill-row" id="pg_dlpf1t">
-        <button class="pbtn sel" data-v="PT1">PT1 ⭐</button>
-        <button class="pbtn" data-v="BIQUAD">BIQUAD</button>
+        <button type="button" class="pbtn sel" data-v="PT1">PT1 ⭐</button>
+        <button type="button" class="pbtn" data-v="BIQUAD">BIQUAD</button>
       </div>
     </div>
     <div class="frow">
@@ -852,9 +853,9 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
     <div class="frow">
       <div class="flabel">Airmode</div>
       <div class="pill-row" id="pg_air">
-        <button class="pbtn sel" data-v="always">Always ON ⭐</button>
-        <button class="pbtn" data-v="switch">Switch</button>
-        <button class="pbtn" data-v="off">OFF</button>
+        <button type="button" class="pbtn sel" data-v="always">Always ON ⭐</button>
+        <button type="button" class="pbtn" data-v="switch">Switch</button>
+        <button type="button" class="pbtn" data-v="off">OFF</button>
       </div>
       <div class="fhint">Always ON = control ดีที่สุดที่ idle throttle · แนะนำสำหรับ freestyle/racing</div>
     </div>
@@ -874,9 +875,9 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
     <div class="frow">
       <div class="flabel">iterm_relax</div>
       <div class="pill-row" id="pg_irelax">
-        <button class="pbtn sel" data-v="RP">RP (แนะนำ)</button>
-        <button class="pbtn" data-v="RPY">RPY (ทุกแกน)</button>
-        <button class="pbtn" data-v="OFF">OFF</button>
+        <button type="button" class="pbtn sel" data-v="RP">RP (แนะนำ)</button>
+        <button type="button" class="pbtn" data-v="RPY">RPY (ทุกแกน)</button>
+        <button type="button" class="pbtn" data-v="OFF">OFF</button>
       </div>
       <div class="fhint">RP: ลด I windup ระหว่าง flip/roll · RPY: รวม yaw ด้วย</div>
     </div>
@@ -890,19 +891,19 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
     <div class="frow">
       <div class="flabel">RC Smoothing Mode</div>
       <div class="pill-row" id="pg_rcsm">
-        <button class="pbtn sel" data-v="AUTO">AUTO ⭐</button>
-        <button class="pbtn" data-v="MANUAL">MANUAL</button>
-        <button class="pbtn" data-v="OFF">OFF</button>
+        <button type="button" class="pbtn sel" data-v="AUTO">AUTO ⭐</button>
+        <button type="button" class="pbtn" data-v="MANUAL">MANUAL</button>
+        <button type="button" class="pbtn" data-v="OFF">OFF</button>
       </div>
       <div class="fhint">AUTO ปรับตาม RC input rate อัตโนมัติ · เหมาะกับ ELRS 250Hz+</div>
     </div>
     <div class="frow">
       <div class="flabel">Feedforward Averaging</div>
       <div class="pill-row" id="pg_ffavg">
-        <button class="pbtn" data-v="OFF">OFF</button>
-        <button class="pbtn sel" data-v="2_POINT">2_POINT ⭐</button>
-        <button class="pbtn" data-v="3_POINT">3_POINT</button>
-        <button class="pbtn" data-v="4_POINT">4_POINT</button>
+        <button type="button" class="pbtn" data-v="OFF">OFF</button>
+        <button type="button" class="pbtn sel" data-v="2_POINT">2_POINT ⭐</button>
+        <button type="button" class="pbtn" data-v="3_POINT">3_POINT</button>
+        <button type="button" class="pbtn" data-v="4_POINT">4_POINT</button>
       </div>
       <div class="fhint">2_POINT ลด RC noise สำหรับ ELRS · 4_POINT ถ้า RC glitchy มาก</div>
     </div>
@@ -922,9 +923,9 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
     <div class="frow" style="margin-top:8px">
       <div class="flabel">OSD/Display System</div>
       <div class="pill-row" id="pg_osd">
-        <button class="pbtn sel" data-v="MAX7456">MAX7456 (Analog)</button>
-        <button class="pbtn" data-v="MSP_DISPLAYPORT">MSP Displayport</button>
-        <button class="pbtn" data-v="NONE">ไม่ใช้ OSD</button>
+        <button type="button" class="pbtn sel" data-v="MAX7456">MAX7456 (Analog)</button>
+        <button type="button" class="pbtn" data-v="MSP_DISPLAYPORT">MSP Displayport</button>
+        <button type="button" class="pbtn" data-v="NONE">ไม่ใช้ OSD</button>
       </div>
       <div class="fhint">DJI O3/O4 และ HDZero/Avatar ใช้ MSP Displayport</div>
     </div>
@@ -942,9 +943,9 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
     <div class="frow">
       <div class="flabel">Failsafe Action</div>
       <div class="pill-row" id="pg_fsact">
-        <button class="pbtn sel-r sel" data-v="DROP">DROP ⭐ FPV</button>
-        <button class="pbtn" data-v="LAND">LAND</button>
-        <button class="pbtn" data-v="GPS_RESCUE">GPS Rescue</button>
+        <button type="button" class="pbtn sel-r sel" data-v="DROP">DROP ⭐ FPV</button>
+        <button type="button" class="pbtn" data-v="LAND">LAND</button>
+        <button type="button" class="pbtn" data-v="GPS_RESCUE">GPS Rescue</button>
       </div>
       <div class="fhint">DROP: ตัด motor ทันที (FPV racing/freestyle) · LAND: ลงช้าๆ (beginner) · GPS_RESCUE: บินกลับ home</div>
     </div>
@@ -1021,9 +1022,9 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
   <div class="out-grid" id="outGrid"></div>
   <div class="out-copy" id="outCopy"></div>
   <div class="out-btns">
-    <button class="obtn go" onclick="copyCLI()">📋 COPY CLI</button>
-    <button class="obtn dl" id="dlBtn">⬇️ DOWNLOAD .TXT</button>
-    <button class="obtn rst" onclick="goStep(1)">🔄 เริ่มใหม่</button>
+    <button type="button" class="obtn go" onclick="copyCLI()">📋 COPY CLI</button>
+    <button type="button" class="obtn dl" id="dlBtn">⬇️ DOWNLOAD .TXT</button>
+    <button type="button" class="obtn rst" onclick="goStep(1)">🔄 เริ่มใหม่</button>
   </div>
   <div class="out-links">
     <a href="/rates-visualizer" class="out-link">📈 Rates Viz</a>
@@ -1037,9 +1038,9 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
 
 <!-- WIZARD NAV -->
 <div class="wiz-nav">
-  <button class="nbtn prev" id="btnPrev" onclick="stepPrev()" disabled>← ก่อนหน้า</button>
+  <button type="button" class="nbtn prev" id="btnPrev" onclick="stepPrev()" disabled>← ก่อนหน้า</button>
   <div class="sctr" id="stepCtr">ขั้นที่ 1 / 8</div>
-  <button class="nbtn next" id="btnNext" onclick="stepNext()">ถัดไป →</button>
+  <button type="button" class="nbtn next" id="btnNext" onclick="stepNext()">ถัดไป →</button>
 </div>
 </div><!-- /wiz-left -->
 
@@ -1048,8 +1049,8 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
   <div class="cli-hd" onclick="toggleCLIPanel()">
     <div class="cli-title"><span class="cli-dot"></span>⚡ LIVE CLI PREVIEW</div>
     <div class="cli-acts">
-      <button class="cbtn copy" onclick="event.stopPropagation();copyCLI()">COPY</button>
-      <button class="cbtn dl" onclick="event.stopPropagation();downloadCLI()">DL</button>
+      <button type="button" class="cbtn copy" onclick="event.stopPropagation();copyCLI()">COPY</button>
+      <button type="button" class="cbtn dl" onclick="event.stopPropagation();downloadCLI()">DL</button>
     </div>
   </div>
   <div class="cli-body"><pre id="cliOut"></pre></div>
@@ -1063,7 +1064,7 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
 </div><!-- /wiz-outer -->
 
 <!-- CLI toggle (mobile) -->
-<button class="cli-toggle" id="cliToggle" onclick="toggleCLIPanel()">📟</button>
+<button type="button" class="cli-toggle" id="cliToggle" onclick="toggleCLIPanel()">📟</button>
 
 <div id="toast"></div>
 

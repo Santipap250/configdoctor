@@ -11,10 +11,10 @@
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 {% set nav_page = "vtx" %}
+</head>
+<body class="dark">
 {% include "partials/nav.html" %}
 {% include "partials/page_actions.html" %}
-
-<style>
 /* ══════════════════════════════════════════════════════
    VTX BANDS & CHANNELS — OBIXConfig Doctor v3
    Full redesign: Spectrum, RacePlanner, Education
@@ -545,11 +545,8 @@
   .ch-grid { grid-template-columns: repeat(4,1fr); }
 }
 </style>
-</head>
-<body class="dark">
 
 <div class="vtx-root">
-
 <!-- ── HERO ── -->
 <div class="vtx-hero">
   <div class="vtx-hero-eyebrow">📡 VTX Reference & Tools</div>
@@ -581,11 +578,11 @@
 
 <!-- ── MAIN TABS ── -->
 <div class="main-tabs" role="tablist">
-  <button class="main-tab active" onclick="switchTab('picker',this)" role="tab">📡 เลือก Channel</button>
-  <button class="main-tab" onclick="switchTab('planner',this)" role="tab">🏁 Race Planner</button>
-  <button class="main-tab" onclick="switchTab('ref',this)" role="tab">📋 ตารางอ้างอิง</button>
-  <button class="main-tab" onclick="switchTab('cli',this)" role="tab">💻 CLI Commands</button>
-  <button class="main-tab" onclick="switchTab('edu',this)" role="tab">📖 คู่มือ</button>
+  <button type="button" class="main-tab active" onclick="switchTab('picker',this)" role="tab">📡 เลือก Channel</button>
+  <button type="button" class="main-tab" onclick="switchTab('planner',this)" role="tab">🏁 Race Planner</button>
+  <button type="button" class="main-tab" onclick="switchTab('ref',this)" role="tab">📋 ตารางอ้างอิง</button>
+  <button type="button" class="main-tab" onclick="switchTab('cli',this)" role="tab">💻 CLI Commands</button>
+  <button type="button" class="main-tab" onclick="switchTab('edu',this)" role="tab">📖 คู่มือ</button>
 </div>
 
 <!-- ══════════════════════════════════════════
@@ -627,10 +624,10 @@
     <div>
       <label class="vtx-label">🔌 Protocol</label>
       <div class="proto-tabs">
-        <button class="proto-tab active" onclick="setProto('smartaudio',this)">SmartAudio</button>
-        <button class="proto-tab" onclick="setProto('tramp',this)">IRC Tramp</button>
-        <button class="proto-tab" onclick="setProto('msp',this)">MSP VTX</button>
-        <button class="proto-tab" onclick="setProto('vtxtable',this)">vtxTable (BF4.3+)</button>
+        <button type="button" class="proto-tab active" onclick="setProto('smartaudio',this)">SmartAudio</button>
+        <button type="button" class="proto-tab" onclick="setProto('tramp',this)">IRC Tramp</button>
+        <button type="button" class="proto-tab" onclick="setProto('msp',this)">MSP VTX</button>
+        <button type="button" class="proto-tab" onclick="setProto('vtxtable',this)">vtxTable (BF4.3+)</button>
       </div>
     </div>
   </div>
@@ -646,8 +643,8 @@
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
       <div class="vtx-panel-title" style="margin-bottom:0;">💻 CLI Command — พร้อม Copy</div>
       <div style="display:flex;gap:6px;">
-        <button class="btn-sm btn-sm-green" onclick="copyAllCLI()">📋 คัดลอก</button>
-        <button class="btn-sm btn-sm-ghost" onclick="clearSelection()">✕ ล้าง</button>
+        <button type="button" class="btn-sm btn-sm-green" onclick="copyAllCLI()">📋 คัดลอก</button>
+        <button type="button" class="btn-sm btn-sm-ghost" onclick="clearSelection()">✕ ล้าง</button>
       </div>
     </div>
     <div class="cli-box" id="cliOut">
@@ -674,10 +671,10 @@
     </div>
     <div class="pilot-list" id="pilotList"></div>
     <div class="planner-actions" style="margin-top:4px;">
-      <button class="planner-btn planner-btn-green" onclick="addPilot()">+ เพิ่ม Pilot</button>
-      <button class="planner-btn planner-btn-blue" onclick="autoAssign()">✨ Auto-Assign ช่องให้อัตโนมัติ</button>
-      <button class="planner-btn planner-btn-ghost" onclick="checkConflicts()">🔍 ตรวจสอบ Conflict</button>
-      <button class="planner-btn planner-btn-ghost" onclick="clearPilots()">✕ ล้างทั้งหมด</button>
+      <button type="button" class="planner-btn planner-btn-green" onclick="addPilot()">+ เพิ่ม Pilot</button>
+      <button type="button" class="planner-btn planner-btn-blue" onclick="autoAssign()">✨ Auto-Assign ช่องให้อัตโนมัติ</button>
+      <button type="button" class="planner-btn planner-btn-ghost" onclick="checkConflicts()">🔍 ตรวจสอบ Conflict</button>
+      <button type="button" class="planner-btn planner-btn-ghost" onclick="clearPilots()">✕ ล้างทั้งหมด</button>
     </div>
     <div id="conflictReport" class="conflict-report"></div>
     <div id="okReport" class="ok-report"></div>
@@ -707,7 +704,7 @@
           <option value="Band F">Band F (Fatshark)</option>
           <option value="Band D">Band D (Low)</option>
         </select>
-        <button class="btn-sm btn-sm-ghost" onclick="exportFreqCSV()">⬇ Export CSV</button>
+        <button type="button" class="btn-sm btn-sm-ghost" onclick="exportFreqCSV()">⬇ Export CSV</button>
       </div>
     </div>
     <div style="overflow-x:auto;">
@@ -753,7 +750,7 @@
         ใช้กับ VTX ที่รองรับ TBS SmartAudio — ตั้งค่าผ่าน CLI หรือ OSD → Video Transmitter Settings
       </div>
       <div class="cli-box" style="position:relative;">
-        <button class="cli-copy-btn" onclick="copyBox(this)">Copy</button>
+        <button type="button" class="cli-copy-btn" onclick="copyBox(this)">Copy</button>
         <span class="cli-comment"># ตัวอย่าง: Raceband Ch1 (5658 MHz), 200mW, SmartAudio</span><br>
         <span class="cli-cmd">set</span> <span class="cli-val">vtx_band = 5</span>       <span class="cli-comment">  # 1=A, 2=B, 3=E, 4=F, 5=R, 6=D</span><br>
         <span class="cli-cmd">set</span> <span class="cli-val">vtx_channel = 1</span>    <span class="cli-comment">  # Ch 1–8</span><br>
@@ -770,7 +767,7 @@
         ส่ง command โดยตรงด้วยความถี่ MHz — ยืดหยุ่นกว่า SmartAudio
       </div>
       <div class="cli-box" style="position:relative;">
-        <button class="cli-copy-btn" onclick="copyBox(this)">Copy</button>
+        <button type="button" class="cli-copy-btn" onclick="copyBox(this)">Copy</button>
         <span class="cli-comment"># IRC Tramp: ตั้งตรงๆ ด้วย freq + power</span><br>
         <span class="cli-comment"># vtx &lt;frequency_mhz&gt; &lt;power_mw&gt;</span><br>
         <span class="cli-cmd">vtx</span> <span class="cli-freq">5658</span> <span class="cli-val">200</span>   <span class="cli-comment">  # R1 @ 5658 MHz, 200mW</span><br>
@@ -791,12 +788,12 @@
         แล้วอ้างอิง index แทนค่า MHz ตรงๆ ยืดหยุ่นและปรับแต่งได้เต็มที่
       </div>
       <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-        <button class="btn-sm btn-sm-green" onclick="showVtxTable('standard')">Standard Bands</button>
-        <button class="btn-sm btn-sm-ghost" onclick="showVtxTable('raceonly')">Raceband Only</button>
-        <button class="btn-sm btn-sm-ghost" onclick="showVtxTable('power25')">25mW Safe</button>
+        <button type="button" class="btn-sm btn-sm-green" onclick="showVtxTable('standard')">Standard Bands</button>
+        <button type="button" class="btn-sm btn-sm-ghost" onclick="showVtxTable('raceonly')">Raceband Only</button>
+        <button type="button" class="btn-sm btn-sm-ghost" onclick="showVtxTable('power25')">25mW Safe</button>
       </div>
       <div id="vtxtableOutput" class="vtxtable-box" style="position:relative;">
-        <button class="cli-copy-btn" onclick="copyBox(this)" style="top:8px;right:8px;">Copy</button>
+        <button type="button" class="cli-copy-btn" onclick="copyBox(this)" style="top:8px;right:8px;">Copy</button>
 <span class="cli-comment"># กด "Standard Bands" ด้านบนเพื่อสร้าง vtxTable command</span></div>
     </div>
 
@@ -1491,7 +1488,7 @@ function showVtxTable(type){
     lines.push('save');
   }
 
-  el.innerHTML=`<button class="cli-copy-btn" onclick="copyBox(this)" style="top:8px;right:8px;">Copy</button><span class="cli-comment">${lines.map(l=>l.startsWith('#')?`<span class="cli-comment">${l}</span>`:l.startsWith('set ')?`<span class="cli-cmd">set</span> <span class="cli-val">${l.slice(4)}</span>`:l.startsWith('vtxtable')?`<span class="cli-cmd">vtxtable</span> <span class="cli-val">${l.slice(9)}</span>`:l.startsWith('save')?`<span class="cli-cmd">${l}</span>`:l).join('\n')}</span>`;
+  el.innerHTML=`<button type="button" class="cli-copy-btn" onclick="copyBox(this)" style="top:8px;right:8px;">Copy</button><span class="cli-comment">${lines.map(l=>l.startsWith('#')?`<span class="cli-comment">${l}</span>`:l.startsWith('set ')?`<span class="cli-cmd">set</span> <span class="cli-val">${l.slice(4)}</span>`:l.startsWith('vtxtable')?`<span class="cli-cmd">vtxtable</span> <span class="cli-val">${l.slice(9)}</span>`:l.startsWith('save')?`<span class="cli-cmd">${l}</span>`:l).join('\n')}</span>`;
 }
 
 // ─── POWER GUIDE ───────────────────────────────────────
@@ -1591,7 +1588,7 @@ function renderPilots(){
       <select class="pilot-ch-select" onchange="pilots[${i}].ch=this.value;checkConflicts()">
         ${buildPilotSelect().replace(`value="${p.ch}"`,`value="${p.ch}" selected`)}
       </select>
-      <button class="pilot-remove-btn" onclick="removePilot(${i})" title="ลบ">✕</button>`;
+      <button type="button" class="pilot-remove-btn" onclick="removePilot(${i})" title="ลบ">✕</button>`;
     list.appendChild(row);
   });
 }
@@ -1689,7 +1686,7 @@ function buildRacePresets(){
     }).join('');
     card.innerHTML=`<div style="font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:8px;">${preset.name}</div>
       <div>${rows}</div>
-      <button class="btn-sm btn-sm-green" style="margin-top:10px;" onclick='loadPreset(${JSON.stringify(preset.pilots)})'>โหลด Preset นี้</button>`;
+      <button type="button" class="btn-sm btn-sm-green" style="margin-top:10px;" onclick='loadPreset(${JSON.stringify(preset.pilots)})'>โหลด Preset นี้</button>`;
     cont.appendChild(card);
   });
 }
