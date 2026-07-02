@@ -203,3 +203,16 @@ def get_starter_kits():
             "products": items,
         })
     return kits
+
+
+def get_all_by_category():
+    """Return all catalog products grouped by category in CATEGORY_ORDER,
+    each group as a list of product dicts (no why-text — template adds this)."""
+    catalog = _load_catalog()
+    products = catalog.get("products", [])
+    result = {cat: [] for cat in CATEGORY_ORDER}
+    for p in products:
+        cat = p.get("category")
+        if cat in result:
+            result[cat].append(p)
+    return result
