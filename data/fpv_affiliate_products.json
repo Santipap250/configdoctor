@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "updated": "2026-06",
-  "disclaimer_th": "บางลิงก์ในหน้านี้อาจเป็น affiliate link — ConfigDoctor อาจได้รับค่าคอมมิชชั่นเล็กน้อยเมื่อคุณซื้อผ่านลิงก์ โดยไม่มีค่าใช้จ่ายเพิ่มจากคุณ ทีมงานคัดเลือกอุปกรณ์จากความเข้ากันได้ทางวิศวกรรม ไม่ใช่จากสปอนเซอร์หรือโฆษณา",
+  "disclaimer_th": "ทีมงานคัดเลือกอุปกรณ์จากความเข้ากันได้ทางวิศวกรรม ไม่ใช่จากสปอนเซอร์หรือโฆษณา",
   "disclaimer_en": "Some links on this page may be affiliate links. ConfigDoctor may earn a small commission at no extra cost to you. Items are picked for engineering fit, not sponsorship.",
   "categories": {
     "motors": {
