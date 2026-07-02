@@ -71,8 +71,8 @@
 {% endif %}
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Sarabun:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-
 <style>
 /* ════════════════════════════════════════════════════════════════
    OBIX UNIFIED HUD NAV v5.3  (prefix: .on-)
@@ -384,7 +384,7 @@ body.light .on-dfoot-ver{color:#059669;}
         <div class="on-dh-sub">FPV Tuning Toolkit · v5.3</div>
       </div>
     </div>
-    <button id="onClose" class="on-dclose" aria-label="ปิดเมนู">✕</button>
+    <button type="button" id="onClose" class="on-dclose" aria-label="ปิดเมนู">✕</button>
   </div>
   <div class="on-search-wrap">
     <div class="on-search-inner">
@@ -510,7 +510,7 @@ body.light .on-dfoot-ver{color:#059669;}
 
 <!-- ═══ TOP BAR ═══ -->
 <div class="on-bar" role="banner">
-  <button id="onHam" class="on-ham" aria-label="เปิดเมนู" aria-expanded="false" aria-controls="onDrawer">
+  <button type="button" id="onHam" class="on-ham" aria-label="เปิดเมนู" aria-expanded="false" aria-controls="onDrawer">
     <span></span><span></span><span></span>
   </button>
   <a href="/app" class="on-logo-link" aria-label="OBIXConfig Doctor Home">
@@ -526,7 +526,7 @@ body.light .on-dfoot-ver{color:#059669;}
   <nav class="on-mega" aria-label="Main navigation">
 
     <div class="on-mg mg-tune {% if nav_group=='tune' %}on-mg-active{% endif %}">
-      <button class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">🩺</span> TUNE <span class="on-mg-arr">▾</span></button>
+      <button type="button" class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">🩺</span> TUNE <span class="on-mg-arr">▾</span></button>
       <div class="on-dd">
         <div class="on-dd-hd">PID · Filter · Setup</div>
         <a class="on-dd-item {% if nav_page=='home' %}on-dd-act{% endif %}" href="/app"><span class="on-dd-ico">🔬</span><span class="on-dd-body"><span class="on-dd-label">Drone Analyzer</span><span class="on-dd-hint">Main PID + Physics</span></span></a>
@@ -539,7 +539,7 @@ body.light .on-dfoot-ver{color:#059669;}
     </div>
 
     <div class="on-mg mg-hw {% if nav_group=='hw' %}on-mg-active{% endif %}">
-      <button class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">⚙️</span> HW <span class="on-mg-arr">▾</span></button>
+      <button type="button" class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">⚙️</span> HW <span class="on-mg-arr">▾</span></button>
       <div class="on-dd">
         <div class="on-dd-hd">Motor · ESC · Battery</div>
         <a class="on-dd-item {% if nav_page=='motor_prop' %}on-dd-act{% endif %}" href="/motor-prop"><span class="on-dd-ico">🧭</span><span class="on-dd-body"><span class="on-dd-label">Motor × Prop</span><span class="on-dd-hint">KV + stator lab</span></span></a>
@@ -551,7 +551,7 @@ body.light .on-dfoot-ver{color:#059669;}
     </div>
 
     <div class="on-mg mg-analysis {% if nav_group=='analysis' %}on-mg-active{% endif %}">
-      <button class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">📊</span> ANALYZE <span class="on-mg-arr">▾</span></button>
+      <button type="button" class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">📊</span> ANALYZE <span class="on-mg-arr">▾</span></button>
       <div class="on-dd">
         <div class="on-dd-hd">Flight Data · Config</div>
         <a class="on-dd-item {% if nav_page=='blackbox' %}on-dd-act{% endif %}" href="/blackbox"><span class="on-dd-ico">📊</span><span class="on-dd-body"><span class="on-dd-label">Blackbox Analyzer</span><span class="on-dd-hint">CSV → PID score</span></span><span class="on-dd-badge ddb-hot">HOT</span></a>
@@ -564,7 +564,7 @@ body.light .on-dfoot-ver{color:#059669;}
     </div>
 
     <div class="on-mg mg-video {% if nav_group=='video' %}on-mg-active{% endif %}">
-      <button class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">📡</span> VIDEO <span class="on-mg-arr">▾</span></button>
+      <button type="button" class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">📡</span> VIDEO <span class="on-mg-arr">▾</span></button>
       <div class="on-dd">
         <div class="on-dd-hd">VTX · OSD · RF</div>
         <a class="on-dd-item {% if nav_page=='vtx' %}on-dd-act{% endif %}" href="/vtx"><span class="on-dd-ico">📡</span><span class="on-dd-body"><span class="on-dd-label">VTX Bands</span><span class="on-dd-hint">Band/Channel table</span></span></a>
@@ -574,7 +574,7 @@ body.light .on-dfoot-ver{color:#059669;}
     </div>
 
     <div class="on-mg mg-explore {% if nav_group=='explore' %}on-mg-active{% endif %}">
-      <button class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">🎮</span> EXPLORE <span class="on-mg-arr">▾</span></button>
+      <button type="button" class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">🎮</span> EXPLORE <span class="on-mg-arr">▾</span></button>
       <div class="on-dd">
         <div class="on-dd-hd">Sim · Community · Info</div>
         <a class="on-dd-item {% if nav_page=='fpv_trainer' %}on-dd-act{% endif %}" href="/fpv-trainer"><span class="on-dd-ico">🕹️</span><span class="on-dd-body"><span class="on-dd-label">FPV Simulator NEO</span><span class="on-dd-hint">3D drone · Race</span></span><span class="on-dd-badge ddb-game">GAME</span></a>
@@ -595,9 +595,9 @@ body.light .on-dfoot-ver{color:#059669;}
     <span class="on-crumb" aria-current="page">
       <span class="on-crumb-dot"></span>{{ nav_label }}
     </span>
-    <button id="onSearchBtn" class="on-search-btn" aria-label="Open search (press /)">🔍<span class="on-search-hint">/</span></button>
-    <button class="on-icon-btn" id="onLang" title="Switch TH/EN" aria-label="Toggle language"><span id="onLangLabel">TH</span></button>
-    <button class="on-icon-btn" id="onTheme" title="Toggle dark/light" aria-label="Toggle theme"><span id="onThemeIcon">🌙</span></button>
+    <button type="button" id="onSearchBtn" class="on-search-btn" aria-label="Open search (press /)">🔍<span class="on-search-hint">/</span></button>
+    <button type="button" class="on-icon-btn" id="onLang" title="Switch TH/EN" aria-label="Toggle language"><span id="onLangLabel">TH</span></button>
+    <button type="button" class="on-icon-btn" id="onTheme" title="Toggle dark/light" aria-label="Toggle theme"><span id="onThemeIcon">🌙</span></button>
   </div>
 </div><!-- /on-bar -->
 
