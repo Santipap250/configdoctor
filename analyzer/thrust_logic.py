@@ -100,16 +100,27 @@ def _default_mah_for_size(size_inch: float) -> int:
     return 1500
 
 
-def calculate_thrust_weight(motor_load, weight):
+def calculate_thrust_weight(motor_load, weight,
+                             max_thrust_per_motor_g=None, motor_count=None):
     """
-    Rough TWR estimate from motor_load score (0–6).
-    Returns 0.0 if data insufficient.
-    advanced_analysis.py overrides this with accurate data.
+    TWR estimate.  Two modes:
+    1. Real-data mode  — when max_thrust_per_motor_g AND motor_count are given:
+       TWR = (max_thrust_per_motor_g * motor_count) / weight
+       (used by advanced_analysis.py once prop/motor thrust is resolved)
+    2. Score-estimate mode — fallback when real data is unavailable:
+       TWR ≈ (motor_load_score / 6.0) * 3.0
+       motor_load_score is a 0–6 ordinal from the rule engine, not grams.
+    Returns 0.0 if data is insufficient or invalid.
     """
     try:
-        w  = float(weight)
+        w = float(weight)
+        if w <= 0:
+            return 0.0
+        if max_thrust_per_motor_g is not None and motor_count is not None:
+            t = float(max_thrust_per_motor_g) * int(motor_count)
+            return round(t / w, 2)
         ml = float(motor_load)
-        if w <= 0 or ml <= 0:
+        if ml <= 0:
             return 0.0
         return round((ml / 6.0) * 3.0, 2)
     except (TypeError, ValueError, ZeroDivisionError):

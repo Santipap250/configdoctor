@@ -395,7 +395,8 @@ def main(argv=None):
     args = p.parse_args(argv)
     cells = _cells_from_str(str(args.cells))
     res = analyze(args.size,cells,args.batt_mAh,args.motor_kv,args.weight,args.motors)
-    print(json.dumps(res,indent=2,ensure_ascii=False))
+    import sys as _sys
+    _sys.stdout.write(json.dumps(res,indent=2,ensure_ascii=False) + "\n")
 
 if __name__=="__main__":
     import sys

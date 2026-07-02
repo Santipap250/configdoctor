@@ -414,7 +414,7 @@ def basic_checks(params: Dict[str, Any]) -> List[Dict]:
             pass
 
     # ─────────────────────────────────────────────────────────────────
-    # BUG FIX v2.1: Filter param naming (BF4.4+ uses *_static_hz)
+    # v2.1: Filter param naming (BF4.4+ uses *_static_hz)
     # Real dumps: gyro_lpf1_STATIC_hz / dterm_lpf1_STATIC_hz
     # cli_surgeon was reading 'gyro_lpf1_hz' (non-existent param)
     # ─────────────────────────────────────────────────────────────────
@@ -690,10 +690,10 @@ set serialrx_provider = CRSF
             with open(sys.argv[1], 'r', encoding='utf8') as f:
                 txt = f.read()
         except Exception as e:
-            print("Cannot read file:", e, file=sys.stderr)
+            sys.stderr.write(f"Cannot read file: {e}\n")
             sys.exit(1)
     out = analyze_dump(txt)
-    print(json.dumps(out, ensure_ascii=False, indent=2))
+    sys.stdout.write(json.dumps(out, ensure_ascii=False, indent=2) + "\n")
 # ----------------------
 # Version Detection (new)
 # ----------------------
