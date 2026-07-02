@@ -157,6 +157,7 @@ try:
         get_starter_kits as _gear_starter_kits,
         get_categories as _gear_categories,
         get_disclaimer as _gear_disclaimer,
+        get_all_by_category as _gear_all_by_category,
         CATEGORY_ORDER as _GEAR_CATEGORY_ORDER,
     )
     GEAR_MODULE_AVAILABLE = True
@@ -167,6 +168,7 @@ except Exception as e:
     def _gear_starter_kits(): return []
     def _gear_categories(): return {}
     def _gear_disclaimer(): return {"th": "", "en": ""}
+    def _gear_all_by_category(): return {}
     logging.warning("affiliate.gear_recommender import failed: %s", e)
 
 # ── Style normalizer ──────────────────────────────────────────────────────
@@ -553,23 +555,32 @@ def fpv_gear():
     style       = (request.args.get('style') or '').strip() or None
     size_inch   = (request.args.get('size') or '').strip() or None
 
-    gear_by_category = None
+    matched_ids = set()
     starter_kits = []
+    all_by_category = {}
+
     if GEAR_MODULE_AVAILABLE:
         try:
-            gear_by_category = _gear_recommend(drone_class=drone_class, style=style, size_inch=size_inch)
+            all_by_category = _gear_all_by_category()
+        except Exception:
+            logger.exception("gear_recommender.get_all_by_category failed")
+        try:
+            matched = _gear_recommend(drone_class=drone_class, style=style, size_inch=size_inch)
+            if matched:
+                for items in matched.values():
+                    for p in items:
+                        matched_ids.add(p['id'])
         except Exception:
             logger.exception("gear_recommender.recommend failed")
-            gear_by_category = None
-        if not gear_by_category:
-            try:
-                starter_kits = _gear_starter_kits()
-            except Exception:
-                logger.exception("gear_recommender.get_starter_kits failed")
+        try:
+            starter_kits = _gear_starter_kits()
+        except Exception:
+            logger.exception("gear_recommender.get_starter_kits failed")
 
     return render_template(
         'fpv_gear.html',
-        gear_by_category=gear_by_category,
+        all_by_category=all_by_category,
+        matched_ids=matched_ids,
         starter_kits=starter_kits,
         drone_class=drone_class, style=style, size_inch=size_inch,
         categories=(_gear_categories() if GEAR_MODULE_AVAILABLE else {}),
