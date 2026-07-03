@@ -1,0 +1,365 @@
+/* ══════════════════════════════════════════════════════════════
+   ConfigDoctor — responsive.css v1.0
+   Covers every layout class found across all 35+ templates.
+   Breakpoints: 1200 → 960 → 768 → 540 → 400
+   Desktop-first: rules only activate at max-width thresholds.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────
+   0. GLOBAL FOUNDATIONS (all sizes)
+   ───────────────────────────────────────────────────────────── */
+html { overflow-x: hidden; }
+body { overflow-x: hidden; }
+
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+/* Tables always scroll instead of breaking layout */
+table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Pre/code blocks don't blow out the page */
+pre, code {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+/* Safe-area padding for iPhone notch / home bar */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .container, .page-wrap, .shell {
+    padding-bottom: max(72px, env(safe-area-inset-bottom));
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   1. ≤1200px  — large tablet / small laptop
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  /* Wide fixed sidebars shrink gracefully */
+  .sa-grid    { grid-template-columns: 260px 1fr 220px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   2. ≤960px  — tablet portrait / large phone landscape
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 960px) {
+
+  /* ── Two-column layouts → single column ─────────────────── */
+  .shell          { grid-template-columns: 1fr !important; }
+  .layout         { grid-template-columns: 1fr !important; }
+  .wiz-outer      { grid-template-columns: 1fr !important; }
+  .qt-body        { grid-template-columns: 1fr !important; }
+  .main-grid      { grid-template-columns: 1fr !important; }
+  .pid-hero       { grid-template-columns: 1fr !important; }
+  .adv-layout     { grid-template-columns: 1fr !important; }
+  .lab-grid       { grid-template-columns: 1fr !important; }
+  .rfl-layout     { grid-template-columns: 1fr !important; }
+  .tool-layout    { grid-template-columns: 1fr !important; }
+  .result-grid    { grid-template-columns: 1fr !important; }
+  .sa-grid        { grid-template-columns: 1fr !important; }
+
+  /* ── Three / four column → two column ───────────────────── */
+  .insight-row    { grid-template-columns: 1fr 1fr !important; }
+  .learn-grid     { grid-template-columns: 1fr 1fr !important; }
+  .rec-grid       { grid-template-columns: 1fr 1fr !important; }
+  .stats-row      { grid-template-columns: 1fr 1fr !important; }
+  .delta-grid     { grid-template-columns: 1fr 1fr !important; }
+  .edu-grid       { grid-template-columns: 1fr 1fr !important; }
+  .mgrid          { grid-template-columns: 1fr 1fr !important; }
+  .summary-row    { grid-template-columns: 1fr 1fr !important; }
+  .cl-stats       { grid-template-columns: 1fr 1fr !important; }
+
+  /* VTX channel matrix: 8→4 */
+  .ch-grid, .ch-matrix { grid-template-columns: repeat(4, 1fr) !important; }
+  .pwr-grid       { grid-template-columns: repeat(4, 1fr) !important; }
+
+  /* Shop sidebar collapses */
+  .shop-body      { grid-template-columns: 1fr !important; padding: 20px 16px 60px !important; }
+  .shop-sidebar   { position: static !important; }
+  .mob-cats       { display: flex !important; }
+  .shop-sidebar .sidebar-card { display: none !important; }
+
+  /* Leaderboard: flatten wide grid */
+  .lb-head        { grid-template-columns: 40px 1fr 90px 80px !important; }
+  .lb-row         { grid-template-columns: 40px 1fr 90px 80px !important; }
+
+  /* PID advisor */
+  .pid-hero-metrics { grid-template-columns: 1fr 1fr !important; }
+  .stats-strip    { grid-template-columns: 1fr 1fr !important; }
+
+  /* Build card: sidebar fixed width → full */
+  .field-row3     { grid-template-columns: 1fr 1fr !important; }
+
+  /* Landing page */
+  .support-grid   { grid-template-columns: 1fr !important; }
+
+  /* Flex rows: ensure wrapping */
+  .hero-inner,
+  .hero-store-btns { flex-direction: column !important; align-items: flex-start !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   3. ≤768px  — tablet narrow / phone landscape
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* ── All remaining fixed 2-col grids → 1 col ────────────── */
+  .ag2, .ant-grid, .choices-grid, .effects-grid,
+  .features, .fg2, .ggrid, .half-grid,
+  .input-split, .intel-main, .metrics-grid,
+  .motor-stats, .out-grid, .param-modal-grid,
+  .pid-3cols, .pid-3labels, .pid-cols, .pid-mini-grid,
+  .pid-row-labels, .pid-row-m, .pid-3cols,
+  .prow, .rates-grid, .safety-grid, .sgrid,
+  .stats, .symp-row, .tools-grid, .exp-grid,
+  .cl-summary, .country-grid,
+  .field-row   { grid-template-columns: 1fr !important; }
+
+  /* PID axis grids 3col → keep 2col at this size */
+  .axis-tabs    { grid-template-columns: 1fr 1fr !important; }
+
+  /* ESC multi-grids */
+  .fg3, .fg4, .cg3, .gg4, .proto-grid, .bg6,
+  .live-strip, .pid3, .sg3, .szg, .env-row,
+  .theme-grid   { grid-template-columns: 1fr 1fr !important; }
+
+  /* VTX: 4→2 */
+  .ch-grid, .ch-matrix { grid-template-columns: repeat(2, 1fr) !important; }
+  .pwr-grid       { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Podium: side by side stays but narrower */
+  .podium         { grid-template-columns: 1fr 1.1fr 1fr !important; }
+
+  /* Scroll-safe tab bars */
+  .tab-bar, .tabs-nav, .band-tabs, .bfw-steps, .result-tabs {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 4px !important;
+    scrollbar-width: none !important;
+  }
+  .tab-bar::-webkit-scrollbar,
+  .tabs-nav::-webkit-scrollbar,
+  .band-tabs::-webkit-scrollbar,
+  .bfw-steps::-webkit-scrollbar,
+  .result-tabs::-webkit-scrollbar { display: none !important; }
+
+  .tab-btn, .band-tab, .bfw-step { flex-shrink: 0 !important; }
+
+  /* Forms: all inputs full-width */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="search"],
+  input[type="url"],
+  select, textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Leaderboard: hide less-important cols */
+  .lb-head        { grid-template-columns: 36px 1fr 80px !important; }
+  .lb-row         { grid-template-columns: 36px 1fr 80px !important; }
+  .lb-col-drone, .lb-col-fc { display: none !important; }
+
+  /* FPV Gear buy buttons stack */
+  .buy-btns       { grid-template-columns: 1fr !important; }
+  .buy-ali        { grid-column: 1 !important; }
+
+  /* Hero rightside panels flow below */
+  .hero-right     { width: 100% !important; align-items: flex-start !important; }
+
+  /* Error pages */
+  .error-box, .error-card {
+    max-width: 100% !important;
+    width: auto !important;
+    margin: 20px 16px !important;
+    padding: 28px 16px !important;
+  }
+  .error-actions, .error-btns {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .error-actions a, .error-btns a {
+    display: block !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  /* Loading page */
+  .loading-box {
+    max-width: 100% !important;
+    width: auto !important;
+    padding: 28px 16px !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   4. ≤540px  — phone portrait
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 540px) {
+
+  /* All grids → single column */
+  .ag2, .ant-grid, .axis-tabs, .bg6, .cg3, .choices-grid,
+  .cl-stats, .cl-summary, .country-grid, .delta-grid,
+  .edu-grid, .effects-grid, .entry-pid, .env-row,
+  .exp-grid, .features, .fg2, .fg3, .fg4,
+  .field-row, .field-row3, .filter-row,
+  .gg4, .ggrid, .half-grid,
+  .input-split, .insight-row, .intel-main,
+  .learn-grid, .live-strip, .metrics-grid, .mgrid,
+  .motor-stats, .out-grid, .param-modal-grid,
+  .pid-3cols, .pid-3labels, .pid-cols, .pid-mini-grid,
+  .pid-row-labels, .pid-row-m, .pid3, .pid-hero-metrics,
+  .podium, .proto-grid, .prow, .pwr-grid,
+  .rates-grid, .rec-grid, .safety-grid, .sg3,
+  .sgrid, .stats, .stats-row, .stats-strip,
+  .summary-row, .symp-row, .szg,
+  .theme-grid, .tools-grid, .env-row,
+  .ch-grid, .ch-matrix,
+  .delta-grid, .out-grid, .buy-btns,
+  .entry-pid, .pid-cols, .pid-row-m, .pid-row-labels  {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Keep podium 3-col at minimum width */
+  .podium { grid-template-columns: 1fr 1.05fr 1fr !important; }
+
+  /* Larger touch targets */
+  button, [role="button"],
+  .tab-btn, .buy-btn, .kit-buy-btn,
+  a.btn-primary, a.btn-outline, a.back-link,
+  a.btn-gear, a.buy-btn {
+    min-height: 44px !important;
+  }
+
+  /* Typography: prevent overflow */
+  h1, h2, h3, h4 {
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
+  /* Heading sizes: clamp so they don't overflow */
+  .shop-h1, .page-title, .vtx-hero-title,
+  .hero-title, .page-hero-title {
+    font-size: clamp(1.4rem, 7vw, 2.2rem) !important;
+    line-height: 1.15 !important;
+  }
+
+  /* Container horizontal padding */
+  .container, .page-wrap {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  /* Leaderboard: minimal cols */
+  .lb-head        { grid-template-columns: 32px 1fr 70px !important; font-size: 11px !important; }
+  .lb-row         { grid-template-columns: 32px 1fr 70px !important; font-size: 12px !important; }
+  .lb-col-drone, .lb-col-fc, .lb-col-kv { display: none !important; }
+
+  /* VTX: stay 2 cols */
+  .ch-grid, .ch-matrix { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* FPV/Landing hero buttons: stack */
+  .hero-store-btns,
+  .hero-cta-group,
+  .hero-actions  { flex-direction: column !important; gap: 10px !important; }
+  .hero-store-btns > *, .hero-actions > * { width: 100% !important; }
+
+  /* kit tab grid */
+  .kit-grid       { grid-template-columns: 1fr !important; }
+
+  /* Back bar flex */
+  .back-bar       { flex-wrap: wrap !important; gap: 6px !important; }
+
+  /* Shop context pill */
+  .context-pill   { font-size: 11px !important; }
+  .disclaimer-strip { text-align: left !important; }
+
+  /* Product card */
+  .p-card         { border-radius: 10px !important; }
+  .card-name      { font-size: 13px !important; }
+
+  /* Gear promo cats */
+  .gear-promo-cats { gap: 6px !important; }
+  .gp-cat         { font-size: 11px !important; padding: 5px 10px !important; }
+
+  /* Changelog */
+  .cl-entry       { flex-direction: column !important; }
+
+  /* Team */
+  .team-card      { flex-direction: column !important; text-align: center !important; }
+
+  /* Quiz options */
+  .choices-grid   { grid-template-columns: 1fr !important; }
+
+  /* BF Wizard step labels → hide text, show dots only */
+  .bfw-step-label { font-size: 0 !important; }
+
+  /* RPM / battery result panels */
+  .rec-grid, .stats-row, .edu-grid { grid-template-columns: 1fr !important; }
+
+  /* Rates visualizer canvas */
+  canvas          { max-width: 100% !important; height: auto !important; }
+
+  /* Loop analyzer */
+  .stats-row      { grid-template-columns: 1fr !important; }
+
+  /* VTX smartaudio */
+  .sa-grid        { grid-template-columns: 1fr !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   5. ≤400px  — very small phones
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 400px) {
+  body { font-size: 14px; }
+
+  .container, .page-wrap {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  /* Even VTX 2-col becomes 1 at 400px */
+  .ch-grid, .ch-matrix { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Podium squish */
+  .podium { font-size: 11px; }
+
+  /* Tab bars: tighter */
+  .tab-btn { padding: 6px 10px !important; font-size: 10px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   6. TOUCH-SPECIFIC
+   ───────────────────────────────────────────────────────────── */
+@media (hover: none) {
+  /* Remove hover transforms on touch — prevents stuck states */
+  .p-card:hover,
+  .tool-card:hover,
+  .kit-card:hover,
+  .gear-promo-cta:hover,
+  .buy-btn:hover,
+  .btn-shop:hover,
+  .btn-gear:hover  { transform: none !important; }
+
+  /* Bigger tap targets on all interactive elements */
+  .drawer-link    { padding-top: 10px !important; padding-bottom: 10px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   7. REDUCED MOTION
+   ───────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
