@@ -3,7 +3,20 @@
 Regression tests for the app.py Drone Analyzer bugs found and fixed in
 this pass. Each test is named after the bug it guards against.
 """
+import os
 import pytest
+
+# FIX: this module imports app.py directly at collection time, before any
+# pytest fixture has a chance to run. app.py hard-exits (SystemExit) if
+# SECRET_KEY is not present in the environment (see app.py's startup
+# guard), so without setting it here first, `import app as A` below
+# crashed pytest's collection phase and took the ENTIRE test suite down
+# with it (every other test file failed too, since pytest aborts the run
+# on a collection error). Match conftest.py's app fixture and set safe
+# defaults before importing.
+os.environ.setdefault("SECRET_KEY", "test-secret-key-do-not-use-in-prod")
+os.environ.setdefault("FLASK_DEBUG", "0")
+
 import app as A
 
 
