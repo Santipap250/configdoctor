@@ -11,7 +11,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>Blackbox Analyzer — ConfigDoctor</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Sarabun:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
@@ -45,21 +45,15 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opac
   background-image:linear-gradient(rgba(0,229,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.7) 1px,transparent 1px);
   background-size:46px 46px}
 
-.page-wrap{position:relative;z-index:1;max-width:min(1080px, 100%);margin:0 auto;padding:0 16px 90px}
+.page-wrap{position:relative;z-index:1;max-width:min(1080px,100%);margin:0 auto;padding:0 16px 90px}
 
 
 /* ── ChatGPT-style top bar ── */
+</style>
 
+<style>
 @media(max-width:760px){
-  .page-wrap{padding:90px 16px 60px!important}
-  .bb-upload-zone{padding:24px 16px}
-  .score-grid{grid-template-columns:1fr 1fr!important}
-  .axis-grid{grid-template-columns:1fr!important}
-  .result-tabs{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
-  .result-tab{flex-shrink:0}
-}
-@media(max-width:480px){
-  .score-grid{grid-template-columns:1fr!important}
+  .page-wrap{padding-top:90px!important;padding-left:16px!important;padding-right:16px!important}
 }
 </style>
 </head>
@@ -87,7 +81,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opac
     <div class="upload-icon">🛰️</div>
     <div class="upload-title">วาง CSV หรือคลิกเพื่อเลือกไฟล์</div>
     <div class="upload-sub">Export จาก Betaflight Blackbox Explorer เป็น <code>.csv</code> หรือใช้ <code>blackbox_decode</code> tool แล้ว drag-drop ที่นี่</div>
-    <button class="upload-btn" onclick="document.getElementById('csvFileInput').click()">
+    <button type="button" class="upload-btn" onclick="document.getElementById('csvFileInput').click()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
         <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
@@ -111,7 +105,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opac
   <!-- Results -->
   <div id="resultsSection">
 
-    <button class="reanalyze-btn" onclick="resetUpload()">
+    <button type="button" class="reanalyze-btn" onclick="resetUpload()">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/>
       </svg>

@@ -11,6 +11,7 @@
 <title>PID Advisor v5 Pro — OBIXConfig Doctor</title>
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/site-theme.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 /* ══════════════════════════════════════════════════════════
@@ -21,7 +22,7 @@
 /* Page layout */
 .adv-layout {
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: min(320px,34vw) 1fr;
   gap: 0;
   min-height: calc(100vh - 54px);
 }
@@ -55,8 +56,7 @@
   margin-bottom: 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
-}
+  gap: 8px;;flex-wrap:wrap}
 .pid-input-title::after { content:''; flex:1; height:1px; background:var(--border2); }
 
 .pid-grid {
@@ -141,8 +141,7 @@
 }
 .profile-btns {
   display: flex;
-  gap: 5px;
-}
+  gap: 5px;;flex-wrap:wrap}
 .profile-btn {
   flex: 1;
   padding: 7px 4px;
@@ -177,8 +176,7 @@
   border-radius: 8px;
   padding: 0 10px;
   margin-bottom: 10px;
-  transition: border-color .15s;
-}
+  transition: border-color .15s;;flex-wrap:wrap}
 .symptom-search-wrap:focus-within { border-color: var(--border-hi); }
 .symptom-search-icon { color: var(--muted2); font-size: 12px; flex-shrink: 0; }
 .symptom-search {
@@ -198,8 +196,7 @@
   padding: 8px 6px 4px;
   display: flex;
   align-items: center;
-  gap: 6px;
-}
+  gap: 6px;;flex-wrap:wrap}
 .category-label::after { content:''; flex:1; height:1px; background:var(--border2); }
 
 .symptom-item {
@@ -211,8 +208,7 @@
   border: 1px solid transparent;
   cursor: pointer;
   transition: all .15s;
-  margin-bottom: 2px;
-}
+  margin-bottom: 2px;;flex-wrap:wrap}
 .symptom-item:hover {
   background: rgba(255,255,255,0.03);
   border-color: var(--border);
@@ -281,7 +277,7 @@
 
 /* Result panels */
 .adv-result { display: none; flex: 1; flex-direction: column; }
-.adv-result.show { display: flex; }
+.adv-result.show { display: flex;;flex-wrap:wrap}
 
 /* Diagnosis header */
 .diag-header {
@@ -293,15 +289,13 @@
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  margin-bottom: 12px;
-}
+  margin-bottom: 12px;;flex-wrap:wrap}
 .diag-icon-wrap {
   width: 48px; height: 48px;
   border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
   font-size: 24px; flex-shrink: 0;
-  border: 2px solid;
-}
+  border: 2px solid;;flex-wrap:wrap}
 .diag-title {
   font-family: var(--font-head);
   font-size: 16px;
@@ -329,8 +323,7 @@
   font-family: var(--font-head);
   font-size: 10px;
   letter-spacing: .08em;
-  color: var(--muted2);
-}
+  color: var(--muted2);;flex-wrap:wrap}
 .confidence-bar {
   width: 80px;
   height: 4px;
@@ -356,8 +349,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
-}
+  font-size: 13px;;flex-wrap:wrap}
 .quick-win-label {
   font-family: var(--font-head);
   font-size: 9px;
@@ -381,8 +373,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
-}
+  margin-bottom: 10px;;flex-wrap:wrap}
 .adv-sec-title::after { content:''; flex:1; height:1px; background:var(--border2); }
 
 /* Diagnosis block */
@@ -403,8 +394,7 @@
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  font-size: 12px;
-}
+  font-size: 12px;;flex-wrap:wrap}
 .diag-cause-label {
   font-family: var(--font-head);
   font-size: 8px;
@@ -448,8 +438,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
-}
+  margin-bottom: 8px;;flex-wrap:wrap}
 .adj-dir {
   font-family: var(--font-head);
   font-size: 9px;
@@ -488,8 +477,7 @@
   background: rgba(255,255,255,0.015);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
+  justify-content: space-between;;flex-wrap:wrap}
 .pid-delta-title {
   font-family: var(--font-head);
   font-size: 11px;
@@ -560,8 +548,7 @@
   background: rgba(255,255,255,0.015);
   display: flex;
   align-items: center;
-  gap: 10px;
-}
+  gap: 10px;;flex-wrap:wrap}
 .cli-title { font-family:var(--font-head); font-size:11px; font-weight:700; letter-spacing:.08em; color:var(--text); }
 .cli-body {
   font-family: var(--font-mono);
@@ -581,8 +568,7 @@
   gap: 8px;
   padding: 10px 16px;
   border-top: 1px solid var(--border2);
-  background: rgba(255,255,255,0.01);
-}
+  background: rgba(255,255,255,0.01);;flex-wrap:wrap}
 
 /* Blackbox hint */
 .bb-hint {
@@ -595,8 +581,7 @@
   gap: 10px;
   font-size: 12.5px;
   line-height: 1.65;
-  color: var(--text2);
-}
+  color: var(--text2);;flex-wrap:wrap}
 .bb-hint-icon { font-size: 16px; flex-shrink: 0; }
 .bb-hint-label {
   font-family: var(--font-head);
@@ -616,8 +601,7 @@
   gap: 8px;
   font-size: 12px;
   color: var(--text2);
-  align-items: flex-start;
-}
+  align-items: flex-start;;flex-wrap:wrap}
 .bf-note-icon { flex-shrink: 0; }
 
 /* Tips list */
@@ -633,8 +617,7 @@
   font-size: 13px;
   line-height: 1.6;
   color: var(--text2);
-  transition: border-color .15s;
-}
+  transition: border-color .15s;;flex-wrap:wrap}
 .tip-item:hover { border-color: rgba(255,255,255,.12); }
 .tip-num {
   font-family: var(--font-head);
@@ -658,8 +641,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--surface);
-}
+  background: var(--surface);;flex-wrap:wrap}
 .related-chip:hover { border-color: rgba(16,196,122,.3); color: var(--text); background: var(--green-dim); }
 
 /* Radar chart */
@@ -679,8 +661,7 @@
   padding: 5px 0;
   font-size: 12px;
   color: var(--text2);
-  border-bottom: 1px solid var(--border2);
-}
+  border-bottom: 1px solid var(--border2);;flex-wrap:wrap}
 .radar-leg-item:last-child { border-bottom: none; }
 .radar-leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .radar-leg-label { flex: 1; }
@@ -939,7 +920,7 @@ body::after{
 }
 .hero-metric-val{
   font-family:var(--font-head);
-  font-size:28px;
+  font-size:clamp(16px,5.6vw,28px);
   font-weight:900;
   line-height:1;
   color:#f6fbff;
@@ -1309,9 +1290,9 @@ body::after{
     <div class="profile-section">
       <div style="font-family:var(--font-head);font-size:8px;letter-spacing:.14em;color:var(--muted2);margin-bottom:8px;text-transform:uppercase">Flight Profile</div>
       <div class="profile-btns">
-        <button class="profile-btn active" data-p="freestyle" onclick="setProfile(this)">🌀 Freestyle</button>
-        <button class="profile-btn" data-p="racing" onclick="setProfile(this)">🏁 Racing</button>
-        <button class="profile-btn" data-p="longrange" onclick="setProfile(this)">🛸 Long Range</button>
+        <button type="button" class="profile-btn active" data-p="freestyle" onclick="setProfile(this)">🌀 Freestyle</button>
+        <button type="button" class="profile-btn" data-p="racing" onclick="setProfile(this)">🏁 Racing</button>
+        <button type="button" class="profile-btn" data-p="longrange" onclick="setProfile(this)">🛸 Long Range</button>
       </div>
     </div>
 
@@ -1473,8 +1454,8 @@ body::after{
             </div>
             <div class="cli-body" id="res-cli"></div>
             <div class="cli-foot">
-              <button class="v5-btn v5-btn-primary v5-btn-sm" onclick="copyCLI()">📋 Copy CLI</button>
-              <button class="v5-btn v5-btn-secondary v5-btn-sm" onclick="copyDelta()">📊 Copy Delta Only</button>
+              <button type="button" class="v5-btn v5-btn-primary v5-btn-sm" onclick="copyCLI()">📋 Copy CLI</button>
+              <button type="button" class="v5-btn v5-btn-secondary v5-btn-sm" onclick="copyDelta()">📊 Copy Delta Only</button>
             </div>
           </div>
         </div>
