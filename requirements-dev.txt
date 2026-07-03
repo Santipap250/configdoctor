@@ -7,9 +7,14 @@
 -r requirements.txt
 
 # ─── Testing ───────────────────────────────────────────────────
+# NOTE: pytest-flask==1.2.0 removed — it imports `flask._request_ctx_stack`,
+# which was removed in Flask 3.x. That import crashes at pytest startup,
+# taking down the entire local test run (`pip install -r requirements-dev.txt
+# && pytest` never even reaches collection). tests/conftest.py already
+# defines its own `app`/`client` fixtures, so the plugin was unused —
+# nothing in tests/ relies on pytest-flask-specific fixtures.
 pytest==7.4.0
 pytest-cov==4.1.0
-pytest-flask==1.2.0
 pytest-mock==3.11.1
 
 # ─── Code Quality ──────────────────────────────────────────────
