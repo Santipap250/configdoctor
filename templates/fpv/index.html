@@ -35,7 +35,7 @@
 
         /* --- Navbar --- */
         .navbar {
-            display: flex;
+            display:flex;flex-wrap:wrap;
             justify-content: space-between;
             align-items: center;
             padding: 1rem 1.5rem;
@@ -83,13 +83,13 @@
 
         .hero p {
             color: var(--text-sub);
-            max-width: 600px;
+            max-width: min(600px, 100%);
             margin: 0 auto;
         }
 
         /* --- Grid Layout --- */
         .container {
-            max-width: 1000px;
+            max-width: min(1000px, 100%);
             margin: 0 auto;
             padding: 1.5rem;
         }
@@ -141,7 +141,7 @@
             color: var(--primary);
             font-weight: 600;
             font-size: 0.9rem;
-            display: flex;
+            display:flex;flex-wrap:wrap;
             align-items: center;
             gap: 0.5rem;
         }
@@ -155,7 +155,20 @@
             border-top: 1px solid #334155;
             margin-top: 3rem;
         }
-    </style>
+    
+@media(max-width:760px){
+  .cards-grid,.hub-grid{grid-template-columns:1fr 1fr!important}
+  .page-hero{padding:100px 16px 40px}
+  .hero-title{font-size:clamp(1.4rem,6vw,2rem)}
+  .card{padding:18px 14px}
+}
+@media(max-width:480px){
+  .cards-grid,.hub-grid{grid-template-columns:1fr!important}
+  .card-icon{font-size:1.6rem}
+}
+</style>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
 </head>
 <body>
 {% set nav_page = "fpv" %}
