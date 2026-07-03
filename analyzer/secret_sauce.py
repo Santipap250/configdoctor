@@ -8,10 +8,18 @@ from __future__ import annotations
 import math
 from typing import Dict, Any, Optional
 
+from analyzer.units import cells_from_battery_string
 
+
+# FIX: this used to be a local `int(str(batt).upper().replace("S",""))`
+# parser — same failure mode as the one removed from thrust_logic.py:
+# any label with trailing info ("6S2P", "4S 1500mAh") fails to parse and
+# silently falls back to 4 cells, and the max clamp here (8S) disagreed
+# with the 12S ceiling used elsewhere in the app. Delegates to the shared
+# parser so Secret Sauce CLI output can't recommend settings for the
+# wrong cell count.
 def _cells(batt: str) -> int:
-    try: return max(1, min(int(str(batt).upper().replace("S","").strip()), 8))
-    except (ValueError, TypeError): return 4
+    return cells_from_battery_string(batt, default=4, lo=1, hi=12)
 
 
 def generate_secret_sauce(

@@ -38,6 +38,7 @@ _DEFAULT_BATT_MAH_BY_SIZE = {
 # could silently drift apart since nothing enforced they matched.
 # Now imported directly so there is exactly one table in the codebase.
 from analyzer.thrust_logic import _HOVER_W_PER_G as _W_PER_G_TABLE
+from analyzer.units import cells_from_battery_string
 
 # Style × size flight power factor
 # Higher style factor = burns more power relative to hover
@@ -49,16 +50,18 @@ _STYLE_FACTORS = {
 }
 
 
+# FIX: this had its own regex-based parser that (mostly) handled the same
+# label formats as analyzer.units.cells_from_battery_string, but clamped
+# to a max of 8S instead of 12S. app.py and analyzer.units both treat 12S
+# as the top of the supported range (large cargo hex/octo builds, which
+# this app explicitly supports per the 1"-15" frame range). A user
+# analyzing a 10S build got their cell count silently clamped to 8 here,
+# while every other part of the app used the real value of 10 — producing
+# a wrong voltage/power/flight-time estimate that disagreed with the rest
+# of the analysis for the exact same input. Now delegates to the shared
+# parser so the clamp range can't drift out of sync again.
 def _cells_from_str(s):
-    # FIX: regex handles "4S+", "4s2p", "4S 1500mAh", plain "4", etc.
-    import re as _re
-    try:
-        m = _re.search(r'(\d+)\s*[Ss]', str(s))
-        if m:
-            return max(1, min(int(m.group(1)), 8))
-        return max(1, min(int(str(s).strip()), 8))
-    except Exception:
-        return 4
+    return cells_from_battery_string(s, default=4, lo=1, hi=12)
 
 def _guess_batt_mAh(size_inch, cells):
     keys = sorted(_DEFAULT_BATT_MAH_BY_SIZE.keys())

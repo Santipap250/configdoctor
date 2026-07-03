@@ -27,6 +27,8 @@
 # extremes (2.5", 7", 10" all predicted longer flight than the
 # validated range). Mid-range (3"-5") already matched and is unchanged.
 # ─────────────────────────────────────────────────────────────
+from analyzer.units import cells_from_battery_string
+
 _HOVER_W_PER_G = {
     # size_inch: W/g at hover throttle
     # (hover = level flight, ~30-50% throttle for typical FPV)
@@ -65,12 +67,18 @@ _STYLE_POWER_FACTOR = {
 }
 
 
+# FIX: this used to be a local hand-rolled parser
+# (`int(str(s).upper().replace("S", "").strip())`) that broke on any
+# battery label with extra info after the cell count — "6S2P", "4S 1500mAh",
+# "6S+" all failed to parse (e.g. "6S2P".replace("S","") -> "62P", which
+# int() can't parse) and silently fell back to the default of 4 cells,
+# even when the user clearly entered a 6S pack. That produced wrong
+# flight-time/power estimates for any non-bare-"NS" label. Now delegates
+# to the shared, regex-based parser in analyzer.units so this file can't
+# drift from app.py / logic/presets.py / analyzer/rpm_filter_calc.py on
+# what counts as a valid battery string or what the cell-count clamp is.
 def _cells_from_str(s) -> int:
-    try:
-        c = int(str(s).upper().replace("S", "").strip())
-        return max(1, min(c, 12))
-    except Exception:
-        return 4
+    return cells_from_battery_string(s, default=4, lo=1, hi=12)
 
 
 def _hover_w_per_g(size_inch: float) -> float:
