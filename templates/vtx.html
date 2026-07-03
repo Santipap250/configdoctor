@@ -10,6 +10,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
 {% set nav_page = "vtx" %}
 </head>
 <body class="dark">
@@ -217,9 +218,9 @@
 }
 
 .ch-grid {
-  display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 5px;
 }
-@media(max-width:440px){ .ch-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; } }
+@media(max-width:440px){ .ch-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 4px; } }
 
 .ch-cell {
   background: var(--bg-elevated); border: 1px solid var(--border);
@@ -437,7 +438,7 @@
 }
 
 /* ─── PROTOCOL GUIDE ────────────────────────────────── */
-.proto-compare { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.proto-compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
 @media(max-width:580px){ .proto-compare { grid-template-columns: 1fr; } }
 .proto-card {
   background: var(--bg-elevated); border: 1px solid var(--border);
@@ -542,7 +543,7 @@
 /* Responsive */
 @media(max-width:480px){
   .ch-live-freq { font-size: 1.9rem; }
-  .ch-grid { grid-template-columns: repeat(4,1fr); }
+  .ch-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
 }
 </style>
 

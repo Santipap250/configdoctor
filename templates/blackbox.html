@@ -11,6 +11,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>Blackbox Analyzer — ConfigDoctor</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Sarabun:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
@@ -44,10 +45,22 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opac
   background-image:linear-gradient(rgba(0,229,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.7) 1px,transparent 1px);
   background-size:46px 46px}
 
-.page-wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 16px 90px}
+.page-wrap{position:relative;z-index:1;max-width:min(1080px, 100%);margin:0 auto;padding:0 16px 90px}
 
 
 /* ── ChatGPT-style top bar ── */
+
+@media(max-width:760px){
+  .page-wrap{padding:90px 16px 60px!important}
+  .bb-upload-zone{padding:24px 16px}
+  .score-grid{grid-template-columns:1fr 1fr!important}
+  .axis-grid{grid-template-columns:1fr!important}
+  .result-tabs{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+  .result-tab{flex-shrink:0}
+}
+@media(max-width:480px){
+  .score-grid{grid-template-columns:1fr!important}
+}
 </style>
 </head>
 <body>

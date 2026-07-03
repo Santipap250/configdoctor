@@ -8,19 +8,19 @@
 <link rel="stylesheet" href="/static/css/site-theme.css">
 <style>
 html,body{height:100%;overflow:hidden}
-body{display:flex;align-items:center;justify-content:center;padding:24px}
+body{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;padding:24px}
 .err-bg{position:fixed;inset:0;pointer-events:none}
 .err-ring{position:absolute;top:50%;left:50%;border-radius:50%;border:1px solid rgba(16,196,122,0.06);transform:translate(-50%,-50%);animation:rPulse 5s ease-in-out infinite}
 .err-ring:nth-child(1){width:180px;height:180px}
 .err-ring:nth-child(2){width:340px;height:340px;animation-delay:.8s}
-.err-ring:nth-child(3){width:520px;height:520px;animation-delay:1.6s}
+.err-ring:nth-child(3){max-width:520px;width:100%;height:520px;animation-delay:1.6s}
 @keyframes rPulse{0%,100%{opacity:.5}50%{opacity:1}}
 .err-card{
   position:relative;z-index:2;
   background:rgba(11,21,32,0.95);
   border:1px solid rgba(16,196,122,0.18);
   border-radius:20px;padding:52px 44px 44px;
-  text-align:center;max-width:440px;width:100%;
+  text-align:center;max-max-width:440px;width:100%;width:100%;
   backdrop-filter:blur(24px);
   box-shadow:0 32px 80px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.05);
   animation:fadeUp .5s var(--ease) both;
@@ -32,7 +32,17 @@ body{display:flex;align-items:center;justify-content:center;padding:24px}
 .err-desc{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:28px;max-width:300px;margin-left:auto;margin-right:auto}
 .err-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:100px;border:1px solid rgba(248,113,113,0.3);background:var(--red-dim);color:var(--red);font-family:var(--font-head);font-size:10px;letter-spacing:.1em;margin-bottom:28px}
 .err-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+@media(max-width:540px){
+  body{padding:16px}
+  .error-box,.error-card{max-width:100%!important;width:auto!important;margin:20px 16px!important;padding:28px 16px!important}
+  .error-code{font-size:clamp(3rem,18vw,5rem)}
+  .error-actions,.error-btns{flex-direction:column;gap:8px;align-items:stretch}
+  .error-actions a,.error-btns a{display:block;text-align:center}
+}
 </style>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
 </head>
 <body>
 <div class="err-bg">
