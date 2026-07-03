@@ -1,0 +1,482 @@
+/* ══════════════════════════════════════════════════════════════════
+   ConfigDoctor — mobile.css
+   Global mobile-responsive overrides loaded on every page.
+   All rules are scoped to ≤900px so they never affect desktop.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. BASE ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  /* Page-level max-width containers become fluid */
+  .page-wrap,
+  [style*="max-width:1020px"],
+  [style*="max-width:1080px"],
+  [style*="max-width:1100px"],
+  [style*="max-width:1140px"],
+  [style*="max-width:1180px"],
+  [style*="max-width:1200px"],
+  [style*="max-width:1320px"],
+  [style*="max-width:1360px"],
+  [style*="max-width:1400px"],
+  [style*="max-width:1500px"] {
+    max-width: 100% !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Tables: scroll horizontally instead of overflow */
+  table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* All fixed-width grids collapse */
+  [style*="grid-template-columns: repeat(3"],
+  [style*="grid-template-columns:repeat(3"],
+  [style*="grid-template-columns: repeat(4"],
+  [style*="grid-template-columns:repeat(4"],
+  [style*="grid-template-columns: repeat(8"],
+  [style*="grid-template-columns:repeat(8"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* Flex rows wrap */
+  .flex-row,
+  .row,
+  .btn-row,
+  .header-row,
+  .tool-row,
+  .stat-row {
+    flex-wrap: wrap !important;
+  }
+
+  /* Forms — inputs full width */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  select,
+  textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* ── 2. TABLET 768px ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  [style*="grid-template-columns: repeat(3"],
+  [style*="grid-template-columns:repeat(3"],
+  [style*="grid-template-columns: repeat(4"],
+  [style*="grid-template-columns:repeat(4"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* ── 3. PHONE 540px ──────────────────────────────────────── */
+@media (max-width: 540px) {
+  [style*="grid-template-columns: repeat("],
+  [style*="grid-template-columns:repeat("],
+  [style*="grid-template-columns: 1fr 1fr"],
+  [style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Fixed widths on inner cards collapse */
+  [style*="width:600px"], [style*="width: 600px"],
+  [style*="width:640px"], [style*="width: 640px"],
+  [style*="width:700px"], [style*="width: 700px"],
+  [style*="width:760px"], [style*="width: 760px"],
+  [style*="width:820px"], [style*="width: 820px"],
+  [style*="width:860px"], [style*="width: 860px"],
+  [style*="width:900px"], [style*="width: 900px"],
+  [style*="width:960px"], [style*="width: 960px"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/*  PER-PAGE PATCHES                                           */
+/* ─────────────────────────────────────────────────────────── */
+
+/* ── index.html (Drone Analyzer) ────────────────────────── */
+@media (max-width: 760px) {
+  .tabs-nav       { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+  .tab-btn        { flex-shrink: 0; }
+  .qs-grid        { grid-template-columns: 1fr 1fr !important; }
+  .result-grid    { grid-template-columns: 1fr 1fr !important; }
+  .adv-grid       { grid-template-columns: 1fr !important; }
+  .cli-box        { font-size: 11px; }
+  .support-card2  { flex-direction: column; }
+  .gear-promo     { flex-direction: column; gap: 10px; }
+}
+@media (max-width: 480px) {
+  .tabs-nav       { gap: 4px; }
+  .tab-btn        { padding: 7px 10px; font-size: 10px; }
+  .qs-stat        { padding: 10px 12px; }
+  .result-grid    { grid-template-columns: 1fr; }
+  .pid-grid       { grid-template-columns: 1fr; }
+  .filter-grid    { grid-template-columns: 1fr; }
+  .form-card      { padding: 14px; }
+  .hero-title-wrap { font-size: clamp(1.4rem, 7vw, 2rem); }
+}
+
+/* ── build_card.html ─────────────────────────────────────── */
+@media (max-width: 860px) {
+  .layout         { grid-template-columns: 1fr !important; }
+  .form-panel     { position: static !important; }
+  .preview-panel  { margin-top: 20px; }
+  .spec-grid      { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 540px) {
+  .spec-grid      { grid-template-columns: 1fr !important; }
+  .card-controls  { flex-direction: column; gap: 8px; }
+  .card-controls button { width: 100%; }
+}
+
+/* ── blackbox.html ───────────────────────────────────────── */
+@media (max-width: 760px) {
+  .bb-layout      { grid-template-columns: 1fr !important; }
+  .bb-score-row   { grid-template-columns: 1fr 1fr !important; }
+  .bb-chart-wrap  { overflow-x: auto; }
+  .bb-upload-area { padding: 24px 16px; }
+  .bb-axis-grid   { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 480px) {
+  .bb-score-row   { grid-template-columns: 1fr !important; }
+}
+
+/* ── motor_prop.html ─────────────────────────────────────── */
+@media (max-width: 860px) {
+  .mp-layout      { grid-template-columns: 1fr !important; }
+  .mp-results     { grid-template-columns: 1fr 1fr !important; }
+  .preset-scroller { overflow-x: auto; flex-wrap: nowrap; }
+  .preset-card    { flex-shrink: 0; min-width: 160px; }
+  .instr-grid     { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 480px) {
+  .mp-results     { grid-template-columns: 1fr !important; }
+  .gauge-row      { flex-direction: column; align-items: center; }
+}
+
+/* ── vtx.html ────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .vtx-root       { padding: 16px; }
+  .ch-grid        { grid-template-columns: repeat(4, 1fr) !important; overflow-x: auto; }
+  .freq-table     { font-size: 11px; }
+  .race-plan-grid { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 540px) {
+  .ch-grid        { grid-template-columns: repeat(2, 1fr) !important; }
+  .band-tabs      { overflow-x: auto; flex-wrap: nowrap; }
+  .band-tab       { flex-shrink: 0; }
+  .vtx-hero-title { font-size: clamp(1.4rem, 6vw, 2rem); }
+}
+
+/* ── vtx_range.html ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  .vr-grid        { grid-template-columns: 1fr 1fr !important; }
+  .vr-chart       { overflow-x: auto; }
+}
+@media (max-width: 480px) {
+  .vr-grid        { grid-template-columns: 1fr !important; }
+  .vr-controls    { flex-direction: column; gap: 8px; }
+}
+
+/* ── vtx_smartaudio.html ─────────────────────────────────── */
+@media (max-width: 768px) {
+  .sa-layout      { grid-template-columns: 1fr !important; }
+  .sa-ch-grid     { grid-template-columns: repeat(4, 1fr) !important; }
+}
+@media (max-width: 480px) {
+  .sa-ch-grid     { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* ── cli_surgeon.html ────────────────────────────────────── */
+@media (max-width: 860px) {
+  .cs-layout      { grid-template-columns: 1fr !important; }
+  .cs-diff-view   { font-size: 11px; }
+  .cs-actions     { flex-wrap: wrap; gap: 8px; }
+  .cs-actions button { flex: 1 1 auto; }
+}
+
+/* ── cli_comparator.html ─────────────────────────────────── */
+@media (max-width: 900px) {
+  .cc-cols        { grid-template-columns: 1fr !important; }
+  .cc-diff-bar    { font-size: 11px; }
+  .cc-header-row  { flex-direction: column; gap: 8px; }
+}
+@media (max-width: 540px) {
+  .diff-table td, .diff-table th { font-size: 11px; padding: 6px 8px; }
+}
+
+/* ── loop_analyzer.html ──────────────────────────────────── */
+@media (max-width: 860px) {
+  .la-layout      { grid-template-columns: 1fr !important; }
+  .la-chart       { height: 200px; }
+  .la-stats       { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 480px) {
+  .la-stats       { grid-template-columns: 1fr !important; }
+}
+
+/* ── rpm_filter.html ─────────────────────────────────────── */
+@media (max-width: 860px) {
+  .rpm-layout     { grid-template-columns: 1fr !important; }
+  .rpm-chart      { overflow-x: auto; }
+  .rpm-presets    { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 480px) {
+  .rpm-presets    { grid-template-columns: 1fr !important; }
+}
+
+/* ── esc_checker.html ────────────────────────────────────── */
+@media (max-width: 860px) {
+  .esc-layout     { grid-template-columns: 1fr !important; }
+  .esc-results    { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 480px) {
+  .esc-results    { grid-template-columns: 1fr !important; }
+  .esc-motor-row  { flex-direction: column; }
+}
+
+/* ── battery_health.html ─────────────────────────────────── */
+@media (max-width: 760px) {
+  .bh-grid        { grid-template-columns: 1fr 1fr !important; }
+  .bh-chart       { overflow-x: auto; }
+  .bh-form-row    { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 480px) {
+  .bh-grid        { grid-template-columns: 1fr !important; }
+}
+
+/* ── motor_thermal.html ──────────────────────────────────── */
+@media (max-width: 760px) {
+  .mt-layout      { grid-template-columns: 1fr !important; }
+  .mt-gauge-row   { flex-direction: column; align-items: center; }
+  .mt-stats       { grid-template-columns: 1fr 1fr !important; }
+}
+
+/* ── pid_advisor.html ────────────────────────────────────── */
+@media (max-width: 860px) {
+  .pa-layout      { grid-template-columns: 1fr !important; }
+  .pa-grid        { grid-template-columns: 1fr 1fr !important; }
+  .pa-symptom-list{ grid-template-columns: 1fr !important; }
+}
+@media (max-width: 480px) {
+  .pa-grid        { grid-template-columns: 1fr !important; }
+}
+
+/* ── quick_tune.html ─────────────────────────────────────── */
+@media (max-width: 760px) {
+  .qt-layout      { grid-template-columns: 1fr !important; }
+  .qt-results     { grid-template-columns: 1fr 1fr !important; }
+  .symptom-grid   { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 480px) {
+  .qt-results     { grid-template-columns: 1fr !important; }
+  .symptom-grid   { grid-template-columns: 1fr !important; }
+}
+
+/* ── bf_wizard.html ──────────────────────────────────────── */
+@media (max-width: 860px) {
+  .bfw-steps      { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 8px; }
+  .bfw-step       { flex-shrink: 0; }
+  .bfw-layout     { grid-template-columns: 1fr !important; }
+  .bfw-options    { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 480px) {
+  .bfw-options    { grid-template-columns: 1fr !important; }
+  .bfw-step-label { display: none; } /* show only dots on tiny screens */
+}
+
+/* ── flight_quiz.html ────────────────────────────────────── */
+@media (max-width: 640px) {
+  .quiz-card      { padding: 20px 16px; }
+  .quiz-options   { grid-template-columns: 1fr !important; }
+  .quiz-header    { flex-direction: column; gap: 8px; }
+  .quiz-progress  { width: 100%; }
+}
+
+/* ── tuning_log.html ─────────────────────────────────────── */
+@media (max-width: 760px) {
+  .tl-layout      { grid-template-columns: 1fr !important; }
+  .tl-entry-grid  { grid-template-columns: 1fr !important; }
+  .tl-filter-row  { flex-direction: column; gap: 8px; }
+  .tl-filter-row select { width: 100%; }
+}
+
+/* ── rates_visualizer.html ───────────────────────────────── */
+@media (max-width: 860px) {
+  .rv-layout      { grid-template-columns: 1fr !important; }
+  .rv-canvas-wrap { max-width: 100%; overflow: hidden; }
+  .rv-controls    { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 540px) {
+  .rv-controls    { grid-template-columns: 1fr !important; }
+  canvas          { max-width: 100%; }
+}
+
+/* ── leaderboard.html ────────────────────────────────────── */
+@media (max-width: 760px) {
+  .lb-table-wrap  { overflow-x: auto; }
+  .lb-table       { min-width: 480px; }
+  .lb-hero-stats  { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 480px) {
+  .lb-hero-stats  { grid-template-columns: 1fr !important; }
+}
+
+/* ── fpv_trainer.html ────────────────────────────────────── */
+@media (max-width: 760px) {
+  .sim-layout     { grid-template-columns: 1fr !important; }
+  .sim-canvas     { max-width: 100%; height: auto; }
+  .sim-controls   { flex-direction: column; gap: 8px; }
+}
+
+/* ── fpv/index.html (FPV Hub) ────────────────────────────── */
+@media (max-width: 760px) {
+  .hub-grid       { grid-template-columns: 1fr 1fr !important; }
+  .card           { padding: 18px 14px; }
+}
+@media (max-width: 480px) {
+  .hub-grid       { grid-template-columns: 1fr !important; }
+}
+
+/* ── fpv_gear.html ───────────────────────────────────────── */
+@media (max-width: 640px) {
+  .kit-grid       { grid-template-columns: 1fr !important; }
+  .buy-btns       { grid-template-columns: 1fr !important; }
+  .buy-ali        { grid-column: 1 !important; }
+  .hero-right     { width: 100%; }
+  .shop-hero      { padding-bottom: 16px; }
+  .context-pill   { font-size: 11px; }
+  .disclaimer-strip { text-align: left; }
+}
+@media (max-width: 420px) {
+  .p-card         { border-radius: 10px; }
+  .card-name      { font-size: 12.5px; }
+  .gear-promo-cats { gap: 6px; }
+  .gp-cat         { font-size: 11px; padding: 5px 10px; }
+}
+
+/* ── changelog.html ──────────────────────────────────────── */
+@media (max-width: 640px) {
+  .cl-timeline    { padding-left: 0; }
+  .cl-grid        { grid-template-columns: 1fr 1fr !important; }
+  .cl-entry       { flex-direction: column; }
+  .cl-date-col    { min-width: 0; }
+}
+@media (max-width: 480px) {
+  .cl-grid        { grid-template-columns: 1fr !important; }
+}
+
+/* ── team.html ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .team-grid      { grid-template-columns: 1fr !important; }
+  .team-card      { flex-direction: column; text-align: center; }
+  .team-avatar    { margin: 0 auto; }
+}
+
+/* ── about.html ──────────────────────────────────────────── */
+@media (max-width: 760px) {
+  .about-grid     { grid-template-columns: 1fr !important; }
+  .about-stat-row { grid-template-columns: 1fr 1fr !important; }
+  .about-hero     { padding: 40px 16px; }
+}
+@media (max-width: 480px) {
+  .about-stat-row { grid-template-columns: 1fr !important; }
+}
+
+/* ── downloads.html ──────────────────────────────────────── */
+@media (max-width: 640px) {
+  .dl-grid        { grid-template-columns: 1fr !important; }
+  .dl-card        { flex-direction: column; gap: 10px; }
+  .dl-actions     { flex-direction: column; }
+  .dl-actions a   { width: 100%; text-align: center; }
+}
+
+/* ── military_uas.html ───────────────────────────────────── */
+@media (max-width: 760px) {
+  .uas-layout     { grid-template-columns: 1fr !important; }
+  .uas-table-wrap { overflow-x: auto; }
+  .uas-table      { min-width: 480px; }
+  .uas-stat-grid  { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 480px) {
+  .uas-stat-grid  { grid-template-columns: 1fr !important; }
+}
+
+/* ── 404 / 429 / 500 error pages ────────────────────────── */
+@media (max-width: 540px) {
+  .error-box      { max-width: 100% !important; width: auto !important; margin: 20px 16px !important; padding: 28px 20px !important; }
+  .error-code     { font-size: clamp(3rem, 18vw, 6rem); }
+  .error-actions  { flex-direction: column; gap: 10px; }
+  .error-actions a { width: 100%; text-align: center; }
+}
+
+/* ── loading.html ────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .loading-box    { max-width: 100% !important; width: auto !important; padding: 28px 16px !important; }
+  .loading-msg    { font-size: 13px; }
+}
+
+/* ── OSD.html ────────────────────────────────────────────── */
+@media (max-width: 760px) {
+  .osd-layout     { grid-template-columns: 1fr !important; }
+  .osd-preview    { max-width: 100%; overflow-x: auto; }
+  .osd-ctrl-grid  { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 480px) {
+  .osd-ctrl-grid  { grid-template-columns: 1fr !important; }
+}
+
+/* ── PARTIALS: nav.html ──────────────────────────────────── */
+@media (max-width: 900px) {
+  .on-nav-inner   { gap: 8px; }
+  .on-logo-text   { display: none; }
+  .on-top-links   { display: none; }
+}
+
+/* ── GLOBAL: touch-target minimum ───────────────────────── */
+@media (max-width: 900px) {
+  button,
+  [role="button"],
+  a.btn-primary,
+  a.btn-outline,
+  a.btn-gear,
+  a.back-link,
+  .tab-btn,
+  .buy-btn,
+  .kit-buy-btn {
+    min-height: 42px;
+    min-width: 42px;
+  }
+
+  /* Prevent text overflow */
+  h1, h2, h3 {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* Prevent overflow from long strings */
+  pre, code, .mono {
+    overflow-x: auto;
+    max-width: 100%;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+}
+
+/* ── GLOBAL: safe-area (iPhone notch/home bar) ───────────── */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .page-wrap,
+  .container,
+  .shop-body,
+  footer {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}
