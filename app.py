@@ -657,6 +657,88 @@ def _parse_analysis_form():
     )
 
 
+def _handle_analysis_get_params():
+    """Run analysis from GET query params (shared links).
+    Maps ?size=5&battery=4S&style=freestyle&weight=700&... → same pipeline as POST."""
+    def safe_float(x, default=0.0):
+        try: return float(x)
+        except Exception: return default
+    def safe_int(x, default=0):
+        try: return int(x) if x not in (None, "", "None") else default
+        except Exception: return default
+
+    a = request.args
+    size        = safe_float(a.get("size"), 5.0)
+    battery     = a.get("battery", "4S")
+    style_raw   = a.get("style", "freestyle")
+    weight      = max(10.0, safe_float(a.get("weight"), 720.0))
+    prop_size   = safe_float(a.get("prop_size"), size)
+    blade_count = safe_int(a.get("blades"), 3)
+    prop_pitch  = safe_float(a.get("pitch"), 4.0)
+    battery_mAh = safe_int(a.get("battery_mAh"), None) or None
+    motor_count = max(1, safe_int(a.get("motor_count"), 4))
+    motor_kv    = safe_int(a.get("motor_kv"), None) or None
+
+    style = _normalize_style(style_raw)
+
+    warnings = validate_input(size, weight, prop_size, prop_pitch, blade_count, battery,
+                               motor_kv=motor_kv, motor_count=motor_count,
+                               battery_mAh=battery_mAh)
+    try:
+        cls_det = detect_class_from_size(size)
+        detected_class, class_meta = (cls_det[0], cls_det[1]) if isinstance(cls_det, (tuple, list)) else (cls_det, {})
+    except Exception:
+        detected_class, class_meta = "freestyle", {}
+
+    try:
+        _cells_int = cells_from_battery_string(battery, default=4, lo=1, hi=12)
+        prop_result = analyze_propeller(prop_size, prop_pitch, blade_count, style,
+                                        motor_kv=motor_kv, cells=_cells_int)
+    except Exception:
+        prop_result = {"summary": "n/a", "effect": {"motor_load": 0, "noise": 0,
+                       "grip": "unknown", "efficiency": "unknown",
+                       "est_g_per_w": None, "est_thrust_100w": None,
+                       "pitch_speed_kmh": None, "notes": []}, "recommendation": ""}
+
+    analysis = analyze_drone(size, battery, style, prop_result, weight, detected_class, motor_kv=motor_kv)
+    analysis.update(dict(
+        size=size, battery=battery, style=style, weight=weight,
+        prop_size=prop_size, blade_count=blade_count, prop_pitch=prop_pitch,
+        battery_mAh=battery_mAh, motor_count=motor_count, motor_kv=motor_kv,
+        detected_class=detected_class, class_meta=class_meta,
+        preset_used=None, warnings=warnings,
+    ))
+
+    try:
+        from analyzer.advanced_analysis import make_advanced_report
+        adv_extra = make_advanced_report(
+            size=size, battery=battery, style=style,
+            weight=weight, motor_kv=motor_kv, motor_count=motor_count,
+            battery_mAh=battery_mAh,
+            prop_size=prop_size, prop_pitch=prop_pitch, blade_count=blade_count,
+        )
+        analysis["advanced"] = adv_extra.get("advanced", {})
+    except Exception:
+        analysis.setdefault("advanced", {})
+
+    try:
+        from analyzer.rule_engine import apply_rules
+        analysis["rules"] = apply_rules(analysis)
+    except Exception:
+        analysis.setdefault("rules", [])
+
+    try:
+        from analyzer.secret_sauce import get_secret_sauce
+        analysis["secret_sauce"] = get_secret_sauce(
+            detected_class, style, size, battery,
+            motor_kv=motor_kv, prop_size=prop_size
+        )
+    except Exception:
+        analysis.setdefault("secret_sauce", [])
+
+    return analysis
+
+
 def _handle_analysis_post():
     """Run full drone analysis from POST form data. Returns analysis dict."""
     p = _parse_analysis_form()
@@ -878,8 +960,18 @@ def index():
         return render_template("index.html", analysis=analysis,
                                preset_groups=PRESET_GROUPS,
                                all_presets=PRESETS)
-    # GET — render blank form
-    return render_template("index.html", analysis=None,
+
+    # GET — if share params present, auto-run analysis so shared links work
+    _SHARE_PARAMS = ("size", "battery", "style", "weight", "prop_size",
+                     "blades", "pitch", "motor_kv", "motor_count", "battery_mAh")
+    if any(request.args.get(p) for p in _SHARE_PARAMS):
+        try:
+            analysis = _handle_analysis_get_params()
+        except Exception:
+            logger.exception("index GET share-param error")
+            analysis = None
+
+    return render_template("index.html", analysis=analysis,
                            preset_groups=PRESET_GROUPS,
                            all_presets=PRESETS)
 
