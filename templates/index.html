@@ -304,6 +304,29 @@ pre::-webkit-scrollbar-thumb{background:rgba(0,255,68,.2);border-radius:2px}
   pointer-events:none;transition:.2s;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* ── Share Panel ─────────────────────────────────────────── */
+.share-panel{margin-top:14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;padding:14px 16px;overflow:hidden}
+.share-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap}
+.share-title{font-family:var(--fd);font-size:9.5px;font-weight:700;letter-spacing:.14em;color:var(--t2)}
+.share-url{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);
+  border-radius:9px;padding:8px 12px;margin-bottom:12px;cursor:pointer;transition:.15s}
+.share-url:hover{border-color:rgba(0,255,68,.25);background:rgba(0,255,68,.04)}
+.share-url-text{font-family:var(--fm);font-size:10.5px;color:var(--t2);flex:1;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.share-url-icon{font-size:14px;flex-shrink:0;color:var(--t2)}
+.share-btns{display:flex;gap:8px;flex-wrap:wrap}
+.sh-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:10px;
+  font-family:var(--fn);font-size:12px;font-weight:700;text-decoration:none;cursor:pointer;
+  border:none;transition:.15s;white-space:nowrap;flex:1;min-width:120px;justify-content:center}
+.sh-btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.sh-line{background:rgba(6,199,85,.12);border:1px solid rgba(6,199,85,.25);color:#06c755}
+.sh-fb{background:rgba(24,119,242,.12);border:1px solid rgba(24,119,242,.25);color:#4a90ff}
+.sh-native{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.22);color:var(--b)}
+.sh-copy{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--t2)}
+.sh-img{background:rgba(255,136,0,.1);border:1px solid rgba(255,136,0,.22);color:#ff8800}
+@media(max-width:540px){.sh-btn{min-width:0;flex:1 1 calc(50% - 4px)}}
+
 /* ── FPV Gear Recommendation promo — extension/UI layer (links to
      /fpv-gear, does not touch analyzer/PID/motor-prop math) ──────────── */
 .gear-promo{display:flex;align-items:center;gap:12px;margin-top:14px;padding:14px 16px;
@@ -362,13 +385,14 @@ pre::-webkit-scrollbar-thumb{background:rgba(0,255,68,.2);border-radius:2px}
 
   <form method="POST" id="aForm" onsubmit="return onAnalyzeSubmit(this)">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    <input type="hidden" name="size"        id="fSz"  value="{{ request.form.get('size','5.0') }}">
-    <input type="hidden" name="prop_size"   id="fPr"  value="{{ request.form.get('prop_size','5.0') }}">
-    <input type="hidden" name="pitch"       id="fPt"  value="{{ request.form.get('pitch','4.0') }}">
-    <input type="hidden" name="weight"      id="fWt"  value="{{ request.form.get('weight','720') }}">
-    <input type="hidden" name="motor_count" value="{{ request.form.get('motor_count','4') }}">
-    <input type="hidden" name="blades"      value="{{ request.form.get('blades','3') }}">
-    <input type="hidden" name="bf_version"  id="fBfv" value="{{ request.form.get('bf_version','4.4') }}">
+    {%- set _fv = request.args if (request.method == 'GET' and analysis) else request.form -%}
+    <input type="hidden" name="size"        id="fSz"  value="{{ _fv.get('size','5.0') }}">
+    <input type="hidden" name="prop_size"   id="fPr"  value="{{ _fv.get('prop_size','5.0') }}">
+    <input type="hidden" name="pitch"       id="fPt"  value="{{ _fv.get('pitch','4.0') }}">
+    <input type="hidden" name="weight"      id="fWt"  value="{{ _fv.get('weight','720') }}">
+    <input type="hidden" name="motor_count" value="{{ _fv.get('motor_count','4') }}">
+    <input type="hidden" name="blades"      value="{{ _fv.get('blades','3') }}">
+    <input type="hidden" name="bf_version"  id="fBfv" value="{{ _fv.get('bf_version','4.4') }}">
 
     <!-- 1. FRAME SIZE -->
     <div class="fld">
@@ -796,9 +820,137 @@ save</pre>
   <div class="sc2-foot">ไม่สนับสนุนก็ใช้งานได้เต็มรูปแบบเหมือนเดิม — ใส่ไว้ให้เผื่อใครอยากช่วยจริงๆเท่านั้น 🙏</div>
 </div>
 
-<!-- ── FPV Gear Recommendation — extension/UI layer only. Forwards the
-     already-computed class/style/size to /fpv-gear for catalog matching;
-     does not read or modify analyzer/PID/motor-prop/blackbox math. ──── -->
+<!-- ── SHARE PANEL ───────────────────────────────────────────────── -->
+{%- set _share_url = (BASE_URL ~ '/app?size=' ~ _sz ~ '&battery=' ~ analysis.battery|default('4S') ~ '&style=' ~ _sy ~ '&weight=' ~ _wt|int ~ '&prop_size=' ~ analysis.prop_size|default(_sz) ~ '&pitch=' ~ analysis.prop_pitch|default(4.0)|round(1) ~ '&blades=' ~ analysis.blade_count|default(3) ~ ('&motor_kv=' ~ _kv if _kv > 0 else '') ~ ('&battery_mAh=' ~ _mah if _mah > 0 else '') ~ '&motor_count=' ~ analysis.motor_count|default(4)) -%}
+{%- set _share_text = '🚁 ConfigDoctor วิเคราะห์โดรนฉัน\n' ~ _sz|string ~ '" · ' ~ analysis.battery|default('4S') ~ ' · ' ~ _sy|capitalize ~ ' · TWR ' ~ _twr|round(2)|string ~ ':1\nดูผลได้ที่: ' -%}
+<div class="share-panel" id="sharePanel">
+  <div class="share-head">
+    <span class="share-title">📤 แชร์ผลวิเคราะห์</span>
+    <span style="font-size:10px;color:var(--t2)">ส่งให้เพื่อนในกลุ่ม FPV ได้เลย</span>
+  </div>
+
+  <div class="share-url" onclick="copyShareLink()" title="คลิกเพื่อ copy link">
+    <span class="share-url-icon">🔗</span>
+    <span class="share-url-text" id="shareUrlText">{{ _share_url }}</span>
+    <span class="share-url-icon" id="shareCopyIc">📋</span>
+  </div>
+
+  <div class="share-btns">
+    <button type="button" class="sh-btn sh-line" onclick="shareLine()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.064-.022.134-.032.2-.032.211 0 .391.09.51.25l2.444 3.317V8.108c0-.345.282-.63.631-.63.345 0 .626.285.626.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+      LINE
+    </button>
+    <button type="button" class="sh-btn sh-fb" onclick="shareFacebook()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      Facebook
+    </button>
+    <button type="button" class="sh-btn sh-native" id="btnNativeShare" onclick="nativeShare()" style="display:none">
+      📱 Share
+    </button>
+    <button type="button" class="sh-btn sh-copy" onclick="copyShareLink()">
+      📋 Copy Link
+    </button>
+    <button type="button" class="sh-btn sh-img" onclick="saveAsImage()">
+      📸 Save รูป
+    </button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const SHARE_URL = {{ _share_url | tojson }};
+  const SHARE_TEXT = {{ (_share_text ~ _share_url) | tojson }};
+  const SHARE_TITLE = {{ ('ConfigDoctor — ' ~ _sz|string ~ '" ' ~ _sy|capitalize ~ ' TWR ' ~ _twr|round(2)|string ~ ':1') | tojson }};
+
+  // Show native share button if supported
+  if (navigator.share) {
+    document.getElementById('btnNativeShare').style.display = 'flex';
+  }
+
+  window.shareLine = function() {
+    const url = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(SHARE_URL);
+    window.open(url, '_blank', 'width=600,height=600,noopener');
+  };
+
+  window.shareFacebook = function() {
+    const url = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(SHARE_URL)
+              + '&quote=' + encodeURIComponent(SHARE_TEXT);
+    window.open(url, '_blank', 'width=600,height=500,noopener');
+  };
+
+  window.nativeShare = function() {
+    if (!navigator.share) return;
+    navigator.share({ title: SHARE_TITLE, text: SHARE_TEXT, url: SHARE_URL })
+      .catch(function(){});
+  };
+
+  window.copyShareLink = function() {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(SHARE_URL).then(function() {
+        showCopyFeedback();
+      }).catch(function() { fallbackCopy(); });
+    } else { fallbackCopy(); }
+  };
+
+  function fallbackCopy() {
+    var ta = document.createElement('textarea');
+    ta.value = SHARE_URL;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    showCopyFeedback();
+  }
+
+  function showCopyFeedback() {
+    var ic = document.getElementById('shareCopyIc');
+    if (ic) { ic.textContent = '✅'; setTimeout(function(){ ic.textContent = '📋'; }, 2000); }
+    if (typeof showToast === 'function') showToast('LINK COPIED');
+    else {
+      var t = document.createElement('div');
+      t.textContent = '✓ LINK COPIED';
+      t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#021a0e;border:1px solid #00ff44;color:#00ff44;font-size:11px;letter-spacing:.1em;padding:9px 20px;border-radius:8px;z-index:9999;font-family:monospace';
+      document.body.appendChild(t);
+      setTimeout(function(){ document.body.removeChild(t); }, 2000);
+    }
+  }
+
+  window.saveAsImage = function() {
+    // Load html2canvas on demand then capture the result card
+    if (window._h2cLoading) return;
+    window._h2cLoading = true;
+    var script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    script.onload = function() {
+      var el = document.getElementById('resultCard') || document.querySelector('.result-card')
+               || document.querySelector('.rh') || document.querySelector('.tabs-body');
+      if (!el) { alert('ไม่พบ element สำหรับ capture'); return; }
+      html2canvas(el, {
+        backgroundColor: '#060d0a',
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      }).then(function(canvas) {
+        var link = document.createElement('a');
+        link.download = 'configdoctor-{{ _sz }}-{{ _sy }}.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        window._h2cLoading = false;
+      }).catch(function(e) {
+        console.error('html2canvas:', e);
+        window._h2cLoading = false;
+      });
+    };
+    script.onerror = function() {
+      alert('โหลด html2canvas ไม่ได้ — ตรวจสอบการเชื่อมต่ออินเทอร์เน็ต');
+      window._h2cLoading = false;
+    };
+    document.head.appendChild(script);
+  };
+})();
+</script>
+
+<!-- ── FPV Gear Recommendation ─── -->
 <a class="gear-promo" href="/fpv-gear?class={{ _cls }}&style={{ _sy }}&size={{ _sz }}">
   <div class="gp-ic">🛒</div>
   <div class="gp-body">
