@@ -11,7 +11,7 @@
 
 ## 🌐 Live Website
 
-configdoctor.vercel.app
+[configdoctor.vercel.app](https://configdoctor.vercel.app/)
 [https://configdoctor.onrender.com](https://configdoctor.onrender.com)
 
 ---
