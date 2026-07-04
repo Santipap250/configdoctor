@@ -129,22 +129,10 @@ body.lang-en .on-en{display:inline}
 .on-ham.on-open span:nth-child(2){opacity:0;transform:scaleX(0);}
 .on-ham.on-open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);background:var(--on-green);}
 /* ── LOGO ── */
-.on-logo-link{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;position:relative;}
-.on-logo-ring{
-  position:absolute;left:-7px;top:50%;width:30px;height:30px;margin-top:-15px;border-radius:50%;
-  background:conic-gradient(from 0deg,rgba(16,196,122,0) 0%,rgba(16,196,122,.55) 18%,rgba(0,229,255,.35) 36%,rgba(16,196,122,0) 60%,rgba(16,196,122,0) 100%);
-  -webkit-mask:radial-gradient(closest-side,transparent calc(100% - 2px),#000 calc(100% - 1.5px));
-  mask:radial-gradient(closest-side,transparent calc(100% - 2px),#000 calc(100% - 1.5px));
-  animation:onRingSpin 6s linear infinite;pointer-events:none;opacity:.9;
-}
-@keyframes onRingSpin{to{transform:rotate(360deg)}}
-@media(prefers-reduced-motion:reduce){.on-logo-ring{animation:none;}}
-.on-logo-img{height:26px;filter:drop-shadow(0 0 7px rgba(16,196,122,.45));transition:filter .2s;position:relative;z-index:1;}
-.on-logo-link:hover .on-logo-img{filter:drop-shadow(0 0 14px rgba(16,196,122,.9));}
-.on-logo-link:hover .on-logo-ring{animation-duration:2.2s;}
-.on-logo-block{display:flex;flex-direction:column;}
-.on-logo-text{font-family:'Orbitron',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--on-text);line-height:1.1;white-space:nowrap;background:linear-gradient(90deg,var(--on-text) 40%,var(--on-green) 120%);-webkit-background-clip:text;background-clip:text;}
-.on-logo-sub{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--on-muted);letter-spacing:.05em;}
+.on-logo-link{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;position:relative;}
+.on-logo-img{height:30px;width:auto;filter:drop-shadow(0 0 7px rgba(16,196,122,.35));transition:filter .2s,transform .2s;position:relative;z-index:1;}
+.on-logo-link:hover .on-logo-img{filter:drop-shadow(0 0 14px rgba(16,196,122,.75));transform:translateY(-1px);}
+@media(prefers-reduced-motion:reduce){.on-logo-link:hover .on-logo-img{transform:none;}}
 .on-logo-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--on-green);box-shadow:0 0 5px var(--on-green);animation:onDot 2.5s ease-in-out infinite;position:relative;}
 .on-logo-dot::before{
   content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--on-green);
@@ -366,14 +354,13 @@ body.lang-en .on-en{display:inline}
   .on-mega{display:flex;}
   .on-crumb{display:none;}
 }
-@media(max-width:440px){.on-logo-block{display:none;}}
+@media(max-width:440px){.on-logo-img{height:24px;}}
 /* ── LIGHT MODE ── */
 body.light .on-bar{background:rgba(248,250,252,.97);border-bottom-color:rgba(0,0,0,.08);}
 body.light .on-bar::before{background:linear-gradient(90deg,transparent,rgba(5,150,105,.2),transparent);}
 body.light .on-ham span{background:#475569;}
 body.light .on-ham{border-color:rgba(0,0,0,.1);}
-body.light .on-logo-text{color:#1e293b;}
-body.light .on-logo-sub{color:#94a3b8;}
+body.light .on-logo-link{background:rgba(4,9,14,.92);padding:5px 10px;border-radius:9px;}
 body.light .on-logo-dot{background:#059669;box-shadow:0 0 5px #059669;}
 body.light .on-crumb{color:#059669;background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.25);}
 body.light .on-crumb-dot{background:#059669;}
@@ -567,13 +554,8 @@ body.light .on-dfoot-ver{color:#059669;}
   <button type="button" id="onHam" class="on-ham" aria-label="เปิดเมนู" aria-expanded="false" aria-controls="onDrawer">
     <span></span><span></span><span></span>
   </button>
-  <a href="/app" class="on-logo-link" aria-label="OBIXConfig Doctor Home">
-    <span class="on-logo-ring" aria-hidden="true"></span>
-    <img src="{{ url_for('static', filename='img/obix-logo.png') }}" alt="OBIX" class="on-logo-img">
-    <div class="on-logo-block">
-      <span class="on-logo-text">OBIXCONFIG</span>
-      <span class="on-logo-sub">v7.0 · FPV 🇹🇭</span>
-    </div>
+  <a href="/app" class="on-logo-link" aria-label="ConfigDoctor Home">
+    <img src="{{ url_for('static', filename='img/configdoctor-logo.png') }}" alt="ConfigDoctor — FPV Drone Diagnostic Platform" class="on-logo-img">
     <div class="on-logo-dot" title="System Online"></div>
   </a>
 
