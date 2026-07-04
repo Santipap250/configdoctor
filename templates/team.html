@@ -72,6 +72,27 @@ body::before{
 }
 @keyframes scanMove{from{background-position:0 0,0 0}to{background-position:0 100%,60px 0}}
 
+/* ════ BACKGROUND VIDEO ════
+   Sits below the scanline overlay and particle canvas (both z-index:0,
+   painted after in DOM order) so the HUD scanlines/particles still read
+   on top. ::after carries a dark tint for text contrast. Falls back to
+   the page's own gradient background (no video) for reduced-motion,
+   save-data, slow connections, or if autoplay is blocked. */
+.team-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+}
+.team-bg::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(2,4,3,.72) 0%,rgba(4,8,8,.66) 45%,rgba(4,8,8,.85) 100%);
+}
+.team-bg-video{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;
+}
+@media(prefers-reduced-motion:reduce){
+  .team-bg-video{display:none;}
+}
+body.no-team-bg-video .team-bg-video{display:none;}
+
 #team-particles{
   position:fixed; inset:0; z-index:0;
   pointer-events:none; opacity:.24;
@@ -643,6 +664,13 @@ body::before{
 {% set nav_page = "team" %}
 </head>
 <body>
+<div class="team-bg" aria-hidden="true">
+  <video class="team-bg-video" id="teamBgVideo" autoplay muted loop playsinline preload="none"
+    poster="{{ url_for('static', filename='img/index-bg-poster.jpg') }}">
+    <source data-src="{{ url_for('static', filename='video/index-bg.webm') }}" type="video/webm">
+    <source data-src="{{ url_for('static', filename='video/index-bg.mp4') }}" type="video/mp4">
+  </video>
+</div>
 {% include "partials/nav.html" %}
 {% include "partials/page_actions.html" %}
 
@@ -874,6 +902,35 @@ body::before{
 </div><!-- /page-wrap -->
 
 <script>
+/* ── Background video: lazy-load only when the device/network can handle it ── */
+(function(){
+  var v = document.getElementById('teamBgVideo');
+  if(!v) return;
+
+  var conn = navigator.connection || navigator.webkitConnection || navigator.mozConnection;
+  var saveData = !!(conn && conn.saveData);
+  var slow = !!(conn && /(^|[^0-9])2g/i.test(conn.effectiveType || ''));
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if(saveData || slow || reduceMotion){
+    document.body.classList.add('no-team-bg-video');
+    return;
+  }
+
+  var sources = v.querySelectorAll('source[data-src]');
+  sources.forEach(function(s){
+    if(!s.getAttribute('src')) s.setAttribute('src', s.getAttribute('data-src'));
+  });
+
+  try { v.load(); } catch(e) {}
+  var playPromise = v.play();
+  if(playPromise && typeof playPromise.catch === 'function'){
+    playPromise.catch(function(){
+      // If autoplay is blocked, the poster / plain gradient remains visible.
+    });
+  }
+})();
+
 /* ── Particle canvas ───────────────────────────── */
 (function(){
   const canvas = document.getElementById('team-particles');
