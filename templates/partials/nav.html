@@ -9,7 +9,12 @@
 
   MOBILE (< 960px):
     • Compact bar: Hamburger | Logo | Breadcrumb | Lang | Theme
-    • Hamburger opens slide-in drawer with full search + all tools
+    • Hamburger opens the same floating popup as desktop's search button
+
+  FLOATING POPUP (Hamburger / Search button / "/" key — all sizes):
+    • Small floating card below the top bar (not full-screen) — search +
+      category chips (Tune/HW/Analyze/Video/Explore) + Recent + full list
+    • Closes on ESC, backdrop click, or swipe-down; focus is trapped inside
 
   USAGE:
     {% set nav_page = "blackbox" %}
@@ -278,51 +283,35 @@ body.lang-en .on-en{display:inline}
 .on-overlay{position:fixed;inset:0;z-index:650;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .22s;touch-action:none;}
 .on-overlay.on-open{opacity:1;pointer-events:all;}
 /* ── DRAWER ── */
+/* ── FLOATING POPUP (command center) ──
+   A compact card that floats below the top bar — not a full-screen
+   takeover. Most of the page stays visible around it; closes on ESC,
+   backdrop click, or swipe-down. Same floating-card treatment on both
+   mobile and desktop, just sized to fit the viewport comfortably. */
 .on-drawer{
-  position:fixed;z-index:700;
-  background:radial-gradient(ellipse 140% 60% at 0% 0%,rgba(16,196,122,.05),transparent 60%),#03080d;
+  position:fixed;z-index:700;left:50%;
+  top:max(70px,calc(env(safe-area-inset-top) + 62px));
+  width:min(420px,calc(100vw - 24px));
+  max-height:min(600px,calc(100vh - 100px));
+  background:radial-gradient(ellipse 140% 60% at 0% 0%,rgba(16,196,122,.06),transparent 60%),rgba(3,8,13,.98);
+  border:1px solid rgba(255,255,255,.09);border-radius:20px;
+  box-shadow:0 24px 70px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.03);
   display:flex;flex-direction:column;overflow:hidden;
+  transform:translate(-50%,-14px) scale(.95);opacity:0;visibility:hidden;pointer-events:none;
+  transition:transform .24s cubic-bezier(.2,.9,.3,1.2),opacity .18s ease,visibility .24s;
   will-change:transform;-webkit-overflow-scrolling:touch;
 }
+.on-drawer.on-open{transform:translate(-50%,0) scale(1);opacity:1;visibility:visible;pointer-events:auto;}
 .on-drawer::before,.on-drawer::after{
-  content:'';position:absolute;width:22px;height:22px;pointer-events:none;opacity:.5;z-index:2;
+  content:'';position:absolute;width:18px;height:18px;pointer-events:none;opacity:.5;z-index:2;
 }
-.on-drawer::before{top:10px;right:10px;border-top:2px solid var(--on-green);border-right:2px solid var(--on-green);border-top-right-radius:4px;}
-.on-drawer::after{bottom:10px;right:10px;border-bottom:2px solid var(--on-cyan);border-right:2px solid var(--on-cyan);border-bottom-right-radius:4px;}
-/* MOBILE (< 960px): full-screen command sheet — slides up from the bottom.
-   Chosen over a bottom sheet because there are 30+ tools to browse; a
-   partial-height sheet would just trade one cramped list for another.
-   Full-screen gives search + category chips + recent + the whole list
-   room to breathe, while still feeling like an overlay (slide + backdrop). */
-@media(max-width:959px){
-  .on-drawer{
-    inset:0;width:100%;height:100%;border-radius:0;
-    transform:translateY(100%);
-    transition:transform .32s cubic-bezier(.32,.72,.28,1);
-  }
-  .on-drawer.on-open{transform:translateY(0);box-shadow:none;}
-  .on-drawer::before,.on-drawer::after{display:none;}
-}
-/* DESKTOP (≥ 960px): centered command-palette modal (⌘K-style) — this is
-   the secondary "find anything fast" surface, separate from the always-
-   visible mega-dropdown top nav which stays the primary way to browse. */
-@media(min-width:960px){
-  .on-drawer{
-    left:50%;top:9vh;width:min(640px,90vw);max-height:78vh;
-    border-radius:16px;border:1px solid rgba(255,255,255,.08);
-    box-shadow:0 30px 90px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.03);
-    transform:translate(-50%,-10px) scale(.97);opacity:0;visibility:hidden;pointer-events:none;
-    transition:transform .22s cubic-bezier(.2,.9,.3,1.2),opacity .18s ease,visibility .22s;
-  }
-  .on-drawer.on-open{transform:translate(-50%,0) scale(1);opacity:1;visibility:visible;pointer-events:auto;}
+.on-drawer::before{top:9px;right:9px;border-top:2px solid var(--on-green);border-right:2px solid var(--on-green);border-top-right-radius:5px;}
+.on-drawer::after{bottom:9px;right:9px;border-bottom:2px solid var(--on-cyan);border-right:2px solid var(--on-cyan);border-bottom-right-radius:5px;}
+@media(min-width:640px){
+  .on-drawer{width:min(460px,calc(100vw - 32px));max-height:min(640px,calc(100vh - 120px));}
 }
 @media(prefers-reduced-motion:reduce){
-  .on-drawer{transition:opacity .15s ease,visibility .15s;}
-  .on-drawer.on-open{transform:none;}
-}
-@media(prefers-reduced-motion:reduce) and (max-width:959px){
-  .on-drawer{transform:none;opacity:0;visibility:hidden;}
-  .on-drawer.on-open{opacity:1;visibility:visible;}
+  .on-drawer{transition:opacity .15s ease,visibility .15s;transform:translate(-50%,0) scale(1);}
 }
 .on-dh{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;position:relative;}
 .on-dh-brand{display:flex;align-items:center;gap:10px;}
@@ -429,7 +418,7 @@ body.light .on-icon-btn:hover{color:#059669;border-color:rgba(5,150,105,.4);back
 body.light .on-search-btn{color:#64748b;border-color:rgba(0,0,0,.1);}
 body.light .on-search-btn:hover{color:#059669;border-color:rgba(5,150,105,.35);}
 body.light .on-overlay{background:rgba(0,0,0,.4);}
-body.light .on-drawer{background:#f8fafc;border-right-color:rgba(0,0,0,.08);}
+body.light .on-drawer{background:#f8fafc;border-color:rgba(0,0,0,.08);}
 body.light .on-dh{border-bottom-color:rgba(0,0,0,.07);}
 body.light .on-dh-icon{background:rgba(5,150,105,.08);border-color:rgba(5,150,105,.2);}
 body.light .on-dh-name{color:#1e293b;}
@@ -768,7 +757,7 @@ function openDrawer(){
   if(drawer)drawer.classList.add('on-open');
   if(overlay){overlay.classList.add('on-open');overlay.setAttribute('aria-hidden','false');}
   document.addEventListener('keydown',handleKey);
-  if(window.innerWidth<960)document.body.style.overflow='hidden';
+  document.body.style.overflow='hidden';
   renderRecent();
   setTimeout(function(){if(searchEl)searchEl.focus();},80);
 }
@@ -799,24 +788,22 @@ if(navEl)navEl.addEventListener('click',function(e){
   var l=e.target.closest('.on-dlink');
   if(!l)return;
   recordRecent(l);
-  if(window.innerWidth<960)closeDrawer();
+  closeDrawer();
 });
 document.addEventListener('keydown',function(e){
   var tag=document.activeElement?document.activeElement.tagName:'';
   if(e.key==='/'&&tag!=='INPUT'&&tag!=='TEXTAREA'){e.preventDefault();openDrawer();}
 });
 
-/* ── SWIPE (mobile full-screen sheet: swipe down to close) ── */
+/* ── SWIPE (floating popup: swipe down to dismiss, touch devices) ── */
 if(drawer){
   var tx=0,ty=0;
   drawer.addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;ty=e.changedTouches[0].clientY;},{passive:true});
   drawer.addEventListener('touchmove',function(e){
-    if(window.innerWidth>=960)return;
     var dy=e.changedTouches[0].clientY-ty;
-    if(dy>0){var r=Math.min(dy*.4,80);drawer.style.transform='translateY('+r+'px)';drawer.style.transition='none';}
+    if(dy>0){var r=Math.min(dy*.4,80);drawer.style.transform='translate(-50%,'+r+'px) scale(1)';drawer.style.transition='none';}
   },{passive:true});
   drawer.addEventListener('touchend',function(e){
-    if(window.innerWidth>=960)return;
     drawer.style.transform='';drawer.style.transition='';
     var dy=e.changedTouches[0].clientY-ty,dx=Math.abs(e.changedTouches[0].clientX-tx);
     if(dy>90&&dx<80)closeDrawer();
