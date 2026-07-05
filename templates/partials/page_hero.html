@@ -1,0 +1,83 @@
+{#
+  templates/partials/page_hero.html — OBIXConfig Doctor
+  ══════════════════════════════════════════════════════
+  Standardised page hero with back-bar, eyebrow, title, sub.
+  Include INSIDE .page-wrap, AFTER nav/page_actions.
+
+  REQUIRED vars (set before include):
+    hero_title     — main heading (can contain <span class="hl">)
+    hero_sub       — subtitle text (plain string or omit)
+
+  OPTIONAL vars:
+    hero_eyebrow   — small caps label above title (default: page tool name)
+    hero_badge     — badge text e.g. "🔋 BATTERY v5"
+    hero_badge_color — CSS color token: green(default)/gold/blue/red/purple
+    hero_back_url  — URL for ← back link (default: /app)
+    hero_back_label — text for back link (default: ← ANALYZER)
+    hero_back2_url  — second back link URL (optional)
+    hero_back2_label— second back link text (optional)
+    hero_note      — info/disclaimer box text (optional)
+#}
+
+{%- set _badge_color = hero_badge_color | default('green') -%}
+{%- set _badge_bg_map = {
+  'green':  'rgba(16,196,122,.09)', 'gold':   'rgba(241,182,90,.09)',
+  'blue':   'rgba(88,166,255,.09)', 'red':    'rgba(248,81,73,.09)',
+  'purple': 'rgba(167,139,250,.09)'
+} -%}
+{%- set _badge_border_map = {
+  'green':  'rgba(16,196,122,.28)', 'gold':   'rgba(241,182,90,.28)',
+  'blue':   'rgba(88,166,255,.28)', 'red':    'rgba(248,81,73,.28)',
+  'purple': 'rgba(167,139,250,.28)'
+} -%}
+{%- set _badge_text_map = {
+  'green': '#10c47a', 'gold': '#f1b65a', 'blue': '#58a6ff',
+  'red': '#f85149', 'purple': '#c9a6ff'
+} -%}
+{%- set _accent_map = {
+  'green': '#10c47a', 'gold': '#f1b65a', 'blue': '#58a6ff',
+  'red': '#f85149', 'purple': '#c9a6ff'
+} -%}
+{%- set _acc = _accent_map.get(_badge_color, '#10c47a') -%}
+
+<style>
+/* page_hero.html inline overrides — accent-color from badge_color */
+.back-link:hover { border-color: {{ _acc }}50 !important; background: {{ _acc }}08 !important; }
+.hero-eyebrow { color: {{ _acc }}a0 !important; }
+.hero-eyebrow::before { background: {{ _acc }} !important; }
+.page-badge {
+  background: {{ _badge_bg_map.get(_badge_color, _badge_bg_map['green']) }} !important;
+  border-color: {{ _badge_border_map.get(_badge_color, _badge_border_map['green']) }} !important;
+  color: {{ _badge_text_map.get(_badge_color, '#10c47a') }} !important;
+}
+.card-title::before, .section-label::before { background: {{ _acc }} !important; }
+</style>
+
+<!-- back bar -->
+<div class="back-bar ui-fade-up">
+  <a class="back-link" href="{{ hero_back_url | default('/app') }}">
+    {{ hero_back_label | default('← ANALYZER') }}
+  </a>
+  {% if hero_back2_url %}
+  <a class="back-link" href="{{ hero_back2_url }}">{{ hero_back2_label | default('🏠 HOME') }}</a>
+  {% endif %}
+  {% if hero_badge %}
+  <span class="page-badge">{{ hero_badge }}</span>
+  {% endif %}
+</div>
+
+<!-- hero -->
+<div class="page-hero ui-fade-up">
+  {% if hero_eyebrow %}
+  <div class="hero-eyebrow">{{ hero_eyebrow }}</div>
+  {% endif %}
+  <h1 class="hero-title">{{ hero_title | safe }}</h1>
+  {% if hero_sub %}
+  <p class="hero-sub">{{ hero_sub }}</p>
+  {% endif %}
+  {% if hero_note %}
+  <div class="hero-note" style="display:flex;align-items:flex-start;gap:10px;background:{{ _acc }}08;border:1px solid {{ _acc }}20;border-radius:12px;padding:13px 17px;font-size:.82rem;color:rgba(221,231,239,.65);line-height:1.65;max-width:640px;margin-top:14px">
+    <span style="flex-shrink:0">ℹ️</span><span>{{ hero_note }}</span>
+  </div>
+  {% endif %}
+</div>
