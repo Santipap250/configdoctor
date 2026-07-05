@@ -1,0 +1,294 @@
+/* ══════════════════════════════════════════════════════════════════
+   ConfigDoctor — ui-enhance.css
+   Global UI / UX enhancement layer.
+   Loaded after style.css / site-theme.css / responsive.css on every page.
+   Never overrides layout or colors specific to one tool page.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ─── 1. TYPOGRAPHY FLOOR ───────────────────────────────────────── */
+/* Prevent text below 11px in body copy (WCAG AA) */
+body { font-size: max(14px, 1em); -webkit-text-size-adjust: 100%; }
+small, .hint, .meta, .label-xs { font-size: max(11px, .75em); }
+/* Prevent orphan words in long Thai text */
+p, li, td, .card-desc, .hero-sub { overflow-wrap: break-word; }
+
+/* ─── 2. SMOOTH GLOBAL TRANSITIONS ──────────────────────────────── */
+a, button, input, select, textarea,
+.card, .tool-card, .p-card, .kit-card,
+.drawer-link, .on-dlink, .tab-btn, .tab,
+.form-field, .select-field {
+  transition-duration: 0.18s;
+  transition-timing-function: ease;
+  transition-property: background, border-color, color, box-shadow, opacity, transform;
+}
+/* Faster for micro-interactions */
+button:active, a:active { transition-duration: 0.06s; }
+
+/* ─── 3. FOCUS RING ──────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid rgba(16, 196, 122, 0.55);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+button:focus-visible, a:focus-visible { border-radius: 6px; }
+
+/* ─── 4. STANDARDISED PAGE HERO ─────────────────────────────────── */
+/* .page-hero: use on every tool page */
+.page-hero { margin-bottom: 32px; }
+.page-hero + .page-wrap-inner { margin-top: 0; }
+
+/* Back bar */
+.back-bar {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+/* back-link — inherits the active group color from the page via --accent */
+.back-link {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: .78rem; color: var(--muted, #6b7f90); text-decoration: none;
+  border: 1px solid var(--border, rgba(255,255,255,.07));
+  padding: 6px 14px; border-radius: 8px;
+  font-family: var(--font-en, 'Orbitron', monospace); letter-spacing: .06em;
+}
+.back-link:hover {
+  color: var(--text, #dde7ef);
+  border-color: rgba(16, 196, 122, 0.3);
+  background: rgba(16, 196, 122, 0.04);
+  transform: translateX(-2px);
+}
+/* page-badge */
+.page-badge {
+  font-family: var(--font-en, 'Orbitron', monospace); font-size: .65rem;
+  font-weight: 700; letter-spacing: .14em;
+  padding: 5px 14px; border-radius: 30px;
+  background: var(--badge-bg, rgba(16,196,122,.09));
+  border: 1px solid var(--badge-border, rgba(16,196,122,.28));
+  color: var(--badge-color, var(--green, #10c47a));
+  white-space: nowrap;
+}
+/* hero-eyebrow */
+.hero-eyebrow {
+  font-family: var(--font-en, 'Orbitron', monospace); font-size: .65rem;
+  font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(16, 196, 122, 0.65); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.hero-eyebrow::before {
+  content: ''; display: block; width: 24px; height: 2px;
+  background: var(--accent, var(--green, #10c47a)); border-radius: 2px;
+}
+/* hero-title */
+.hero-title, .page-hero h1 {
+  font-family: var(--font-en, 'Orbitron', monospace);
+  font-size: clamp(1.6rem, 4.5vw, 2.8rem); font-weight: 900;
+  color: #fff; line-height: 1.1; margin-bottom: 12px;
+}
+.hero-title .hl, .page-hero h1 .hl {
+  color: var(--accent, var(--green, #10c47a));
+}
+/* hero-sub */
+.hero-sub {
+  font-size: clamp(.87rem, 2vw, .97rem); color: var(--muted, #6b7f90);
+  line-height: 1.8; max-width: 600px;
+}
+
+/* ─── 5. CARD ENHANCEMENTS ────────────────────────────────────────  */
+.card, .tool-card, .result-card, .stat-card {
+  border-radius: var(--radius-lg, 14px);
+  transition: border-color .18s, box-shadow .18s, transform .18s;
+}
+.card:hover, .tool-card:hover {
+  border-color: rgba(16, 196, 122, 0.18) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+/* Card section title with left pip */
+.card-title, .section-label {
+  font-family: var(--font-en, 'Orbitron', monospace);
+  font-size: .67rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--muted, #6b7f90);
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 18px;
+}
+.card-title::before, .section-label::before {
+  content: ''; display: block; width: 4px; height: 14px;
+  background: var(--accent, var(--green, #10c47a));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+/* ─── 6. BUTTON ENHANCEMENTS ─────────────────────────────────────── */
+/* Primary green action button */
+.btn-primary, .btn-analyze, .btn-run, .btn-go {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 11px 22px; border-radius: 10px; font-weight: 700;
+  font-family: var(--font-th, 'Sarabun', sans-serif); font-size: .88rem;
+  background: linear-gradient(135deg, var(--green, #10c47a), #0ea368);
+  color: #021a0e; border: none; cursor: pointer; white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(16, 196, 122, 0.22);
+}
+.btn-primary:hover, .btn-analyze:hover, .btn-run:hover, .btn-go:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(16, 196, 122, 0.36);
+  filter: brightness(1.06);
+}
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled, .btn-primary[disabled] {
+  opacity: .5; cursor: not-allowed; transform: none; filter: none;
+  box-shadow: none;
+}
+/* Loading state */
+.btn-primary.loading::after {
+  content: ''; display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(2,26,14,.4); border-top-color: #021a0e;
+  border-radius: 50%; animation: uiSpin .65s linear infinite;
+}
+@keyframes uiSpin { to { transform: rotate(360deg); } }
+
+/* Secondary outline button */
+.btn-outline, .btn-secondary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 9px 18px; border-radius: 9px; font-weight: 600;
+  font-family: var(--font-th, 'Sarabun', sans-serif); font-size: .86rem;
+  background: transparent; color: var(--text, #dde7ef);
+  border: 1px solid var(--border-hi, rgba(255,255,255,.12)); cursor: pointer;
+}
+.btn-outline:hover, .btn-secondary:hover {
+  border-color: rgba(16, 196, 122, 0.35);
+  background: rgba(16, 196, 122, 0.05); color: var(--green, #10c47a);
+  transform: translateY(-1px);
+}
+
+/* ─── 7. FORM INPUT ENHANCEMENTS ─────────────────────────────────── */
+input[type="text"], input[type="number"], input[type="email"],
+input[type="search"], input[type="url"], input[type="password"],
+select, textarea {
+  border-radius: 8px;
+  transition: border-color .18s, box-shadow .18s;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: rgba(16, 196, 122, 0.45) !important;
+  box-shadow: 0 0 0 3px rgba(16, 196, 122, 0.1) !important;
+}
+
+/* Input label */
+.field-label, .form-label {
+  font-family: var(--font-en, 'Orbitron', monospace);
+  font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted, #6b7f90); margin-bottom: 6px; display: block;
+}
+/* Input hint */
+.field-hint, .form-hint {
+  font-size: .76rem; color: var(--muted, #6b7f90); margin-top: 4px; line-height: 1.5;
+}
+
+/* ─── 8. EMPTY STATE ──────────────────────────────────────────────── */
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 52px 24px; text-align: center; gap: 12px;
+}
+.empty-state-icon { font-size: 2.5rem; opacity: .55; margin-bottom: 6px; }
+.empty-state-title {
+  font-family: var(--font-en, 'Orbitron', monospace); font-size: .9rem;
+  font-weight: 700; color: var(--text, #dde7ef); letter-spacing: .04em;
+}
+.empty-state-sub {
+  font-size: .85rem; color: var(--muted, #6b7f90); max-width: 340px; line-height: 1.7;
+}
+
+/* ─── 9. TOAST NOTIFICATION ──────────────────────────────────────── */
+#uiToast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: rgba(0,0,0,.92); border: 1px solid rgba(16,196,122,.28);
+  color: #10c47a; font-family: var(--font-en, 'Orbitron', monospace);
+  font-size: 9px; letter-spacing: .12em;
+  padding: 10px 22px; border-radius: 10px;
+  z-index: 9999; opacity: 0; pointer-events: none;
+  transition: opacity .2s, transform .2s;
+  white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,.5);
+}
+#uiToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#uiToast.error { border-color: rgba(248,81,73,.35); color: #f85149; }
+#uiToast.info  { border-color: rgba(88,166,255,.28); color: #58a6ff; }
+
+/* ─── 10. TOOLTIP ─────────────────────────────────────────────────── */
+[data-tip] { position: relative; cursor: help; }
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute; bottom: calc(100% + 8px); left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.92); color: #cde4f0; border: 1px solid rgba(255,255,255,.1);
+  font-family: var(--font-th, 'Sarabun', sans-serif); font-size: 12px; font-weight: 400;
+  padding: 7px 12px; border-radius: 8px; white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: opacity .18s, transform .18s;
+  transform: translateX(-50%) translateY(4px);
+  z-index: 200; line-height: 1.5; max-width: 240px; white-space: normal;
+  text-align: center;
+}
+[data-tip]:hover::after {
+  opacity: 1; transform: translateX(-50%) translateY(0);
+}
+
+/* ─── 11. SCORE / STAT RINGS (used in index.html result cards) ──── */
+.stat-ring-wrap { position: relative; display: inline-block; }
+.stat-ring-label {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; pointer-events: none;
+}
+
+/* ─── 12. TAG / BADGE CHIPS ──────────────────────────────────────── */
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: .72rem; padding: 3px 10px; border-radius: 999px;
+  border: 1px solid var(--border, rgba(255,255,255,.07));
+  color: var(--muted, #6b7f90); background: rgba(255,255,255,.04);
+  font-family: var(--mono, 'JetBrains Mono', monospace);
+}
+.chip.green { background: rgba(16,196,122,.08); border-color: rgba(16,196,122,.22); color: #10c47a; }
+.chip.gold  { background: rgba(241,182,90,.08); border-color: rgba(241,182,90,.22); color: #f1b65a; }
+.chip.blue  { background: rgba(88,166,255,.08); border-color: rgba(88,166,255,.22); color: #58a6ff; }
+.chip.red   { background: rgba(248,81,73,.08);  border-color: rgba(248,81,73,.22);  color: #f85149; }
+
+/* ─── 13. DIVIDER ─────────────────────────────────────────────────── */
+.ui-divider {
+  height: 1px; background: var(--border, rgba(255,255,255,.07));
+  margin: 24px 0; border: none;
+}
+
+/* ─── 14. SCROLL-ANIMATE ──────────────────────────────────────────── */
+/* Elements with .ui-fade-up animate in on scroll */
+.ui-fade-up {
+  opacity: 0; transform: translateY(16px);
+  transition: opacity .4s ease, transform .4s ease;
+}
+.ui-fade-up.ui-visible { opacity: 1; transform: translateY(0); }
+/* Staggered delay children */
+.ui-fade-up:nth-child(2) { transition-delay: .06s; }
+.ui-fade-up:nth-child(3) { transition-delay: .12s; }
+.ui-fade-up:nth-child(4) { transition-delay: .18s; }
+
+/* ─── 15. SELECTION COLOR ────────────────────────────────────────── */
+::selection { background: rgba(16,196,122,.22); color: #fff; }
+
+/* ─── 16. SCROLLBAR ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(16,196,122,.3); }
+* { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.1) transparent; }
+
+/* ─── 17. LIGHT MODE OVERRIDES ────────────────────────────────────── */
+body.light ::selection { background: rgba(5,150,105,.2); color: #0f172a; }
+body.light ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); }
+body.light ::-webkit-scrollbar-thumb:hover { background: rgba(5,150,105,.3); }
+body.light .back-link { color: #64748b; border-color: rgba(0,0,0,.1); }
+body.light .back-link:hover { color: #0f172a; border-color: rgba(5,150,105,.35); background: rgba(5,150,105,.05); }
+body.light .card:hover, body.light .tool-card:hover { border-color: rgba(5,150,105,.2) !important; }
+body.light #uiToast { background: #fff; border-color: rgba(5,150,105,.4); color: #059669; }
+
+/* ─── 18. REDUCED MOTION ──────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .ui-fade-up { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .btn-primary.loading::after { animation: none; }
+}
