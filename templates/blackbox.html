@@ -12,6 +12,8 @@
 <title>Blackbox Analyzer — ConfigDoctor</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-enhance.css') }}">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Sarabun:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
@@ -62,6 +64,17 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opac
 
 {% include "partials/nav.html" %}
 {% include "partials/page_actions.html" %}
+
+{% set hero_badge = "📊 BLACKBOX ANALYZER" %}
+{% set hero_badge_color = "blue" %}
+{% set hero_back_url = "/app" %}
+{% set hero_back2_url = "/cli_surgeon" %}
+{% set hero_back2_label = "🩺 CLI SURGEON" %}
+{% set hero_eyebrow = "Flight Log Analysis" %}
+{% set hero_title = "Blackbox <span class=\"hl\">CSV</span> Analyzer" %}
+{% set hero_sub = "อัพโหลด CSV จาก Betaflight Blackbox — ได้ PID Score, Oscillation Analysis และ Motor Imbalance" %}
+{% include "partials/page_hero.html" %}
+
 
 <div class="page-wrap">
 
@@ -522,5 +535,28 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
 function fmtNum(n){ return n ? Number(n).toLocaleString() : '—'; }
 </script>
 {% include "partials/footer_nav.html" %}
+
+<!-- Global toast -->
+<div id="uiToast" role="status" aria-live="polite"></div>
+<script>
+window.showToast = function(msg, type, dur) {
+  var t = document.getElementById('uiToast');
+  if (!t) return;
+  t.textContent = msg;
+  t.className = (type === 'error' ? 'error' : type === 'info' ? 'info' : '') + ' show';
+  clearTimeout(t._tid);
+  t._tid = setTimeout(function() { t.className = t.className.replace(' show',''); }, dur || 2400);
+};
+// Scroll-animate observer (re-runs on DOMContentLoaded)
+document.addEventListener('DOMContentLoaded', function() {
+(function() {
+  if (!window.IntersectionObserver) return;
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('ui-visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.ui-fade-up').forEach(function(el) { obs.observe(el); });
+})();
+});
+</script>
 </body>
 </html>

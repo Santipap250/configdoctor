@@ -12,6 +12,8 @@
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/site-theme.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-enhance.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 /* ══════════════════════════════════════════════════════════
@@ -812,7 +814,7 @@ body::after{
   background:rgba(16,196,122,.06);
   color:var(--green);
   font-family:var(--font-head);
-  font-size:9px;
+  font-size:10px;
   font-weight:700;
   letter-spacing:.18em;
   text-transform:uppercase;
@@ -911,7 +913,7 @@ body::after{
 .hero-metric.purple{border-color:rgba(167,139,250,.18)}
 .hero-metric-label{
   font-family:var(--font-head);
-  font-size:8px;
+  font-size:10px;
   font-weight:700;
   letter-spacing:.18em;
   text-transform:uppercase;
@@ -972,7 +974,7 @@ body::after{
   position:relative;
   z-index:1;
   font-family:var(--font-head);
-  font-size:8px;
+  font-size:10px;
   font-weight:700;
   letter-spacing:.18em;
   text-transform:uppercase;
@@ -1142,6 +1144,17 @@ body::after{
 <body>
 {% include "partials/nav.html" %}
 {% include "partials/page_actions.html" %}
+
+{% set hero_badge = "💊 PID ADVISOR v5" %}
+{% set hero_badge_color = "purple" %}
+{% set hero_back_url = "/app" %}
+{% set hero_back2_url = "/fpv" %}
+{% set hero_back2_label = "📖 FPV HUB" %}
+{% set hero_eyebrow = "Symptom → Fix Engine" %}
+{% set hero_title = "PID <span class=\"hl\">Symptom</span> Advisor" %}
+{% set hero_sub = "บอกอาการที่เจอ → รับคำแนะนำ PID/Filter แบบเจาะจง พร้อม CLI Command สำเร็จรูป" %}
+{% include "partials/page_hero.html" %}
+
 
 <!-- Stats strip -->
 <div class="stats-strip">
@@ -2123,5 +2136,28 @@ function onPidChange() {
 }
 </script>
 {% include "partials/footer_nav.html" %}
+
+<!-- Global toast -->
+<div id="uiToast" role="status" aria-live="polite"></div>
+<script>
+window.showToast = function(msg, type, dur) {
+  var t = document.getElementById('uiToast');
+  if (!t) return;
+  t.textContent = msg;
+  t.className = (type === 'error' ? 'error' : type === 'info' ? 'info' : '') + ' show';
+  clearTimeout(t._tid);
+  t._tid = setTimeout(function() { t.className = t.className.replace(' show',''); }, dur || 2400);
+};
+// Scroll-animate observer (re-runs on DOMContentLoaded)
+document.addEventListener('DOMContentLoaded', function() {
+(function() {
+  if (!window.IntersectionObserver) return;
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('ui-visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.ui-fade-up').forEach(function(el) { obs.observe(el); });
+})();
+});
+</script>
 </body>
 </html>

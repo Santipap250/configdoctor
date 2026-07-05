@@ -11,10 +11,23 @@
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Sarabun:wght@300;400;600&family=Bebas+Neue&display=swap" rel="stylesheet">
 {% set nav_page = "quick_tune" %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-enhance.css') }}">
 </head>
 <body>
 {% include "partials/nav.html" %}
 {% include "partials/page_actions.html" %}
+
+{% set hero_badge = "⚡ QUICK TUNE v5" %}
+{% set hero_badge_color = "green" %}
+{% set hero_back_url = "/app" %}
+{% set hero_back2_url = "/pid-advisor" %}
+{% set hero_back2_label = "💊 PID ADVISOR" %}
+{% set hero_eyebrow = "Fast PID Delta + CLI" %}
+{% set hero_title = "Quick <span class=\"hl\">Tune</span> Pad" %}
+{% set hero_sub = "เลือกอาการ → PID delta ที่แนะนำ + CLI command พร้อม copy" %}
+{% include "partials/page_hero.html" %}
+
 
 <style>
 :root{
@@ -708,5 +721,28 @@ function notify(msg){
 }
 </script>
 {% include "partials/footer_nav.html" %}
+
+<!-- Global toast -->
+<div id="uiToast" role="status" aria-live="polite"></div>
+<script>
+window.showToast = function(msg, type, dur) {
+  var t = document.getElementById('uiToast');
+  if (!t) return;
+  t.textContent = msg;
+  t.className = (type === 'error' ? 'error' : type === 'info' ? 'info' : '') + ' show';
+  clearTimeout(t._tid);
+  t._tid = setTimeout(function() { t.className = t.className.replace(' show',''); }, dur || 2400);
+};
+// Scroll-animate observer (re-runs on DOMContentLoaded)
+document.addEventListener('DOMContentLoaded', function() {
+(function() {
+  if (!window.IntersectionObserver) return;
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('ui-visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.ui-fade-up').forEach(function(el) { obs.observe(el); });
+})();
+});
+</script>
 </body>
 </html>
