@@ -1,48 +1,49 @@
 {#
-  templates/partials/nav.html — OBIXConfig Doctor v7.0 "Nova"
-  ══════════════════════════════════════════════════════
-  UNIFIED HUD NAV — works on every page, one include.
+  templates/partials/nav.html — OBIXConfig Doctor v8.0 "TOOLBOX"
+  ══════════════════════════════════════════════════════════════
+  SIDE TOOLBOX NAV — one include works on every page.
 
-  DESKTOP (≥ 960px):
-    • Fixed top bar: Logo | 5 Mega Dropdown Groups | Search | Lang | Theme
-    • Hover dropdowns with animated panels, active state auto-highlighted
+  Old mega-dropdown top bar + hamburger drawer has been fully
+  replaced by a collapsible "toolbox" side panel:
 
-  MOBILE (< 960px):
-    • Compact bar: Hamburger | Logo | Breadcrumb | Lang | Theme
-    • Hamburger opens the same floating popup as desktop's search button
+    • A slim utility bar stays at the top (logo, toolbox toggle,
+      current page pill, search / language / theme).
+    • Tapping the toggle opens the toolbox panel:
+        - DESKTOP (≥ 960px): fixed-width panel (360px) that slides
+          in over the page with a dim backdrop. Collapsed state
+          takes zero space — it never fights the page for room.
+        - MOBILE  (< 960px): near full-width sheet (92vw) that
+          slides in from the left, big tap targets, swipe-to-close.
+    • Tools are grouped into clear categories with quick-jump
+      chips, and a live search filters everything instantly.
 
-  FLOATING POPUP (Hamburger / Search button / "/" key — all sizes):
-    • Small floating card below the top bar (not full-screen) — search +
-      category chips (Tune/HW/Analyze/Video/Explore) + Recent + full list
-    • Closes on ESC, backdrop click, or swipe-down; focus is trapped inside
-
-  USAGE:
+  USAGE (unchanged):
     {% set nav_page = "blackbox" %}
     {% include "partials/nav.html" %}
 
-  NAV PAGE KEYS (full list):
+  NAV PAGE KEYS (full list, unchanged):
     home · pid_advisor · quick_tune · rpm_filter · rates · bf_wizard
     motor_prop · esc_checker · battery_health · motor_thermal · loop_analyzer
     blackbox · cli_surgeon · comparator · build_card · tuning_log · osd
     vtx · vtx_range · vtx_smartaudio
-    fpv_trainer · flight_quiz · leaderboard · military_uas · fpv
+    fpv_trainer · flight_quiz · leaderboard · military_uas · fpv · fpv_gear
     downloads · about · team · changelog
 #}
 
-{# ── Determine active group ────────────────────────────────── #}
+{# ── Determine active group (used for pill label + quick-jump chips) ── #}
 {% if nav_page in ['home','pid_advisor','quick_tune','rpm_filter','rates','bf_wizard'] %}
   {% set nav_group = 'tune' %}
 {% elif nav_page in ['motor_prop','esc_checker','battery_health','motor_thermal','loop_analyzer'] %}
   {% set nav_group = 'hw' %}
 {% elif nav_page in ['blackbox','cli_surgeon','comparator','build_card','tuning_log','osd'] %}
-  {% set nav_group = 'analysis' %}
+  {% set nav_group = 'analyze' %}
 {% elif nav_page in ['vtx','vtx_range','vtx_smartaudio'] %}
-  {% set nav_group = 'video' %}
+  {% set nav_group = 'signal' %}
 {% else %}
   {% set nav_group = 'explore' %}
 {% endif %}
 
-{# ── Breadcrumb label ─────────────────────────────────────── #}
+{# ── Breadcrumb / pill label ─────────────────────────────────────── #}
 {% if   nav_page == 'blackbox'         %}{% set nav_label = 'BLACKBOX' %}
 {% elif nav_page == 'cli_surgeon'      %}{% set nav_label = 'CLI SURGEON' %}
 {% elif nav_page == 'osd'              %}{% set nav_label = 'OSD DESIGNER' %}
@@ -80,837 +81,518 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Sarabun:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 /* ════════════════════════════════════════════════════════════════
-   OBIX UNIFIED HUD NAV v7.0 "NOVA"  (prefix: .on-)
+   OBIX TOOLBOX NAV v8.0  (prefix: .tbx-)
    ════════════════════════════════════════════════════════════════ */
-.on-en{display:none}
-body.lang-en .on-th{display:none}
-body.lang-en .on-en{display:inline}
+.tbx-en{display:none}
+body.lang-en .tbx-th{display:none}
+body.lang-en .tbx-en{display:inline}
 :root{
-  --on-green:#10c47a;--on-cyan:#00e5ff;--on-blue:#3a82f6;
-  --on-gold:#f59e0b;--on-purple:#a855f7;--on-red:#f87171;
-  --on-muted:#4a6272;--on-muted2:#7a9ab4;--on-text:#c8dce8;
-  --on-bg:rgba(4,9,14,0.92);--on-border:rgba(255,255,255,0.06);
+  --tbx-green:#10c47a;--tbx-cyan:#00e5ff;--tbx-blue:#3a82f6;
+  --tbx-gold:#f59e0b;--tbx-purple:#a855f7;--tbx-red:#f87171;
+  --tbx-muted:#4a6272;--tbx-muted2:#7a9ab4;--tbx-text:#c8dce8;
+  --tbx-bg:rgba(4,9,14,0.92);--tbx-border:rgba(255,255,255,0.06);
+  --tbx-panel-w:360px;
 }
-/* ── TOP BAR ── */
-.on-bar{
-  position:sticky;top:0;z-index:500;height:58px;
-  display:flex;align-items:center;padding:0 16px 0 12px;gap:8px;
-  background:
-    linear-gradient(180deg,rgba(9,17,24,.55),transparent 40%),
-    var(--on-bg);
-  backdrop-filter:blur(30px) saturate(1.75);-webkit-backdrop-filter:blur(30px) saturate(1.75);
+
+/* ── SLIM UTILITY BAR ── */
+.tbx-bar{
+  position:sticky;top:0;z-index:500;height:52px;
+  display:flex;align-items:center;padding:0 14px;gap:8px;
+  background:linear-gradient(180deg,rgba(9,17,24,.55),transparent 40%),var(--tbx-bg);
+  backdrop-filter:blur(28px) saturate(1.7);-webkit-backdrop-filter:blur(28px) saturate(1.7);
   border-bottom:1px solid rgba(255,255,255,.055);
-  box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 18px 40px -24px rgba(0,0,0,.7);
   font-family:'Sarabun',sans-serif;
 }
-.on-bar::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(16,196,122,.3) 30%,rgba(0,229,255,.25) 60%,transparent);
-  pointer-events:none;
-}
-.on-bar::after{
+.tbx-bar::after{
   content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--on-green) 20%,var(--on-cyan) 50%,var(--on-blue) 80%,transparent);
-  background-size:200% 100%;animation:onSweep 9s linear infinite;pointer-events:none;
+  background:linear-gradient(90deg,transparent,var(--tbx-green) 20%,var(--tbx-cyan) 50%,var(--tbx-blue) 80%,transparent);
+  background-size:200% 100%;animation:tbxSweep 9s linear infinite;pointer-events:none;
 }
-@keyframes onSweep{0%{background-position:100%}100%{background-position:-100%}}
-@media(prefers-reduced-motion:reduce){.on-bar::after{animation:none;background-position:0 0;}}
-/* ── HAMBURGER ── */
-.on-ham{
-  width:36px;height:36px;flex-shrink:0;background:none;
-  border:1px solid rgba(255,255,255,.08);border-radius:8px;
-  display:none;flex-direction:column;align-items:center;justify-content:center;gap:4.5px;
+@keyframes tbxSweep{0%{background-position:100%}100%{background-position:-100%}}
+@media(prefers-reduced-motion:reduce){.tbx-bar::after{animation:none;background-position:0 0;}}
+
+/* ── TOGGLE (single button, opens/closes the toolbox) ── */
+.tbx-toggle{
+  width:38px;height:38px;flex-shrink:0;background:none;
+  border:1px solid rgba(16,196,122,.22);border-radius:9px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
   cursor:pointer;transition:border-color .18s,background .18s;
-  -webkit-tap-highlight-color:transparent;
+  -webkit-tap-highlight-color:transparent;position:relative;
 }
-.on-ham:hover{border-color:rgba(16,196,122,.4);background:rgba(16,196,122,.04);}
-.on-ham span{
-  display:block;width:16px;height:1.5px;background:var(--on-muted2);border-radius:2px;
+.tbx-toggle:hover{border-color:rgba(16,196,122,.5);background:rgba(16,196,122,.06);}
+.tbx-toggle span{
+  display:block;width:16px;height:1.5px;background:var(--tbx-muted2);border-radius:2px;
   transition:background .2s,transform .28s cubic-bezier(.68,-.6,.32,1.6),opacity .2s;
   transform-origin:center;
 }
-.on-ham:hover span{background:var(--on-green);}
-.on-ham.on-open span:nth-child(1){transform:translateY(6px) rotate(45deg);background:var(--on-green);}
-.on-ham.on-open span:nth-child(2){opacity:0;transform:scaleX(0);}
-.on-ham.on-open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);background:var(--on-green);}
+.tbx-toggle:hover span{background:var(--tbx-green);}
+.tbx-toggle.tbx-open span:nth-child(1){transform:translateY(5.5px) rotate(45deg);background:var(--tbx-green);}
+.tbx-toggle.tbx-open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.tbx-toggle.tbx-open span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg);background:var(--tbx-green);}
+
 /* ── LOGO ── */
-.on-logo-link{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;position:relative;}
-.on-logo-img{height:30px;width:auto;filter:drop-shadow(0 0 7px rgba(16,196,122,.35));transition:filter .2s,transform .2s;position:relative;z-index:1;}
-.on-logo-link:hover .on-logo-img{filter:drop-shadow(0 0 14px rgba(16,196,122,.75));transform:translateY(-1px);}
-@media(prefers-reduced-motion:reduce){.on-logo-link:hover .on-logo-img{transform:none;}}
-.on-logo-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--on-green);box-shadow:0 0 5px var(--on-green);animation:onDot 2.5s ease-in-out infinite;position:relative;}
-.on-logo-dot::before{
-  content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--on-green);
-  opacity:.55;animation:onPing 2.5s ease-out infinite;
-}
-@keyframes onDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
-@keyframes onPing{0%{transform:scale(.6);opacity:.55}100%{transform:scale(1.9);opacity:0}}
-@media(prefers-reduced-motion:reduce){.on-logo-dot::before{animation:none;opacity:0;}}
-/* ── MEGA NAV ── */
-.on-mega{display:flex;align-items:center;gap:2px;flex:1;justify-content:center;}
-.on-mg{position:relative;}
-.on-mg-btn{
-  display:flex;align-items:center;gap:5px;padding:6px 12px;height:38px;
-  font-family:'Orbitron',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.09em;
-  color:var(--on-muted2);background:transparent;border:none;border-radius:8px;
-  cursor:pointer;white-space:nowrap;transition:color .16s,background .16s;
-  -webkit-tap-highlight-color:transparent;
-}
-.on-mg-ico{font-size:1rem;}
-.on-mg-arr{font-size:.55rem;opacity:.45;margin-left:1px;transition:transform .22s,opacity .22s;}
-.on-mg-btn:hover{color:var(--on-text);background:rgba(255,255,255,.04);}
-.on-mg-btn:hover .on-mg-arr{opacity:.85;transform:translateY(1px);}
-.on-mg:hover .on-mg-arr,.on-mg.on-dd-open .on-mg-arr{transform:rotate(180deg)!important;opacity:.9!important;}
-/* Active group */
-.on-mg.mg-tune.on-mg-active    .on-mg-btn{color:var(--on-green);background:rgba(16,196,122,.07);}
-.on-mg.mg-hw.on-mg-active      .on-mg-btn{color:var(--on-cyan);background:rgba(0,229,255,.06);}
-.on-mg.mg-analysis.on-mg-active .on-mg-btn{color:var(--on-gold);background:rgba(245,158,11,.07);}
-.on-mg.mg-video.on-mg-active   .on-mg-btn{color:var(--on-blue);background:rgba(58,130,246,.07);}
-.on-mg.mg-explore.on-mg-active .on-mg-btn{color:var(--on-purple);background:rgba(168,85,247,.07);}
-/* Active underline */
-.on-mg.on-mg-active .on-mg-btn::after{
-  content:'';position:absolute;bottom:-4px;left:50%;
-  transform:translateX(-50%);width:20px;height:2px;border-radius:2px;
-  overflow:hidden;
-}
-.on-mg.mg-tune.on-mg-active     .on-mg-btn::after{background:var(--on-green);box-shadow:0 0 6px var(--on-green);}
-.on-mg.mg-hw.on-mg-active       .on-mg-btn::after{background:var(--on-cyan);box-shadow:0 0 6px var(--on-cyan);}
-.on-mg.mg-analysis.on-mg-active .on-mg-btn::after{background:var(--on-gold);box-shadow:0 0 6px var(--on-gold);}
-.on-mg.mg-video.on-mg-active    .on-mg-btn::after{background:var(--on-blue);box-shadow:0 0 6px var(--on-blue);}
-.on-mg.mg-explore.on-mg-active  .on-mg-btn::after{background:var(--on-purple);box-shadow:0 0 6px var(--on-purple);}
-.on-mg.on-mg-active .on-mg-btn::before{
-  content:'';position:absolute;bottom:-4px;left:50%;width:8px;height:2px;border-radius:2px;
-  transform:translateX(-50%);background:rgba(255,255,255,.9);filter:blur(.5px);
-  animation:onGlint 3.2s ease-in-out infinite;
-}
-@keyframes onGlint{0%{transform:translateX(-14px);opacity:0}12%{opacity:1}50%{transform:translateX(14px);opacity:0}100%{opacity:0}}
-@media(prefers-reduced-motion:reduce){.on-mg.on-mg-active .on-mg-btn::before{animation:none;display:none;}}
-/* ── DROPDOWN ── */
-.on-dd{
-  position:absolute;top:calc(100% + 10px);left:50%;
-  transform:translateX(-50%) translateY(-6px) scale(.96);
-  transform-origin:top center;
-  min-width:240px;background:rgba(3,9,16,.98);backdrop-filter:blur(24px);
-  border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:6px;
-  opacity:0;visibility:hidden;pointer-events:none;filter:blur(4px);
-  transition:opacity .2s ease,transform .24s cubic-bezier(.2,.9,.3,1.3),visibility .2s,filter .2s ease;
-  box-shadow:0 20px 56px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.03),inset 0 1px 0 rgba(255,255,255,.04);
-  z-index:10;overflow:hidden;
-}
-.on-dd::before{
-  content:'';position:absolute;top:0;left:18px;right:18px;height:1px;border-radius:1px;pointer-events:none;z-index:1;
-}
-.mg-tune    .on-dd::before{background:linear-gradient(90deg,transparent,var(--on-green),transparent);}
-.mg-hw      .on-dd::before{background:linear-gradient(90deg,transparent,var(--on-cyan),transparent);}
-.mg-analysis .on-dd::before{background:linear-gradient(90deg,transparent,var(--on-gold),transparent);}
-.mg-video   .on-dd::before{background:linear-gradient(90deg,transparent,var(--on-blue),transparent);}
-.mg-explore .on-dd::before{background:linear-gradient(90deg,transparent,var(--on-purple),transparent);}
-.on-dd::after{
-  content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;opacity:.5;
-  background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 1px,transparent 1px,transparent 3px);
-}
-.on-mg:hover .on-dd,.on-mg.on-dd-open .on-dd{
-  opacity:1;visibility:visible;pointer-events:auto;filter:blur(0);
-  transform:translateX(-50%) translateY(0) scale(1);
-}
-@media(prefers-reduced-motion:reduce){
-  .on-dd{transition:opacity .15s ease,visibility .15s;filter:none;transform:translateX(-50%) translateY(0) scale(1);}
-}
-.on-dd-hd{
-  padding:5px 10px 7px;font-family:'Orbitron',sans-serif;font-size:7.5px;
-  letter-spacing:.16em;color:rgba(255,255,255,.2);
-  border-bottom:1px solid rgba(255,255,255,.05);margin-bottom:4px;
-}
-.on-dd-item{
-  display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;
-  text-decoration:none;color:var(--on-muted2);font-family:'Sarabun',sans-serif;
-  transition:background .13s,color .13s,padding-left .13s;
-  position:relative;overflow:hidden;margin-bottom:1px;
-}
-.on-dd-item::before{
-  content:'';position:absolute;left:0;top:4px;bottom:4px;width:2px;
-  border-radius:2px;transform:scaleY(0);transition:transform .14s;
-}
-.on-dd-item:hover{color:var(--on-text);background:rgba(255,255,255,.04);padding-left:12px;}
-.on-dd-item:hover::before{transform:scaleY(1);}
-.mg-tune     .on-dd-item:hover::before{background:var(--on-green);}
-.mg-hw       .on-dd-item:hover::before{background:var(--on-cyan);}
-.mg-analysis .on-dd-item:hover::before{background:var(--on-gold);}
-.mg-video    .on-dd-item:hover::before{background:var(--on-blue);}
-.mg-explore  .on-dd-item:hover::before{background:var(--on-purple);}
-.on-dd-item.on-dd-act{border:1px solid transparent;}
-.mg-tune.on-mg-active     .on-dd-item.on-dd-act{background:rgba(16,196,122,.07);border-color:rgba(16,196,122,.18);color:var(--on-green);}
-.mg-hw.on-mg-active       .on-dd-item.on-dd-act{background:rgba(0,229,255,.06);border-color:rgba(0,229,255,.18);color:var(--on-cyan);}
-.mg-analysis.on-mg-active .on-dd-item.on-dd-act{background:rgba(245,158,11,.07);border-color:rgba(245,158,11,.18);color:var(--on-gold);}
-.mg-video.on-mg-active    .on-dd-item.on-dd-act{background:rgba(58,130,246,.07);border-color:rgba(58,130,246,.18);color:var(--on-blue);}
-.mg-explore.on-mg-active  .on-dd-item.on-dd-act{background:rgba(168,85,247,.07);border-color:rgba(168,85,247,.18);color:var(--on-purple);}
-.on-dd-ico{font-size:.95rem;width:22px;text-align:center;flex-shrink:0;transition:transform .16s ease;}
-.on-dd-item:hover .on-dd-ico{transform:scale(1.14);}
-@media(prefers-reduced-motion:reduce){.on-dd-item:hover .on-dd-ico{transform:none;}}
-.on-dd-body{flex:1;min-width:0;}
-.on-dd-label{font-size:.81rem;font-weight:600;display:block;}
-.on-dd-hint{font-size:.68rem;color:var(--on-muted);font-family:'JetBrains Mono',monospace;display:block;margin-top:1px;}
-.on-dd-badge{font-size:.55rem;font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:.07em;padding:1px 6px;border-radius:4px;flex-shrink:0;}
-.ddb-hot {background:rgba(248,113,113,.12);color:var(--on-red);border:1px solid rgba(248,113,113,.25);}
-.ddb-new {background:rgba(16,196,122,.1);color:var(--on-green);border:1px solid rgba(16,196,122,.22);}
-.ddb-game{background:rgba(168,85,247,.12);color:var(--on-purple);border:1px solid rgba(168,85,247,.25);}
-/* ── RIGHT ── */
-.on-bar-right{margin-left:auto;display:flex;align-items:center;gap:4px;flex-shrink:0;}
-.on-crumb{
+.tbx-logo-link{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;position:relative;}
+.tbx-logo-img{height:28px;width:auto;filter:drop-shadow(0 0 7px rgba(16,196,122,.35));transition:filter .2s,transform .2s;}
+.tbx-logo-link:hover .tbx-logo-img{filter:drop-shadow(0 0 14px rgba(16,196,122,.75));transform:translateY(-1px);}
+@media(prefers-reduced-motion:reduce){.tbx-logo-link:hover .tbx-logo-img{transform:none;}}
+.tbx-logo-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--tbx-green);box-shadow:0 0 5px var(--tbx-green);animation:tbxDot 2.5s ease-in-out infinite;}
+@keyframes tbxDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+@media(prefers-reduced-motion:reduce){.tbx-logo-dot{animation:none;}}
+
+/* ── CURRENT PAGE PILL ── */
+.tbx-crumb{
   font-family:'Orbitron',sans-serif;font-size:9px;font-weight:600;letter-spacing:.13em;
-  color:var(--on-green);background:rgba(16,196,122,.07);border:1px solid rgba(16,196,122,.2);
-  padding:3px 10px;border-radius:100px;display:none;align-items:center;gap:5px;white-space:nowrap;
+  color:var(--tbx-green);background:rgba(16,196,122,.07);border:1px solid rgba(16,196,122,.2);
+  padding:3px 10px;border-radius:100px;display:flex;align-items:center;gap:5px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;min-width:0;
 }
-.on-crumb-dot{width:5px;height:5px;border-radius:50%;background:var(--on-green);flex-shrink:0;animation:onBlink 2.5s ease-in-out infinite;}
-@keyframes onBlink{0%,100%{opacity:1}50%{opacity:.2}}
-.on-icon-btn{
-  background:none;border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:5px 10px;
-  cursor:pointer;color:var(--on-muted2);font-family:'Orbitron',sans-serif;font-weight:700;
+.tbx-crumb-dot{width:5px;height:5px;border-radius:50%;background:var(--tbx-green);flex-shrink:0;animation:tbxBlink 2.5s ease-in-out infinite;}
+@keyframes tbxBlink{0%,100%{opacity:1}50%{opacity:.2}}
+@media(max-width:560px){.tbx-crumb{display:none;}}
+
+/* ── RIGHT-SIDE UTILITY BUTTONS ── */
+.tbx-bar-right{margin-left:auto;display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.tbx-icon-btn{
+  background:none;border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:6px 10px;
+  cursor:pointer;color:var(--tbx-muted2);font-family:'Orbitron',sans-serif;font-weight:700;
   font-size:9.5px;letter-spacing:.05em;display:flex;align-items:center;gap:4px;
-  transition:color .18s,border-color .18s,background .18s,box-shadow .18s,transform .18s;-webkit-tap-highlight-color:transparent;white-space:nowrap;
-}
-.on-icon-btn:hover{color:var(--on-green);border-color:rgba(16,196,122,.35);background:rgba(16,196,122,.04);box-shadow:0 0 14px rgba(16,196,122,.14);transform:translateY(-1px);}
-.on-search-btn{
-  font-size:13px;padding:5px 9px;background:none;border:1px solid rgba(255,255,255,.08);
-  border-radius:7px;cursor:pointer;color:var(--on-muted2);
   transition:color .18s,border-color .18s,background .18s,box-shadow .18s,transform .18s;
-  display:flex;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent;
+  -webkit-tap-highlight-color:transparent;white-space:nowrap;min-height:38px;
 }
-.on-search-btn:hover{color:var(--on-green);border-color:rgba(16,196,122,.3);background:rgba(16,196,122,.04);box-shadow:0 0 14px rgba(16,196,122,.14);transform:translateY(-1px);}
-@media(prefers-reduced-motion:reduce){.on-icon-btn:hover,.on-search-btn:hover{transform:none;}}
-.on-search-hint{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--on-muted);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:3px;padding:1px 4px;}
-/* ── OVERLAY ── */
-.on-overlay{position:fixed;inset:0;z-index:650;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .22s;touch-action:none;}
-.on-overlay.on-open{opacity:1;pointer-events:all;}
-/* ── DRAWER ── */
-/* ── FLOATING POPUP (command center) ──
-   A compact card that floats below the top bar — not a full-screen
-   takeover. Most of the page stays visible around it; closes on ESC,
-   backdrop click, or swipe-down. Same floating-card treatment on both
-   mobile and desktop, just sized to fit the viewport comfortably. */
-.on-drawer{
-  position:fixed;z-index:700;left:50%;
-  top:max(70px,calc(env(safe-area-inset-top) + 62px));
-  width:min(420px,calc(100vw - 24px));
-  max-height:min(600px,calc(100vh - 100px));
-  background:radial-gradient(ellipse 140% 60% at 0% 0%,rgba(16,196,122,.06),transparent 60%),rgba(3,8,13,.98);
-  border:1px solid rgba(255,255,255,.09);border-radius:20px;
-  box-shadow:0 24px 70px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.03);
+.tbx-icon-btn:hover{color:var(--tbx-green);border-color:rgba(16,196,122,.35);background:rgba(16,196,122,.04);box-shadow:0 0 14px rgba(16,196,122,.14);transform:translateY(-1px);}
+@media(prefers-reduced-motion:reduce){.tbx-icon-btn:hover{transform:none;}}
+.tbx-search-btn{font-size:14px;padding:6px 9px;}
+
+/* ── BACKDROP ── */
+.tbx-overlay{position:fixed;inset:0;z-index:650;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .22s;touch-action:none;}
+.tbx-overlay.tbx-open{opacity:1;pointer-events:all;}
+
+/* ── TOOLBOX PANEL ── */
+.tbx-panel{
+  position:fixed;left:0;top:0;bottom:0;z-index:700;
+  width:min(var(--tbx-panel-w),calc(100vw - 32px));
+  background:radial-gradient(ellipse 140% 60% at 0% 0%,rgba(16,196,122,.05),transparent 60%),#03080d;
+  border-right:1px solid rgba(255,255,255,.08);
   display:flex;flex-direction:column;overflow:hidden;
-  transform:translate(-50%,-14px) scale(.95);opacity:0;visibility:hidden;pointer-events:none;
-  transition:transform .24s cubic-bezier(.2,.9,.3,1.2),opacity .18s ease,visibility .24s;
+  transform:translateX(-100%);transition:transform .32s cubic-bezier(.32,.72,.28,1);
   will-change:transform;-webkit-overflow-scrolling:touch;
+  box-shadow:0 0 0 rgba(0,0,0,0);
 }
-.on-drawer.on-open{transform:translate(-50%,0) scale(1);opacity:1;visibility:visible;pointer-events:auto;}
-.on-drawer::before,.on-drawer::after{
-  content:'';position:absolute;width:18px;height:18px;pointer-events:none;opacity:.5;z-index:2;
-}
-.on-drawer::before{top:9px;right:9px;border-top:2px solid var(--on-green);border-right:2px solid var(--on-green);border-top-right-radius:5px;}
-.on-drawer::after{bottom:9px;right:9px;border-bottom:2px solid var(--on-cyan);border-right:2px solid var(--on-cyan);border-bottom-right-radius:5px;}
-@media(min-width:640px){
-  .on-drawer{width:min(460px,calc(100vw - 32px));max-height:min(640px,calc(100vh - 120px));}
-}
-@media(prefers-reduced-motion:reduce){
-  .on-drawer{transition:opacity .15s ease,visibility .15s;transform:translate(-50%,0) scale(1);}
-}
-.on-dh{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;position:relative;}
-.on-dh-brand{display:flex;align-items:center;gap:10px;}
-.on-dh-icon{width:34px;height:34px;border-radius:9px;background:rgba(16,196,122,.08);border:1px solid rgba(16,196,122,.2);display:grid;place-items:center;font-size:16px;flex-shrink:0;position:relative;}
-.on-dh-icon::before{
+.tbx-panel.tbx-open{transform:translateX(0);box-shadow:12px 0 56px rgba(0,0,0,.75);}
+
+/* header */
+.tbx-head{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;}
+.tbx-head-brand{display:flex;align-items:center;gap:10px;min-width:0;}
+.tbx-head-icon{width:34px;height:34px;border-radius:9px;background:rgba(16,196,122,.08);border:1px solid rgba(16,196,122,.2);display:grid;place-items:center;font-size:16px;flex-shrink:0;position:relative;}
+.tbx-head-icon::before{
   content:'';position:absolute;inset:-4px;border-radius:11px;
   background:conic-gradient(from 0deg,rgba(16,196,122,0) 0%,rgba(16,196,122,.5) 20%,rgba(0,229,255,.3) 40%,rgba(16,196,122,0) 65%,rgba(16,196,122,0) 100%);
   -webkit-mask:radial-gradient(closest-side,transparent calc(100% - 2px),#000 calc(100% - 1.5px));
   mask:radial-gradient(closest-side,transparent calc(100% - 2px),#000 calc(100% - 1.5px));
-  animation:onRingSpin 7s linear infinite;
+  animation:tbxRingSpin 7s linear infinite;
 }
-@media(prefers-reduced-motion:reduce){.on-dh-icon::before{animation:none;}}
-.on-dh-name{font-family:'Orbitron',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.05em;color:var(--on-text);}
-.on-dh-sub{font-size:10px;color:var(--on-muted);margin-top:2px;}
-.on-dclose{background:none;border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:5px 9px;color:var(--on-muted);cursor:pointer;font-size:13px;line-height:1;transition:color .18s,border-color .18s;flex-shrink:0;}
-.on-dclose:hover{color:#ff5566;border-color:rgba(255,85,102,.3);}
-.on-search-wrap{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0;}
-.on-search-inner{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:7px 11px;transition:border-color .18s;}
-.on-search-inner:focus-within{border-color:rgba(16,196,122,.35);}
-.on-search-icon{color:var(--on-muted);font-size:12px;flex-shrink:0;}
-.on-search-input{background:none;border:none;outline:none;color:var(--on-text);font-family:'Sarabun',sans-serif;font-size:13px;width:100%;}
-.on-search-input::placeholder{color:rgba(74,98,114,.7);}
-.on-search-clear{background:none;border:none;color:var(--on-muted);cursor:pointer;font-size:11px;padding:2px 4px;flex-shrink:0;border-radius:4px;line-height:1;}
-.on-search-clear:hover{color:#ff5566;}
-/* ── CATEGORY CHIPS ── */
-.on-chips{display:flex;gap:6px;padding:10px 12px;overflow-x:auto;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.05);scrollbar-width:none;}
-.on-chips::-webkit-scrollbar{display:none;}
-.on-chip{
-  flex-shrink:0;font-family:'Sarabun',sans-serif;font-size:12px;font-weight:600;
-  padding:7px 13px;border-radius:100px;background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.08);color:var(--on-muted2);cursor:pointer;
-  transition:background .16s,border-color .16s,color .16s;white-space:nowrap;
+@keyframes tbxRingSpin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.tbx-head-icon::before{animation:none;}}
+.tbx-head-name{font-family:'Orbitron',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.05em;color:var(--tbx-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tbx-head-sub{font-size:10px;color:var(--tbx-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tbx-close{background:none;border:1px solid rgba(255,255,255,.08);border-radius:8px;width:38px;height:38px;color:var(--tbx-muted);cursor:pointer;font-size:15px;line-height:1;transition:color .18s,border-color .18s;flex-shrink:0;}
+.tbx-close:hover{color:#ff5566;border-color:rgba(255,85,102,.35);}
+
+/* quick-jump category chips */
+.tbx-chips{display:flex;gap:6px;padding:10px 12px;overflow-x:auto;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.05);scrollbar-width:none;}
+.tbx-chips::-webkit-scrollbar{display:none;}
+.tbx-chip{
+  display:flex;align-items:center;gap:5px;flex-shrink:0;padding:7px 12px;border-radius:100px;
+  border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);color:var(--tbx-muted2);
+  font-size:11.5px;font-weight:600;cursor:pointer;transition:.16s;white-space:nowrap;min-height:34px;
+  font-family:'Sarabun',sans-serif;
 }
-.on-chip:hover{color:var(--on-text);border-color:rgba(255,255,255,.16);}
-.on-chip.on-chip-active{background:rgba(16,196,122,.12);border-color:rgba(16,196,122,.4);color:var(--on-green);}
-.on-chip:focus-visible{outline:2px solid rgba(16,196,122,.4);}
-/* ── RECENT ── */
-.on-recent-hd{display:flex;align-items:center;gap:6px;}
-.on-recent-list .on-dlink{background:rgba(255,255,255,.02);}
-.on-dnav{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 8px calc(16px + env(safe-area-inset-bottom));scrollbar-width:thin;scrollbar-color:rgba(16,196,122,.15) transparent;}
-.on-dnav::-webkit-scrollbar{width:4px;}
-.on-dnav::-webkit-scrollbar-track{background:transparent;}
-.on-dnav::-webkit-scrollbar-thumb{background:rgba(16,196,122,.15);border-radius:4px;}
-.on-dgroup{font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;letter-spacing:.18em;color:rgba(74,98,114,.8);padding:10px 8px 4px;}
-.on-ddiv{height:1px;background:rgba(255,255,255,.045);margin:6px 0;}
-.on-dlink{display:flex;align-items:center;gap:10px;padding:11px 10px;min-height:48px;border-radius:10px;border:1px solid transparent;text-decoration:none;transition:background .14s,border-color .14s,padding-left .14s;margin-bottom:2px;}
-.on-dlink:hover{background:rgba(16,196,122,.05);border-color:rgba(16,196,122,.12);padding-left:12px;}
-.on-dlink.on-act{background:rgba(16,196,122,.08);border-color:rgba(16,196,122,.22);}
-.on-dlink:focus-visible{outline:2px solid rgba(16,196,122,.4);border-radius:10px;}
-.on-ico{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;font-size:14px;flex-shrink:0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);}
-.on-ico.g{background:rgba(16,196,122,.07);border-color:rgba(16,196,122,.2);}
-.on-ico.b{background:rgba(58,130,246,.07);border-color:rgba(58,130,246,.2);}
-.on-ico.a{background:rgba(245,158,11,.07);border-color:rgba(245,158,11,.2);}
-.on-ico.p{background:rgba(168,85,247,.07);border-color:rgba(168,85,247,.2);}
-.on-ico.r{background:rgba(248,113,113,.07);border-color:rgba(248,113,113,.2);}
-.on-ico.c{background:rgba(0,229,255,.06);border-color:rgba(0,229,255,.18);}
-.on-dbody{flex:1;min-width:0;}
-.on-dtitle{font-size:12.5px;font-weight:600;color:rgba(184,208,222,.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;}
-.on-dmeta{font-size:10.5px;color:rgba(74,98,114,.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;margin-top:1px;}
-.on-dlink.on-act .on-dtitle{color:var(--on-green);}
-.on-dlink:hover .on-dtitle{color:#d8eaf6;}
-.on-pill{font-family:'Orbitron',sans-serif;font-size:7.5px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:100px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);color:var(--on-muted);flex-shrink:0;}
-.on-pill.nw{background:rgba(16,196,122,.08);border-color:rgba(16,196,122,.28);color:var(--on-green);}
-.on-pill.hot{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.28);color:var(--on-red);}
-.on-no-results{text-align:center;padding:32px 16px;color:var(--on-muted);font-size:13px;display:none;}
-.on-dfoot{padding:10px 14px;border-top:1px solid rgba(255,255,255,.045);flex-shrink:0;font-size:10px;color:var(--on-muted);line-height:1.6;}
-.on-dfoot-ver{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--on-green);}
+.tbx-chip:hover{color:var(--tbx-text);border-color:rgba(255,255,255,.18);}
+.tbx-chip.tbx-chip-active{color:var(--tbx-green);border-color:rgba(16,196,122,.4);background:rgba(16,196,122,.08);}
+
+/* search */
+.tbx-search-wrap{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0;}
+.tbx-search-inner{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 12px;transition:border-color .18s;}
+.tbx-search-inner:focus-within{border-color:rgba(16,196,122,.4);}
+.tbx-search-icon{color:var(--tbx-muted);font-size:12px;flex-shrink:0;}
+.tbx-search-input{background:none;border:none;outline:none;color:var(--tbx-text);font-family:'Sarabun',sans-serif;font-size:14px;width:100%;}
+.tbx-search-input::placeholder{color:rgba(74,98,114,.7);}
+
+/* scrollable tool list */
+.tbx-list{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 8px 16px;scrollbar-width:thin;scrollbar-color:rgba(16,196,122,.18) transparent;}
+.tbx-list::-webkit-scrollbar{width:4px;}
+.tbx-list::-webkit-scrollbar-track{background:transparent;}
+.tbx-list::-webkit-scrollbar-thumb{background:rgba(16,196,122,.18);border-radius:4px;}
+.tbx-group-label{display:flex;align-items:center;gap:6px;font-family:'Orbitron',sans-serif;font-size:8.5px;font-weight:700;letter-spacing:.16em;color:rgba(122,154,180,.85);padding:12px 8px 5px;scroll-margin-top:6px;}
+.tbx-div{height:1px;background:rgba(255,255,255,.045);margin:6px 0;}
+.tbx-link{
+  display:flex;align-items:center;gap:10px;padding:10px 9px;border-radius:9px;border:1px solid transparent;
+  text-decoration:none;transition:background .14s,border-color .14s;margin-bottom:2px;min-height:48px;
+}
+.tbx-link:hover{background:rgba(16,196,122,.06);border-color:rgba(16,196,122,.14);}
+.tbx-link.tbx-act{background:rgba(16,196,122,.09);border-color:rgba(16,196,122,.24);}
+.tbx-link:focus-visible{outline:2px solid rgba(16,196,122,.45);outline-offset:1px;}
+.tbx-ico{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:14px;flex-shrink:0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);}
+.tbx-ico.g{background:rgba(16,196,122,.08);border-color:rgba(16,196,122,.22);}
+.tbx-ico.b{background:rgba(58,130,246,.08);border-color:rgba(58,130,246,.22);}
+.tbx-ico.a{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.22);}
+.tbx-ico.p{background:rgba(168,85,247,.08);border-color:rgba(168,85,247,.22);}
+.tbx-ico.r{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.22);}
+.tbx-ico.c{background:rgba(0,229,255,.07);border-color:rgba(0,229,255,.2);}
+.tbx-body{flex:1;min-width:0;}
+.tbx-title{font-size:13px;font-weight:600;color:rgba(184,208,222,.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;}
+.tbx-meta{font-size:10.5px;color:rgba(74,98,114,.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;margin-top:1px;}
+.tbx-link.tbx-act .tbx-title{color:var(--tbx-green);}
+.tbx-link:hover .tbx-title{color:#d8eaf6;}
+.tbx-pill{font-family:'Orbitron',sans-serif;font-size:7.5px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:100px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);color:var(--tbx-muted);flex-shrink:0;}
+.tbx-pill.nw{background:rgba(16,196,122,.09);border-color:rgba(16,196,122,.3);color:var(--tbx-green);}
+.tbx-pill.hot{background:rgba(248,113,113,.09);border-color:rgba(248,113,113,.3);color:var(--tbx-red);}
+.tbx-pill.game{background:rgba(168,85,247,.09);border-color:rgba(168,85,247,.3);color:var(--tbx-purple);}
+.tbx-no-results{text-align:center;padding:36px 16px;color:var(--tbx-muted);font-size:13px;display:none;}
+
+.tbx-foot{padding:10px 14px;border-top:1px solid rgba(255,255,255,.045);flex-shrink:0;font-size:10px;color:var(--tbx-muted);line-height:1.6;}
+.tbx-foot-ver{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--tbx-green);}
+
 /* ── RESPONSIVE ── */
 @media(max-width:959px){
-  .on-ham{display:flex;}
-  .on-mega{display:none;}
-  .on-crumb{display:flex;}
-  .on-search-hint{display:none;}
+  :root{--tbx-panel-w:100vw;}
+  .tbx-panel{width:92vw;}
+  .tbx-logo-img{height:24px;}
 }
 @media(min-width:960px){
-  .on-ham{display:none;}
-  .on-mega{display:flex;}
-  .on-crumb{display:none;}
+  .tbx-panel{width:var(--tbx-panel-w);}
 }
-@media(max-width:440px){.on-logo-img{height:24px;}}
+
 /* ── LIGHT MODE ── */
-body.light .on-bar{background:rgba(248,250,252,.97);border-bottom-color:rgba(0,0,0,.08);}
-body.light .on-bar::before{background:linear-gradient(90deg,transparent,rgba(5,150,105,.2),transparent);}
-body.light .on-ham span{background:#475569;}
-body.light .on-ham{border-color:rgba(0,0,0,.1);}
-body.light .on-logo-link{background:rgba(4,9,14,.92);padding:5px 10px;border-radius:9px;}
-body.light .on-logo-dot{background:#059669;box-shadow:0 0 5px #059669;}
-body.light .on-crumb{color:#059669;background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.25);}
-body.light .on-crumb-dot{background:#059669;}
-body.light .on-mg-btn{color:#64748b;}
-body.light .on-mg-btn:hover{color:#1e293b;background:rgba(0,0,0,.04);}
-body.light .on-mg.mg-tune.on-mg-active    .on-mg-btn{color:#059669;background:rgba(5,150,105,.07);}
-body.light .on-mg.mg-hw.on-mg-active      .on-mg-btn{color:#0891b2;background:rgba(8,145,178,.07);}
-body.light .on-mg.mg-analysis.on-mg-active .on-mg-btn{color:#d97706;background:rgba(217,119,6,.07);}
-body.light .on-mg.mg-video.on-mg-active   .on-mg-btn{color:#2563eb;background:rgba(37,99,235,.07);}
-body.light .on-mg.mg-explore.on-mg-active .on-mg-btn{color:#7c3aed;background:rgba(124,58,237,.07);}
-body.light .on-dd{background:rgba(248,250,252,.99);border-color:rgba(0,0,0,.1);box-shadow:0 20px 56px rgba(0,0,0,.15);}
-body.light .on-dd-hd{color:rgba(0,0,0,.3);border-bottom-color:rgba(0,0,0,.07);}
-body.light .on-dd-item{color:#64748b;}
-body.light .on-dd-item:hover{color:#1e293b;background:rgba(0,0,0,.04);}
-body.light .on-dd-hint{color:#94a3b8;}
-body.light .on-icon-btn{color:#64748b;border-color:rgba(0,0,0,.1);}
-body.light .on-icon-btn:hover{color:#059669;border-color:rgba(5,150,105,.4);background:rgba(5,150,105,.05);}
-body.light .on-search-btn{color:#64748b;border-color:rgba(0,0,0,.1);}
-body.light .on-search-btn:hover{color:#059669;border-color:rgba(5,150,105,.35);}
-body.light .on-overlay{background:rgba(0,0,0,.4);}
-body.light .on-drawer{background:#f8fafc;border-color:rgba(0,0,0,.08);}
-body.light .on-dh{border-bottom-color:rgba(0,0,0,.07);}
-body.light .on-dh-icon{background:rgba(5,150,105,.08);border-color:rgba(5,150,105,.2);}
-body.light .on-dh-name{color:#1e293b;}
-body.light .on-dh-sub{color:#94a3b8;}
-body.light .on-dclose{color:#94a3b8;border-color:rgba(0,0,0,.1);}
-body.light .on-search-inner{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);}
-body.light .on-search-input{color:#1e293b;}
-body.light .on-search-input::placeholder{color:#94a3b8;}
-body.light .on-search-clear{color:#94a3b8;}
-body.light .on-chips{border-bottom-color:rgba(0,0,0,.06);}
-body.light .on-chip{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08);color:#64748b;}
-body.light .on-chip:hover{color:#0f172a;border-color:rgba(0,0,0,.16);}
-body.light .on-chip.on-chip-active{background:rgba(5,150,105,.08);border-color:rgba(5,150,105,.35);color:#059669;}
-body.light .on-recent-list .on-dlink{background:rgba(0,0,0,.015);}
-body.light .on-dgroup{color:#cbd5e1;}
-body.light .on-ddiv{background:rgba(0,0,0,.07);}
-body.light .on-dlink:hover{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08);padding-left:11px;}
-body.light .on-dlink.on-act{background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.22);}
-body.light .on-ico{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);}
-body.light .on-ico.g{background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.2);}
-body.light .on-ico.b{background:rgba(37,99,235,.07);border-color:rgba(37,99,235,.2);}
-body.light .on-ico.a{background:rgba(217,119,6,.07);border-color:rgba(217,119,6,.2);}
-body.light .on-ico.p{background:rgba(109,40,217,.07);border-color:rgba(109,40,217,.2);}
-body.light .on-ico.r{background:rgba(220,38,38,.07);border-color:rgba(220,38,38,.2);}
-body.light .on-dtitle{color:#334155;}
-body.light .on-dmeta{color:#94a3b8;}
-body.light .on-dlink.on-act .on-dtitle{color:#059669;}
-body.light .on-dlink:hover .on-dtitle{color:#0f172a;}
-body.light .on-pill{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);color:#94a3b8;}
-body.light .on-pill.nw{background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.28);color:#059669;}
-body.light .on-pill.hot{background:rgba(220,38,38,.07);border-color:rgba(220,38,38,.28);color:#dc2626;}
-body.light .on-no-results{color:#94a3b8;}
-body.light .on-dfoot{border-top-color:rgba(0,0,0,.07);color:#94a3b8;}
-body.light .on-dfoot-ver{color:#059669;}
+body.light .tbx-bar{background:rgba(248,250,252,.97);border-bottom-color:rgba(0,0,0,.08);}
+body.light .tbx-toggle{border-color:rgba(0,0,0,.12);}
+body.light .tbx-toggle span{background:#475569;}
+body.light .tbx-logo-link{background:rgba(4,9,14,.92);padding:5px 10px;border-radius:9px;}
+body.light .tbx-logo-dot{background:#059669;box-shadow:0 0 5px #059669;}
+body.light .tbx-crumb{color:#059669;background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.25);}
+body.light .tbx-crumb-dot{background:#059669;}
+body.light .tbx-icon-btn{color:#64748b;border-color:rgba(0,0,0,.1);}
+body.light .tbx-icon-btn:hover{color:#059669;border-color:rgba(5,150,105,.4);background:rgba(5,150,105,.05);}
+body.light .tbx-overlay{background:rgba(0,0,0,.35);}
+body.light .tbx-panel{background:#f8fafc;border-right-color:rgba(0,0,0,.08);}
+body.light .tbx-head{border-bottom-color:rgba(0,0,0,.07);}
+body.light .tbx-head-icon{background:rgba(5,150,105,.08);border-color:rgba(5,150,105,.2);}
+body.light .tbx-head-name{color:#1e293b;}
+body.light .tbx-head-sub{color:#94a3b8;}
+body.light .tbx-close{color:#94a3b8;border-color:rgba(0,0,0,.1);}
+body.light .tbx-chips{border-bottom-color:rgba(0,0,0,.06);}
+body.light .tbx-chip{color:#64748b;border-color:rgba(0,0,0,.1);background:rgba(0,0,0,.02);}
+body.light .tbx-chip:hover{color:#1e293b;border-color:rgba(0,0,0,.2);}
+body.light .tbx-chip.tbx-chip-active{color:#059669;border-color:rgba(5,150,105,.4);background:rgba(5,150,105,.08);}
+body.light .tbx-search-inner{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);}
+body.light .tbx-search-input{color:#1e293b;}
+body.light .tbx-search-input::placeholder{color:#94a3b8;}
+body.light .tbx-group-label{color:#94a3b8;}
+body.light .tbx-div{background:rgba(0,0,0,.07);}
+body.light .tbx-link:hover{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08);}
+body.light .tbx-link.tbx-act{background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.22);}
+body.light .tbx-ico{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);}
+body.light .tbx-ico.g{background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.2);}
+body.light .tbx-ico.b{background:rgba(37,99,235,.07);border-color:rgba(37,99,235,.2);}
+body.light .tbx-ico.a{background:rgba(217,119,6,.07);border-color:rgba(217,119,6,.2);}
+body.light .tbx-ico.p{background:rgba(109,40,217,.07);border-color:rgba(109,40,217,.2);}
+body.light .tbx-ico.r{background:rgba(220,38,38,.07);border-color:rgba(220,38,38,.2);}
+body.light .tbx-title{color:#334155;}
+body.light .tbx-meta{color:#94a3b8;}
+body.light .tbx-link.tbx-act .tbx-title{color:#059669;}
+body.light .tbx-link:hover .tbx-title{color:#0f172a;}
+body.light .tbx-pill{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);color:#94a3b8;}
+body.light .tbx-pill.nw{background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.28);color:#059669;}
+body.light .tbx-pill.hot{background:rgba(220,38,38,.07);border-color:rgba(220,38,38,.28);color:#dc2626;}
+body.light .tbx-no-results{color:#94a3b8;}
+body.light .tbx-foot{border-top-color:rgba(0,0,0,.07);color:#94a3b8;}
+body.light .tbx-foot-ver{color:#059669;}
 </style>
 
-<!-- ═══ OVERLAY ═══ -->
-<div id="onOverlay" class="on-overlay" aria-hidden="true"></div>
-
-<!-- ═══ DRAWER ═══ -->
-<aside id="onDrawer" class="on-drawer" role="dialog" aria-modal="true" aria-label="ศูนย์ควบคุมเครื่องมือ ConfigDoctor">
-  <div class="on-dh">
-    <div class="on-dh-brand">
-      <div class="on-dh-icon">🚁</div>
-      <div>
-        <div class="on-dh-name"><span class="on-th">ศูนย์ควบคุมเครื่องมือ</span><span class="on-en">CONTROL CENTER</span></div>
-        <div class="on-dh-sub">ConfigDoctor · v7.0 Nova</div>
-      </div>
-    </div>
-    <button type="button" id="onClose" class="on-dclose" aria-label="ปิดเมนู">✕</button>
-  </div>
-  <div class="on-search-wrap">
-    <div class="on-search-inner">
-      <span class="on-search-icon">🔍</span>
-      <input id="onSearch" class="on-search-input" type="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="ค้นหาเครื่องมือ... เช่น PID, ESC, VTX" aria-label="ค้นหาเครื่องมือ">
-      <button type="button" id="onSearchClear" class="on-search-clear" aria-label="ล้างคำค้นหา" hidden>✕</button>
-    </div>
-  </div>
-  <div class="on-chips" id="onChips" aria-label="กรองตามหมวดหมู่">
-    <button type="button" class="on-chip on-chip-active" data-chip-group="all" aria-pressed="true">ทั้งหมด</button>
-    <button type="button" class="on-chip" data-chip-group="tune" aria-pressed="false">🩺 Tune</button>
-    <button type="button" class="on-chip" data-chip-group="hw" aria-pressed="false">⚙️ HW</button>
-    <button type="button" class="on-chip" data-chip-group="analysis" aria-pressed="false">📊 Analyze</button>
-    <button type="button" class="on-chip" data-chip-group="video" aria-pressed="false">📡 Video</button>
-    <button type="button" class="on-chip" data-chip-group="explore" aria-pressed="false">🎮 Explore</button>
-  </div>
-  <nav class="on-dnav" id="onNav" aria-label="เมนูทั้งหมด">
-    <div class="on-no-results" id="onNoResults">ไม่พบเครื่องมือที่ค้นหา 🔍</div>
-    <div class="on-dgroup on-grp on-recent-hd" id="onRecentHd" hidden><span class="on-th">🕓 ใช้ล่าสุด</span><span class="on-en">🕓 Recent</span></div>
-    <div class="on-recent-list" id="onRecentList"></div>
-    <div class="on-ddiv on-grp on-recent-div" id="onRecentDiv" hidden></div>
-    <div class="on-dgroup on-grp" data-group="tune"><span class="on-th">🔬 หน้าหลัก</span><span class="on-en">🔬 Main</span></div>
-
-    <a class="on-dlink {% if nav_page=='home' %}on-act{% endif %}" data-group="tune" href="/app" data-search="drone analyzer วิเคราะห์ pid filter motor">
-      <span class="on-ico g">🔬</span><span class="on-dbody"><span class="on-dtitle">Drone Analyzer</span><span class="on-dmeta on-th">วิเคราะห์ PID · Filter · Flight time</span><span class="on-dmeta on-en">PID · Filter · Motor · Flight time</span></span><span class="on-pill nw">main</span>
-    </a>
-    <div class="on-ddiv on-grp" data-group="tune"></div>
-    <div class="on-dgroup on-grp" data-group="tune"><span class="on-th">🩺 PID &amp; Tuning</span><span class="on-en">🩺 PID &amp; Tuning</span></div>
-    <a class="on-dlink {% if nav_page=='pid_advisor' %}on-act{% endif %}" data-group="tune" href="/pid-advisor" data-search="pid symptom advisor อาการ bounce propwash oscillation">
-      <span class="on-ico p">💊</span><span class="on-dbody"><span class="on-dtitle">PID Symptom Advisor</span><span class="on-dmeta on-th">บอกอาการ → รับคำแนะนำ PID</span><span class="on-dmeta on-en">Describe symptoms → PID fixes</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='quick_tune' %}on-act{% endif %}" data-group="tune" href="/quick-tune" data-search="quick tune pad pid delta อาการ">
-      <span class="on-ico g">⚡</span><span class="on-dbody"><span class="on-dtitle">Quick Tune Pad</span><span class="on-dmeta on-th">เลือกอาการ → PID delta + CLI</span><span class="on-dmeta on-en">Symptom → PID delta + CLI</span></span><span class="on-pill nw">v5</span>
-    </a>
-    <a class="on-dlink {% if nav_page=='rpm_filter' %}on-act{% endif %}" data-group="tune" href="/rpm-filter" data-search="rpm filter calculator harmonic dyn notch">
-      <span class="on-ico g">⚙️</span><span class="on-dbody"><span class="on-dtitle">RPM Filter Calculator</span><span class="on-dmeta on-th">คำนวณ harmonic + dyn_notch</span><span class="on-dmeta on-en">Compute harmonics + dyn_notch</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='rates' %}on-act{% endif %}" data-group="tune" href="/rates-visualizer" data-search="rates visualizer curve expo rc rate">
-      <span class="on-ico b">📈</span><span class="on-dbody"><span class="on-dtitle">Rates Visualizer</span><span class="on-dmeta on-th">Curve real-time · per-axis</span><span class="on-dmeta on-en">Real-time rate curve · per-axis</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='bf_wizard' %}on-act{% endif %}" data-group="tune" href="/bf-wizard" data-search="betaflight wizard config cli 7 ขั้นตอน">
-      <span class="on-ico g">⚡</span><span class="on-dbody"><span class="on-dtitle">BF Config Wizard</span><span class="on-dmeta on-th">7 ขั้นตอน → CLI พร้อม paste</span><span class="on-dmeta on-en">7 steps → paste-ready CLI</span></span>
-    </a>
-    <div class="on-ddiv on-grp" data-group="hw"></div>
-    <div class="on-dgroup on-grp" data-group="hw"><span class="on-th">⚙️ Hardware</span><span class="on-en">⚙️ Hardware</span></div>
-    <a class="on-dlink {% if nav_page=='motor_prop' %}on-act{% endif %}" data-group="hw" href="/motor-prop" data-search="motor prop recommender มอเตอร์ ใบพัด kv stator">
-      <span class="on-ico c">🧭</span><span class="on-dbody"><span class="on-dtitle">Motor × Prop Recommender</span><span class="on-dmeta on-th">แนะนำมอเตอร์/ใบพัดตามสเปค</span><span class="on-dmeta on-en">Motor &amp; prop match by spec</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='esc_checker' %}on-act{% endif %}" data-group="hw" href="/esc-checker" data-search="esc checker compatibility amps protocol dshot">
-      <span class="on-ico a">⚡</span><span class="on-dbody"><span class="on-dtitle">ESC Compatibility Checker</span><span class="on-dmeta on-th">ตรวจ ESC amps · protocol · KV</span><span class="on-dmeta on-en">Check ESC amps · protocol</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='battery_health' %}on-act{% endif %}" data-group="hw" href="/battery-health" data-search="battery health advisor แบต ir sag">
-      <span class="on-ico g">🔋</span><span class="on-dbody"><span class="on-dtitle">Battery Health Advisor</span><span class="on-dmeta on-th">IR · Sag · Health Score · อายุแบต</span><span class="on-dmeta on-en">IR · Sag · Health Score</span></span><span class="on-pill nw">v5</span>
-    </a>
-    <a class="on-dlink {% if nav_page=='motor_thermal' %}on-act{% endif %}" data-group="hw" href="/motor-thermal" data-search="motor thermal estimator อุณหภูมิ winding temp">
-      <span class="on-ico r">🌡️</span><span class="on-dbody"><span class="on-dtitle">Motor Thermal Estimator</span><span class="on-dmeta on-th">อุณหภูมิ motor · thermal margin</span><span class="on-dmeta on-en">Estimate winding temp · safe zone</span></span><span class="on-pill nw">v5</span>
-    </a>
-    <a class="on-dlink {% if nav_page=='loop_analyzer' %}on-act{% endif %}" data-group="hw" href="/loop-analyzer" data-search="control loop analyzer latency looptime">
-      <span class="on-ico p">🔄</span><span class="on-dbody"><span class="on-dtitle">Control Loop Analyzer</span><span class="on-dmeta on-th">Stick→Prop latency · bottleneck</span><span class="on-dmeta on-en">Stick→Prop latency chain</span></span><span class="on-pill nw">v5</span>
-    </a>
-    <div class="on-ddiv on-grp" data-group="analysis"></div>
-    <div class="on-dgroup on-grp" data-group="analysis"><span class="on-th">📊 Analysis</span><span class="on-en">📊 Analysis</span></div>
-    <a class="on-dlink {% if nav_page=='blackbox' %}on-act{% endif %}" data-group="analysis" href="/blackbox" data-search="blackbox csv analyzer flight log pid score">
-      <span class="on-ico b">📊</span><span class="on-dbody"><span class="on-dtitle">Blackbox CSV Analyzer</span><span class="on-dmeta on-th">วิเคราะห์ flight log · PID score</span><span class="on-dmeta on-en">Analyze flight log · PID score</span></span><span class="on-pill hot">HOT</span>
-    </a>
-    <a class="on-dlink {% if nav_page=='cli_surgeon' %}on-act{% endif %}" data-group="analysis" href="/cli_surgeon" data-search="cli surgeon diff all dump วิเคราะห์">
-      <span class="on-ico a">🩺</span><span class="on-dbody"><span class="on-dtitle">CLI Surgeon</span><span class="on-dmeta on-th">วิเคราะห์ diff all / dump</span><span class="on-dmeta on-en">Analyze diff all / dump</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='comparator' %}on-act{% endif %}" data-group="analysis" href="/cli-comparator" data-search="cli diff comparator compare เปรียบเทียบ">
-      <span class="on-ico a">⚖️</span><span class="on-dbody"><span class="on-dtitle">CLI Diff Comparator</span><span class="on-dmeta on-th">วาง 2 config → เห็นทุกค่าที่เปลี่ยน</span><span class="on-dmeta on-en">Paste 2 configs → see every diff</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='osd' %}on-act{% endif %}" data-group="analysis" href="/osd" data-search="osd designer layout export cli">
-      <span class="on-ico p">🖥️</span><span class="on-dbody"><span class="on-dtitle">OSD Designer</span><span class="on-dmeta on-th">ออกแบบ layout OSD + export CLI</span><span class="on-dmeta on-en">Design OSD layout + export CLI</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='build_card' %}on-act{% endif %}" data-group="analysis" href="/build-card" data-search="build card generator สเปค โดรน social">
-      <span class="on-ico a">🃏</span><span class="on-dbody"><span class="on-dtitle">Build Card Generator</span><span class="on-dmeta on-th">สร้างรูปสเปคโดรนแชร์ Social</span><span class="on-dmeta on-en">Share your build spec card</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='tuning_log' %}on-act{% endif %}" data-group="analysis" href="/tuning-log" data-search="tuning log session บันทึก pid เปรียบเทียบ">
-      <span class="on-ico b">📋</span><span class="on-dbody"><span class="on-dtitle">Tuning Log</span><span class="on-dmeta on-th">บันทึก session · เปรียบเทียบ PID</span><span class="on-dmeta on-en">Log sessions · compare PID</span></span>
-    </a>
-    <div class="on-ddiv on-grp" data-group="video"></div>
-    <div class="on-dgroup on-grp" data-group="video">📡 VTX &amp; Signal</div>
-    <a class="on-dlink {% if nav_page=='vtx' %}on-act{% endif %}" data-group="video" href="/vtx" data-search="vtx bands channels ตาราง band channel">
-      <span class="on-ico g">📡</span><span class="on-dbody"><span class="on-dtitle">VTX Bands &amp; Channels</span><span class="on-dmeta on-th">ตาราง Band/Channel + CLI</span><span class="on-dmeta on-en">Band/Channel table + CLI</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='vtx_range' %}on-act{% endif %}" data-group="video" href="/vtx-range" data-search="vtx range calculator ระยะสัญญาณ signal">
-      <span class="on-ico b">🏞️</span><span class="on-dbody"><span class="on-dtitle">VTX Range Calculator</span><span class="on-dmeta on-th">ประมาณระยะสัญญาณ + กราฟ</span><span class="on-dmeta on-en">Estimate signal range + graph</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='vtx_smartaudio' %}on-act{% endif %}" data-group="video" href="/vtx-smartaudio" data-search="vtx smartaudio tramp commands">
-      <span class="on-ico a">🎙️</span><span class="on-dbody"><span class="on-dtitle">VTX SmartAudio Guide</span><span class="on-dmeta">SmartAudio / Tramp commands</span></span>
-    </a>
-    <div class="on-ddiv on-grp" data-group="explore"></div>
-    <div class="on-dgroup on-grp" data-group="explore"><span class="on-th">🎮 Simulator &amp; Community</span><span class="on-en">🎮 Simulator &amp; Community</span></div>
-    <a class="on-dlink {% if nav_page=='fpv_trainer' %}on-act{% endif %}" data-group="explore" href="/fpv-trainer" data-search="fpv trainer simulator ฝึกบิน 3d gamepad">
-      <span class="on-ico g">🕹️</span><span class="on-dbody"><span class="on-dtitle">FPV Training Simulator</span><span class="on-dmeta on-th">ฝึกบิน 3D · 4 โหมด · Gamepad</span><span class="on-dmeta on-en">3D drone sim · Tutorial · Race</span></span><span class="on-pill hot">FUN</span>
-    </a>
-    <a class="on-dlink {% if nav_page=='flight_quiz' %}on-act{% endif %}" data-group="explore" href="/flight-quiz" data-search="flight style quiz rates preset สไตล์">
-      <span class="on-ico a">🎯</span><span class="on-dbody"><span class="on-dtitle">Flight Style Quiz</span><span class="on-dmeta on-th">5 คำถาม → rates + preset แนะนำ</span><span class="on-dmeta on-en">5 questions → rates + preset</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='military_uas' %}on-act{% endif %}" data-group="explore" href="/military-uas" data-search="military uas analyzer โดรนทหาร physics">
-      <span class="on-ico r">🎖️</span><span class="on-dbody"><span class="on-dtitle">Military UAS Analyzer</span><span class="on-dmeta on-th">วิเคราะห์โดรนทหาร · 6 modules</span><span class="on-dmeta on-en">Military drone analysis · 6 modules</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='leaderboard' %}on-act{% endif %}" data-group="explore" href="/leaderboard" data-search="config leaderboard vote rank community">
-      <span class="on-ico a">🏆</span><span class="on-dbody"><span class="on-dtitle">Config Leaderboard</span><span class="on-dmeta on-th">Vote · rank · copy config ชุมชน</span><span class="on-dmeta on-en">Vote · rank · share configs</span></span>
-    </a>
-    <div class="on-ddiv on-grp" data-group="explore"></div>
-    <div class="on-dgroup on-grp" data-group="explore"><span class="on-th">📚 แหล่งข้อมูล</span><span class="on-en">📚 Resources</span></div>
-    <a class="on-dlink {% if nav_page=='fpv' %}on-act{% endif %}" data-group="explore" href="/fpv" data-search="fpv hub knowledge ความรู้ โดรน บทความ">
-      <span class="on-ico g">📖</span><span class="on-dbody"><span class="on-dtitle"><span class="on-th">FPV Knowledge Hub</span><span class="on-en">FPV Knowledge Hub</span></span><span class="on-dmeta on-th">รวมบทความ &amp; เครื่องมือทั้งหมด</span><span class="on-dmeta on-en">All articles &amp; tools in one place</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='fpv_gear' %}on-act{% endif %}" data-group="explore" href="/fpv-gear" data-search="fpv gear guide affiliate มอเตอร์ เฟรม ใบพัด แนะนำอุปกรณ์">
-      <span class="on-ico b">🛒</span><span class="on-dbody"><span class="on-dtitle"><span class="on-th">FPV Gear Guide</span><span class="on-en">FPV Gear Guide</span></span><span class="on-dmeta on-th">แนะนำอุปกรณ์ตาม class/style</span><span class="on-dmeta on-en">Parts matched to class &amp; style</span></span><span class="on-pill nw">NEW</span>
-    </a>
-    <a class="on-dlink {% if nav_page=='downloads' %}on-act{% endif %}" data-group="explore" href="/downloads" data-search="downloads diff dump files ไฟล์ config">
-      <span class="on-ico">📁</span><span class="on-dbody"><span class="on-dtitle"><span class="on-th">ไฟล์ DIFF &amp; DUMP</span><span class="on-en">DIFF &amp; DUMP Files</span></span><span class="on-dmeta on-th">รวม CLI config สำเร็จรูป</span><span class="on-dmeta on-en">Ready-to-use CLI configs</span></span>
-    </a>
-    <a class="on-dlink" data-group="explore" href="https://www.facebook.com/banmysanti/" target="_blank" rel="noopener" data-search="facebook obixconfig lab เพจ ชุมชน">
-      <span class="on-ico b">📘</span><span class="on-dbody"><span class="on-dtitle">OBIXConfig Lab</span><span class="on-dmeta on-th">ถาม-แนะนำ &amp; ตัวอย่างการตั้งค่า</span><span class="on-dmeta on-en">Community Q&amp;A &amp; examples</span></span><span class="on-pill">↗</span>
-    </a>
-    <a class="on-dlink {% if nav_page=='about' %}on-act{% endif %}" data-group="explore" href="/about" data-search="about เกี่ยวกับ ที่มา วิธีใช้">
-      <span class="on-ico">ℹ️</span><span class="on-dbody"><span class="on-dtitle"><span class="on-th">เกี่ยวกับ</span><span class="on-en">About</span></span><span class="on-dmeta on-th">ที่มา &amp; วิธีใช้งาน</span><span class="on-dmeta on-en">Background &amp; how to use</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='team' %}on-act{% endif %}" data-group="explore" href="/team" data-search="team ทีม developer ผู้พัฒนา">
-      <span class="on-ico">👥</span><span class="on-dbody"><span class="on-dtitle"><span class="on-th">ทีมพัฒนา</span><span class="on-en">Team</span></span><span class="on-dmeta on-th">ผู้พัฒนา &amp; AI Partners</span><span class="on-dmeta on-en">Developers &amp; AI partners</span></span>
-    </a>
-    <a class="on-dlink {% if nav_page=='changelog' %}on-act{% endif %}" data-group="explore" href="/changelog" data-search="changelog อัปเดต update history">
-      <span class="on-ico g">📝</span><span class="on-dbody"><span class="on-dtitle">Changelog</span><span class="on-dmeta on-th">บันทึกการอัปเดต</span><span class="on-dmeta on-en">Update history</span></span><span class="on-pill">v5.3</span>
-    </a>
-  </nav>
-  <div class="on-dfoot">
-    OBIXConfig Doctor &nbsp;·&nbsp; <span class="on-dfoot-ver">v7.0</span><br>
-    <span class="on-th">พัฒนาสำหรับชุมชน FPV 🇹🇭</span>
-    <span class="on-en">Built for the FPV community 🌏</span>
-  </div>
-</aside>
-
-<!-- ═══ TOP BAR ═══ -->
-<div class="on-bar" role="banner">
-  <button type="button" id="onHam" class="on-ham" aria-label="เปิดเมนู" aria-expanded="false" aria-controls="onDrawer">
+<!-- ═══ SLIM UTILITY BAR ═══ -->
+<div class="tbx-bar" role="banner">
+  <button type="button" id="tbxToggle" class="tbx-toggle" aria-label="เปิดกล่องเครื่องมือ" aria-expanded="false" aria-controls="tbxPanel">
     <span></span><span></span><span></span>
   </button>
-  <a href="/app" class="on-logo-link" aria-label="ConfigDoctor Home">
-    <img src="{{ url_for('static', filename='img/configdoctor-logo.png') }}" alt="ConfigDoctor — FPV Drone Diagnostic Platform" class="on-logo-img">
-    <div class="on-logo-dot" title="System Online"></div>
+  <a href="/app" class="tbx-logo-link" aria-label="ConfigDoctor Home">
+    <img src="{{ url_for('static', filename='img/configdoctor-logo.png') }}" alt="ConfigDoctor — FPV Drone Diagnostic Platform" class="tbx-logo-img">
+    <div class="tbx-logo-dot" title="System Online"></div>
   </a>
-
-  <!-- MEGA NAV (desktop ≥ 960px) -->
-  <nav class="on-mega" aria-label="Main navigation">
-
-    <div class="on-mg mg-tune {% if nav_group=='tune' %}on-mg-active{% endif %}">
-      <button type="button" class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">🩺</span> TUNE <span class="on-mg-arr">▾</span></button>
-      <div class="on-dd">
-        <div class="on-dd-hd">PID · Filter · Setup</div>
-        <a class="on-dd-item {% if nav_page=='home' %}on-dd-act{% endif %}" href="/app"><span class="on-dd-ico">🔬</span><span class="on-dd-body"><span class="on-dd-label">Drone Analyzer</span><span class="on-dd-hint">Main PID + Physics</span></span></a>
-        <a class="on-dd-item {% if nav_page=='pid_advisor' %}on-dd-act{% endif %}" href="/pid-advisor"><span class="on-dd-ico">💊</span><span class="on-dd-body"><span class="on-dd-label">PID Advisor</span><span class="on-dd-hint">Symptom → Fix</span></span></a>
-        <a class="on-dd-item {% if nav_page=='quick_tune' %}on-dd-act{% endif %}" href="/quick-tune"><span class="on-dd-ico">⚡</span><span class="on-dd-body"><span class="on-dd-label">Quick Tune Pad</span><span class="on-dd-hint">PID delta + CLI</span></span><span class="on-dd-badge ddb-new">NEW</span></a>
-        <a class="on-dd-item {% if nav_page=='rates' %}on-dd-act{% endif %}" href="/rates-visualizer"><span class="on-dd-ico">📈</span><span class="on-dd-body"><span class="on-dd-label">Rates Visualizer</span><span class="on-dd-hint">Live curve</span></span></a>
-        <a class="on-dd-item {% if nav_page=='rpm_filter' %}on-dd-act{% endif %}" href="/rpm-filter"><span class="on-dd-ico">🔔</span><span class="on-dd-body"><span class="on-dd-label">RPM Filter</span><span class="on-dd-hint">Harmonic Hz</span></span></a>
-        <a class="on-dd-item {% if nav_page=='bf_wizard' %}on-dd-act{% endif %}" href="/bf-wizard"><span class="on-dd-ico">⚡</span><span class="on-dd-body"><span class="on-dd-label">BF Config Wizard</span><span class="on-dd-hint">7 steps → CLI</span></span><span class="on-dd-badge ddb-new">NEW</span></a>
-      </div>
-    </div>
-
-    <div class="on-mg mg-hw {% if nav_group=='hw' %}on-mg-active{% endif %}">
-      <button type="button" class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">⚙️</span> HW <span class="on-mg-arr">▾</span></button>
-      <div class="on-dd">
-        <div class="on-dd-hd">Motor · ESC · Battery</div>
-        <a class="on-dd-item {% if nav_page=='motor_prop' %}on-dd-act{% endif %}" href="/motor-prop"><span class="on-dd-ico">🧭</span><span class="on-dd-body"><span class="on-dd-label">Motor × Prop</span><span class="on-dd-hint">KV + stator lab</span></span></a>
-        <a class="on-dd-item {% if nav_page=='esc_checker' %}on-dd-act{% endif %}" href="/esc-checker"><span class="on-dd-ico">⚡</span><span class="on-dd-body"><span class="on-dd-label">ESC Checker</span><span class="on-dd-hint">Protocol + sizing</span></span></a>
-        <a class="on-dd-item {% if nav_page=='battery_health' %}on-dd-act{% endif %}" href="/battery-health"><span class="on-dd-ico">🔋</span><span class="on-dd-body"><span class="on-dd-label">Battery Health</span><span class="on-dd-hint">IR · Sag · Score</span></span><span class="on-dd-badge ddb-new">v5</span></a>
-        <a class="on-dd-item {% if nav_page=='motor_thermal' %}on-dd-act{% endif %}" href="/motor-thermal"><span class="on-dd-ico">🌡️</span><span class="on-dd-body"><span class="on-dd-label">Motor Thermal</span><span class="on-dd-hint">Winding temp est.</span></span><span class="on-dd-badge ddb-new">v5</span></a>
-        <a class="on-dd-item {% if nav_page=='loop_analyzer' %}on-dd-act{% endif %}" href="/loop-analyzer"><span class="on-dd-ico">🔄</span><span class="on-dd-body"><span class="on-dd-label">Loop Analyzer</span><span class="on-dd-hint">Stick→Prop latency</span></span><span class="on-dd-badge ddb-new">v5</span></a>
-      </div>
-    </div>
-
-    <div class="on-mg mg-analysis {% if nav_group=='analysis' %}on-mg-active{% endif %}">
-      <button type="button" class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">📊</span> ANALYZE <span class="on-mg-arr">▾</span></button>
-      <div class="on-dd">
-        <div class="on-dd-hd">Flight Data · Config</div>
-        <a class="on-dd-item {% if nav_page=='blackbox' %}on-dd-act{% endif %}" href="/blackbox"><span class="on-dd-ico">📊</span><span class="on-dd-body"><span class="on-dd-label">Blackbox Analyzer</span><span class="on-dd-hint">CSV → PID score</span></span><span class="on-dd-badge ddb-hot">HOT</span></a>
-        <a class="on-dd-item {% if nav_page=='cli_surgeon' %}on-dd-act{% endif %}" href="/cli_surgeon"><span class="on-dd-ico">🩺</span><span class="on-dd-body"><span class="on-dd-label">CLI Surgeon</span><span class="on-dd-hint">diff all / dump</span></span></a>
-        <a class="on-dd-item {% if nav_page=='comparator' %}on-dd-act{% endif %}" href="/cli-comparator"><span class="on-dd-ico">⚖️</span><span class="on-dd-body"><span class="on-dd-label">CLI Comparator</span><span class="on-dd-hint">Compare 2 configs</span></span></a>
-        <a class="on-dd-item {% if nav_page=='osd' %}on-dd-act{% endif %}" href="/osd"><span class="on-dd-ico">🖥️</span><span class="on-dd-body"><span class="on-dd-label">OSD Designer</span><span class="on-dd-hint">Layout + CLI export</span></span></a>
-        <a class="on-dd-item {% if nav_page=='build_card' %}on-dd-act{% endif %}" href="/build-card"><span class="on-dd-ico">🃏</span><span class="on-dd-body"><span class="on-dd-label">Build Card</span><span class="on-dd-hint">Share to Social</span></span><span class="on-dd-badge ddb-new">NEW</span></a>
-        <a class="on-dd-item {% if nav_page=='tuning_log' %}on-dd-act{% endif %}" href="/tuning-log"><span class="on-dd-ico">📋</span><span class="on-dd-body"><span class="on-dd-label">Tuning Log</span><span class="on-dd-hint">Log PID sessions</span></span><span class="on-dd-badge ddb-new">NEW</span></a>
-      </div>
-    </div>
-
-    <div class="on-mg mg-video {% if nav_group=='video' %}on-mg-active{% endif %}">
-      <button type="button" class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">📡</span> VIDEO <span class="on-mg-arr">▾</span></button>
-      <div class="on-dd">
-        <div class="on-dd-hd">VTX · OSD · RF</div>
-        <a class="on-dd-item {% if nav_page=='vtx' %}on-dd-act{% endif %}" href="/vtx"><span class="on-dd-ico">📡</span><span class="on-dd-body"><span class="on-dd-label">VTX Bands</span><span class="on-dd-hint">Band/Channel table</span></span></a>
-        <a class="on-dd-item {% if nav_page=='vtx_range' %}on-dd-act{% endif %}" href="/vtx-range"><span class="on-dd-ico">🏞️</span><span class="on-dd-body"><span class="on-dd-label">VTX Range</span><span class="on-dd-hint">Signal estimator</span></span></a>
-        <a class="on-dd-item {% if nav_page=='vtx_smartaudio' %}on-dd-act{% endif %}" href="/vtx-smartaudio"><span class="on-dd-ico">🎙️</span><span class="on-dd-body"><span class="on-dd-label">SmartAudio</span><span class="on-dd-hint">Commands ref</span></span></a>
-      </div>
-    </div>
-
-    <div class="on-mg mg-explore {% if nav_group=='explore' %}on-mg-active{% endif %}">
-      <button type="button" class="on-mg-btn" aria-haspopup="true" aria-expanded="false"><span class="on-mg-ico">🎮</span> EXPLORE <span class="on-mg-arr">▾</span></button>
-      <div class="on-dd">
-        <div class="on-dd-hd">Sim · Community · Info</div>
-        <a class="on-dd-item {% if nav_page=='fpv_trainer' %}on-dd-act{% endif %}" href="/fpv-trainer"><span class="on-dd-ico">🕹️</span><span class="on-dd-body"><span class="on-dd-label">FPV Simulator NEO</span><span class="on-dd-hint">3D drone · Race</span></span><span class="on-dd-badge ddb-game">GAME</span></a>
-        <a class="on-dd-item {% if nav_page=='flight_quiz' %}on-dd-act{% endif %}" href="/flight-quiz"><span class="on-dd-ico">🎯</span><span class="on-dd-body"><span class="on-dd-label">Flight Style Quiz</span><span class="on-dd-hint">5Q → rates rec.</span></span><span class="on-dd-badge ddb-new">NEW</span></a>
-        <a class="on-dd-item {% if nav_page=='leaderboard' %}on-dd-act{% endif %}" href="/leaderboard"><span class="on-dd-ico">🏆</span><span class="on-dd-body"><span class="on-dd-label">Config Leaderboard</span><span class="on-dd-hint">Vote · rank · copy</span></span><span class="on-dd-badge ddb-new">NEW</span></a>
-        <a class="on-dd-item {% if nav_page=='military_uas' %}on-dd-act{% endif %}" href="/military-uas"><span class="on-dd-ico">🎖️</span><span class="on-dd-body"><span class="on-dd-label">Military UAS</span><span class="on-dd-hint">Tactical analysis</span></span></a>
-        <a class="on-dd-item {% if nav_page=='fpv' %}on-dd-act{% endif %}" href="/fpv"><span class="on-dd-ico">📖</span><span class="on-dd-body"><span class="on-dd-label">FPV Knowledge Hub</span><span class="on-dd-hint">All articles &amp; tools</span></span></a>
-        <a class="on-dd-item {% if nav_page=='fpv_gear' %}on-dd-act{% endif %}" href="/fpv-gear"><span class="on-dd-ico">🛒</span><span class="on-dd-body"><span class="on-dd-label">FPV Gear Guide</span><span class="on-dd-hint">Parts by class &amp; style</span></span><span class="on-dd-badge ddb-new">NEW</span></a>
-        <a class="on-dd-item {% if nav_page=='downloads' %}on-dd-act{% endif %}" href="/downloads"><span class="on-dd-ico">📁</span><span class="on-dd-body"><span class="on-dd-label">Downloads</span><span class="on-dd-hint">DIFF &amp; DUMP files</span></span></a>
-        <a class="on-dd-item {% if nav_page=='about' %}on-dd-act{% endif %}" href="/about"><span class="on-dd-ico">ℹ️</span><span class="on-dd-body"><span class="on-dd-label">About</span><span class="on-dd-hint">Project info</span></span></a>
-        <a class="on-dd-item {% if nav_page=='changelog' %}on-dd-act{% endif %}" href="/changelog"><span class="on-dd-ico">📝</span><span class="on-dd-body"><span class="on-dd-label">Changelog</span><span class="on-dd-hint">Update history</span></span></a>
-      </div>
-    </div>
-
-  </nav><!-- /on-mega -->
-
-  <div class="on-bar-right">
-    <span class="on-crumb" aria-current="page">
-      <span class="on-crumb-dot"></span>{{ nav_label }}
-    </span>
-    <button type="button" id="onSearchBtn" class="on-search-btn" aria-label="Open search (press /)">🔍<span class="on-search-hint">/</span></button>
-    <button type="button" class="on-icon-btn" id="onLang" title="Switch TH/EN" aria-label="Toggle language"><span id="onLangLabel">TH</span></button>
-    <button type="button" class="on-icon-btn" id="onTheme" title="Toggle dark/light" aria-label="Toggle theme"><span id="onThemeIcon">🌙</span></button>
+  <span class="tbx-crumb" aria-current="page"><span class="tbx-crumb-dot"></span>{{ nav_label }}</span>
+  <div class="tbx-bar-right">
+    <button type="button" id="tbxSearchBtn" class="tbx-icon-btn tbx-search-btn" aria-label="ค้นหาเครื่องมือ (กด /)">🔍</button>
+    <button type="button" class="tbx-icon-btn" id="tbxLang" title="Switch TH/EN" aria-label="Toggle language"><span id="tbxLangLabel">TH</span></button>
+    <button type="button" class="tbx-icon-btn" id="tbxTheme" title="Toggle dark/light" aria-label="Toggle theme"><span id="tbxThemeIcon">🌙</span></button>
   </div>
-</div><!-- /on-bar -->
+</div><!-- /tbx-bar -->
+
+<!-- ═══ BACKDROP ═══ -->
+<div id="tbxOverlay" class="tbx-overlay" aria-hidden="true"></div>
+
+<!-- ═══ TOOLBOX PANEL ═══ -->
+<aside id="tbxPanel" class="tbx-panel" role="dialog" aria-modal="true" aria-label="กล่องเครื่องมือ">
+  <div class="tbx-head">
+    <div class="tbx-head-brand">
+      <div class="tbx-head-icon">🧰</div>
+      <div style="min-width:0;">
+        <div class="tbx-head-name">OBIX CONFIG DOCTOR</div>
+        <div class="tbx-head-sub">FPV Tuning Toolbox · v8.0</div>
+      </div>
+    </div>
+    <button type="button" id="tbxClose" class="tbx-close" aria-label="ปิดกล่องเครื่องมือ">✕</button>
+  </div>
+
+  <!-- quick-jump category chips -->
+  <div class="tbx-chips" id="tbxChips" role="tablist" aria-label="หมวดหมู่เครื่องมือ">
+    <button type="button" class="tbx-chip {% if nav_group=='tune' %}tbx-chip-active{% endif %}" data-jump="grp-tune">🩺 <span class="tbx-th">ปรับแต่ง</span><span class="tbx-en">Tune</span></button>
+    <button type="button" class="tbx-chip {% if nav_group=='hw' %}tbx-chip-active{% endif %}" data-jump="grp-hw">⚙️ <span class="tbx-th">ฮาร์ดแวร์</span><span class="tbx-en">Hardware</span></button>
+    <button type="button" class="tbx-chip {% if nav_group=='analyze' %}tbx-chip-active{% endif %}" data-jump="grp-analyze">📊 <span class="tbx-th">วิเคราะห์</span><span class="tbx-en">Analyze</span></button>
+    <button type="button" class="tbx-chip {% if nav_group=='signal' %}tbx-chip-active{% endif %}" data-jump="grp-signal">📡 <span class="tbx-th">สัญญาณ</span><span class="tbx-en">Signal</span></button>
+    <button type="button" class="tbx-chip {% if nav_group=='explore' %}tbx-chip-active{% endif %}" data-jump="grp-explore">🎮 <span class="tbx-th">สำรวจ</span><span class="tbx-en">Explore</span></button>
+  </div>
+
+  <div class="tbx-search-wrap">
+    <div class="tbx-search-inner">
+      <span class="tbx-search-icon">🔍</span>
+      <input id="tbxSearch" class="tbx-search-input" type="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="ค้นหาเครื่องมือ... เช่น PID, ESC, VTX" aria-label="ค้นหาเครื่องมือ">
+    </div>
+  </div>
+
+  <nav class="tbx-list" id="tbxList" aria-label="เมนูทั้งหมด">
+    <div class="tbx-no-results" id="tbxNoResults">ไม่พบเครื่องมือที่ค้นหา 🔍</div>
+
+    <div class="tbx-group-label tbx-grp" id="grp-tune">🩺 <span class="tbx-th">ปรับแต่ง (Tune)</span><span class="tbx-en">Tune</span></div>
+    <a class="tbx-link {% if nav_page=='home' %}tbx-act{% endif %}" href="/app" data-search="drone analyzer วิเคราะห์ pid filter motor">
+      <span class="tbx-ico g">🔬</span><span class="tbx-body"><span class="tbx-title">Drone Analyzer</span><span class="tbx-meta tbx-th">วิเคราะห์ PID · Filter · Flight time</span><span class="tbx-meta tbx-en">PID · Filter · Motor · Flight time</span></span><span class="tbx-pill nw">main</span>
+    </a>
+    <a class="tbx-link {% if nav_page=='pid_advisor' %}tbx-act{% endif %}" href="/pid-advisor" data-search="pid symptom advisor อาการ bounce propwash oscillation">
+      <span class="tbx-ico p">💊</span><span class="tbx-body"><span class="tbx-title">PID Symptom Advisor</span><span class="tbx-meta tbx-th">บอกอาการ → รับคำแนะนำ PID</span><span class="tbx-meta tbx-en">Describe symptoms → PID fixes</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='quick_tune' %}tbx-act{% endif %}" href="/quick-tune" data-search="quick tune pad pid delta อาการ">
+      <span class="tbx-ico g">⚡</span><span class="tbx-body"><span class="tbx-title">Quick Tune Pad</span><span class="tbx-meta tbx-th">เลือกอาการ → PID delta + CLI</span><span class="tbx-meta tbx-en">Symptom → PID delta + CLI</span></span><span class="tbx-pill nw">v5</span>
+    </a>
+    <a class="tbx-link {% if nav_page=='rpm_filter' %}tbx-act{% endif %}" href="/rpm-filter" data-search="rpm filter calculator harmonic dyn notch">
+      <span class="tbx-ico g">⚙️</span><span class="tbx-body"><span class="tbx-title">RPM Filter Calculator</span><span class="tbx-meta tbx-th">คำนวณ harmonic + dyn_notch</span><span class="tbx-meta tbx-en">Compute harmonics + dyn_notch</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='rates' %}tbx-act{% endif %}" href="/rates-visualizer" data-search="rates visualizer curve expo rc rate">
+      <span class="tbx-ico b">📈</span><span class="tbx-body"><span class="tbx-title">Rates Visualizer</span><span class="tbx-meta tbx-th">Curve real-time · per-axis</span><span class="tbx-meta tbx-en">Real-time rate curve · per-axis</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='bf_wizard' %}tbx-act{% endif %}" href="/bf-wizard" data-search="betaflight wizard config cli 7 ขั้นตอน">
+      <span class="tbx-ico g">⚡</span><span class="tbx-body"><span class="tbx-title">BF Config Wizard</span><span class="tbx-meta tbx-th">7 ขั้นตอน → CLI พร้อม paste</span><span class="tbx-meta tbx-en">7 steps → paste-ready CLI</span></span>
+    </a>
+
+    <div class="tbx-div tbx-grp"></div>
+    <div class="tbx-group-label tbx-grp" id="grp-hw">⚙️ <span class="tbx-th">ฮาร์ดแวร์ (Hardware)</span><span class="tbx-en">Hardware</span></div>
+    <a class="tbx-link {% if nav_page=='motor_prop' %}tbx-act{% endif %}" href="/motor-prop" data-search="motor prop recommender มอเตอร์ ใบพัด kv stator">
+      <span class="tbx-ico c">🧭</span><span class="tbx-body"><span class="tbx-title">Motor × Prop Recommender</span><span class="tbx-meta tbx-th">แนะนำมอเตอร์/ใบพัดตามสเปค</span><span class="tbx-meta tbx-en">Motor &amp; prop match by spec</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='esc_checker' %}tbx-act{% endif %}" href="/esc-checker" data-search="esc checker compatibility amps protocol dshot">
+      <span class="tbx-ico a">⚡</span><span class="tbx-body"><span class="tbx-title">ESC Compatibility Checker</span><span class="tbx-meta tbx-th">ตรวจ ESC amps · protocol · KV</span><span class="tbx-meta tbx-en">Check ESC amps · protocol</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='battery_health' %}tbx-act{% endif %}" href="/battery-health" data-search="battery health advisor แบต ir sag">
+      <span class="tbx-ico g">🔋</span><span class="tbx-body"><span class="tbx-title">Battery Health Advisor</span><span class="tbx-meta tbx-th">IR · Sag · Health Score · อายุแบต</span><span class="tbx-meta tbx-en">IR · Sag · Health Score</span></span><span class="tbx-pill nw">v5</span>
+    </a>
+    <a class="tbx-link {% if nav_page=='motor_thermal' %}tbx-act{% endif %}" href="/motor-thermal" data-search="motor thermal estimator อุณหภูมิ winding temp">
+      <span class="tbx-ico r">🌡️</span><span class="tbx-body"><span class="tbx-title">Motor Thermal Estimator</span><span class="tbx-meta tbx-th">อุณหภูมิ motor · thermal margin</span><span class="tbx-meta tbx-en">Estimate winding temp · safe zone</span></span><span class="tbx-pill nw">v5</span>
+    </a>
+    <a class="tbx-link {% if nav_page=='loop_analyzer' %}tbx-act{% endif %}" href="/loop-analyzer" data-search="control loop analyzer latency looptime">
+      <span class="tbx-ico p">🔄</span><span class="tbx-body"><span class="tbx-title">Control Loop Analyzer</span><span class="tbx-meta tbx-th">Stick→Prop latency · bottleneck</span><span class="tbx-meta tbx-en">Stick→Prop latency chain</span></span><span class="tbx-pill nw">v5</span>
+    </a>
+
+    <div class="tbx-div tbx-grp"></div>
+    <div class="tbx-group-label tbx-grp" id="grp-analyze">📊 <span class="tbx-th">วิเคราะห์ (Analyze)</span><span class="tbx-en">Analyze</span></div>
+    <a class="tbx-link {% if nav_page=='blackbox' %}tbx-act{% endif %}" href="/blackbox" data-search="blackbox csv analyzer flight log pid score">
+      <span class="tbx-ico b">📊</span><span class="tbx-body"><span class="tbx-title">Blackbox CSV Analyzer</span><span class="tbx-meta tbx-th">วิเคราะห์ flight log · PID score</span><span class="tbx-meta tbx-en">Analyze flight log · PID score</span></span><span class="tbx-pill hot">HOT</span>
+    </a>
+    <a class="tbx-link {% if nav_page=='cli_surgeon' %}tbx-act{% endif %}" href="/cli_surgeon" data-search="cli surgeon diff all dump วิเคราะห์">
+      <span class="tbx-ico a">🩺</span><span class="tbx-body"><span class="tbx-title">CLI Surgeon</span><span class="tbx-meta tbx-th">วิเคราะห์ diff all / dump</span><span class="tbx-meta tbx-en">Analyze diff all / dump</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='comparator' %}tbx-act{% endif %}" href="/cli-comparator" data-search="cli diff comparator compare เปรียบเทียบ">
+      <span class="tbx-ico a">⚖️</span><span class="tbx-body"><span class="tbx-title">CLI Diff Comparator</span><span class="tbx-meta tbx-th">วาง 2 config → เห็นทุกค่าที่เปลี่ยน</span><span class="tbx-meta tbx-en">Paste 2 configs → see every diff</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='osd' %}tbx-act{% endif %}" href="/osd" data-search="osd designer layout export cli">
+      <span class="tbx-ico p">🖥️</span><span class="tbx-body"><span class="tbx-title">OSD Designer</span><span class="tbx-meta tbx-th">ออกแบบ layout OSD + export CLI</span><span class="tbx-meta tbx-en">Design OSD layout + export CLI</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='build_card' %}tbx-act{% endif %}" href="/build-card" data-search="build card generator สเปค โดรน social">
+      <span class="tbx-ico a">🃏</span><span class="tbx-body"><span class="tbx-title">Build Card Generator</span><span class="tbx-meta tbx-th">สร้างรูปสเปคโดรนแชร์ Social</span><span class="tbx-meta tbx-en">Share your build spec card</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='tuning_log' %}tbx-act{% endif %}" href="/tuning-log" data-search="tuning log session บันทึก pid เปรียบเทียบ">
+      <span class="tbx-ico b">📋</span><span class="tbx-body"><span class="tbx-title">Tuning Log</span><span class="tbx-meta tbx-th">บันทึก session · เปรียบเทียบ PID</span><span class="tbx-meta tbx-en">Log sessions · compare PID</span></span>
+    </a>
+
+    <div class="tbx-div tbx-grp"></div>
+    <div class="tbx-group-label tbx-grp" id="grp-signal">📡 <span class="tbx-th">สัญญาณ (VTX)</span><span class="tbx-en">Signal</span></div>
+    <a class="tbx-link {% if nav_page=='vtx' %}tbx-act{% endif %}" href="/vtx" data-search="vtx bands channels ตาราง band channel">
+      <span class="tbx-ico g">📡</span><span class="tbx-body"><span class="tbx-title">VTX Bands &amp; Channels</span><span class="tbx-meta tbx-th">ตาราง Band/Channel + CLI</span><span class="tbx-meta tbx-en">Band/Channel table + CLI</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='vtx_range' %}tbx-act{% endif %}" href="/vtx-range" data-search="vtx range calculator ระยะสัญญาณ signal">
+      <span class="tbx-ico b">🏞️</span><span class="tbx-body"><span class="tbx-title">VTX Range Calculator</span><span class="tbx-meta tbx-th">ประมาณระยะสัญญาณ + กราฟ</span><span class="tbx-meta tbx-en">Estimate signal range + graph</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='vtx_smartaudio' %}tbx-act{% endif %}" href="/vtx-smartaudio" data-search="vtx smartaudio tramp commands">
+      <span class="tbx-ico a">🎙️</span><span class="tbx-body"><span class="tbx-title">VTX SmartAudio Guide</span><span class="tbx-meta">SmartAudio / Tramp commands</span></span>
+    </a>
+
+    <div class="tbx-div tbx-grp"></div>
+    <div class="tbx-group-label tbx-grp" id="grp-explore">🎮 <span class="tbx-th">สำรวจ &amp; ชุมชน</span><span class="tbx-en">Explore &amp; Community</span></div>
+    <a class="tbx-link {% if nav_page=='fpv_trainer' %}tbx-act{% endif %}" href="/fpv-trainer" data-search="fpv trainer simulator ฝึกบิน 3d gamepad">
+      <span class="tbx-ico g">🕹️</span><span class="tbx-body"><span class="tbx-title">FPV Training Simulator</span><span class="tbx-meta tbx-th">ฝึกบิน 3D · 4 โหมด · Gamepad</span><span class="tbx-meta tbx-en">3D drone sim · Tutorial · Race</span></span><span class="tbx-pill hot">FUN</span>
+    </a>
+    <a class="tbx-link {% if nav_page=='flight_quiz' %}tbx-act{% endif %}" href="/flight-quiz" data-search="flight style quiz rates preset สไตล์">
+      <span class="tbx-ico a">🎯</span><span class="tbx-body"><span class="tbx-title">Flight Style Quiz</span><span class="tbx-meta tbx-th">5 คำถาม → rates + preset แนะนำ</span><span class="tbx-meta tbx-en">5 questions → rates + preset</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='military_uas' %}tbx-act{% endif %}" href="/military-uas" data-search="military uas analyzer โดรนทหาร physics">
+      <span class="tbx-ico r">🎖️</span><span class="tbx-body"><span class="tbx-title">Military UAS Analyzer</span><span class="tbx-meta tbx-th">วิเคราะห์โดรนทหาร · 6 modules</span><span class="tbx-meta tbx-en">Military drone analysis · 6 modules</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='leaderboard' %}tbx-act{% endif %}" href="/leaderboard" data-search="config leaderboard vote rank community">
+      <span class="tbx-ico a">🏆</span><span class="tbx-body"><span class="tbx-title">Config Leaderboard</span><span class="tbx-meta tbx-th">Vote · rank · copy config ชุมชน</span><span class="tbx-meta tbx-en">Vote · rank · share configs</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='fpv' %}tbx-act{% endif %}" href="/fpv" data-search="fpv hub knowledge ความรู้ โดรน บทความ">
+      <span class="tbx-ico g">📖</span><span class="tbx-body"><span class="tbx-title"><span class="tbx-th">FPV Knowledge Hub</span><span class="tbx-en">FPV Knowledge Hub</span></span><span class="tbx-meta tbx-th">รวมบทความ &amp; เครื่องมือทั้งหมด</span><span class="tbx-meta tbx-en">All articles &amp; tools in one place</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='fpv_gear' %}tbx-act{% endif %}" href="/fpv-gear" data-search="fpv gear guide affiliate มอเตอร์ เฟรม ใบพัด แนะนำอุปกรณ์">
+      <span class="tbx-ico b">🛒</span><span class="tbx-body"><span class="tbx-title"><span class="tbx-th">FPV Gear Guide</span><span class="tbx-en">FPV Gear Guide</span></span><span class="tbx-meta tbx-th">แนะนำอุปกรณ์ตาม class/style</span><span class="tbx-meta tbx-en">Parts matched to class &amp; style</span></span><span class="tbx-pill nw">NEW</span>
+    </a>
+    <a class="tbx-link {% if nav_page=='downloads' %}tbx-act{% endif %}" href="/downloads" data-search="downloads diff dump files ไฟล์ config">
+      <span class="tbx-ico">📁</span><span class="tbx-body"><span class="tbx-title"><span class="tbx-th">ไฟล์ DIFF &amp; DUMP</span><span class="tbx-en">DIFF &amp; DUMP Files</span></span><span class="tbx-meta tbx-th">รวม CLI config สำเร็จรูป</span><span class="tbx-meta tbx-en">Ready-to-use CLI configs</span></span>
+    </a>
+    <a class="tbx-link" href="https://www.facebook.com/banmysanti/" target="_blank" rel="noopener" data-search="facebook obixconfig lab เพจ ชุมชน">
+      <span class="tbx-ico b">📘</span><span class="tbx-body"><span class="tbx-title">OBIXConfig Lab</span><span class="tbx-meta tbx-th">ถาม-แนะนำ &amp; ตัวอย่างการตั้งค่า</span><span class="tbx-meta tbx-en">Community Q&amp;A &amp; examples</span></span><span class="tbx-pill">↗</span>
+    </a>
+    <a class="tbx-link {% if nav_page=='about' %}tbx-act{% endif %}" href="/about" data-search="about เกี่ยวกับ ที่มา วิธีใช้">
+      <span class="tbx-ico">ℹ️</span><span class="tbx-body"><span class="tbx-title"><span class="tbx-th">เกี่ยวกับ</span><span class="tbx-en">About</span></span><span class="tbx-meta tbx-th">ที่มา &amp; วิธีใช้งาน</span><span class="tbx-meta tbx-en">Background &amp; how to use</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='team' %}tbx-act{% endif %}" href="/team" data-search="team ทีม developer ผู้พัฒนา">
+      <span class="tbx-ico">👥</span><span class="tbx-body"><span class="tbx-title"><span class="tbx-th">ทีมพัฒนา</span><span class="tbx-en">Team</span></span><span class="tbx-meta tbx-th">ผู้พัฒนา &amp; AI Partners</span><span class="tbx-meta tbx-en">Developers &amp; AI partners</span></span>
+    </a>
+    <a class="tbx-link {% if nav_page=='changelog' %}tbx-act{% endif %}" href="/changelog" data-search="changelog อัปเดต update history">
+      <span class="tbx-ico g">📝</span><span class="tbx-body"><span class="tbx-title">Changelog</span><span class="tbx-meta tbx-th">บันทึกการอัปเดต</span><span class="tbx-meta tbx-en">Update history</span></span><span class="tbx-pill">v5.3</span>
+    </a>
+  </nav>
+
+  <div class="tbx-foot">
+    OBIXConfig Doctor &nbsp;·&nbsp; <span class="tbx-foot-ver">v8.0</span><br>
+    <span class="tbx-th">พัฒนาสำหรับชุมชน FPV 🇹🇭</span>
+    <span class="tbx-en">Built for the FPV community 🌏</span>
+  </div>
+</aside>
 
 <script>
 (function(){
 'use strict';
-var ham=document.getElementById('onHam'),drawer=document.getElementById('onDrawer'),
-    overlay=document.getElementById('onOverlay'),closeBtn=document.getElementById('onClose'),
-    searchEl=document.getElementById('onSearch'),navEl=document.getElementById('onNav'),
-    noRes=document.getElementById('onNoResults'),searchBtn=document.getElementById('onSearchBtn'),
-    searchClearBtn=document.getElementById('onSearchClear'),chipsEl=document.getElementById('onChips'),
-    recentHd=document.getElementById('onRecentHd'),recentList=document.getElementById('onRecentList'),
-    recentDiv=document.getElementById('onRecentDiv');
-var activeGroup='all';
+var toggle=document.getElementById('tbxToggle'),panel=document.getElementById('tbxPanel'),
+    overlay=document.getElementById('tbxOverlay'),closeBtn=document.getElementById('tbxClose'),
+    searchEl=document.getElementById('tbxSearch'),listEl=document.getElementById('tbxList'),
+    noRes=document.getElementById('tbxNoResults'),searchBtn=document.getElementById('tbxSearchBtn'),
+    chips=document.getElementById('tbxChips');
 
 /* ── THEME ── */
 var theme=localStorage.getItem('obix-theme')||'dark';
 function applyTheme(t){
   document.body.classList.toggle('light',t==='light');
   document.body.classList.toggle('dark',t!=='light');
-  var icon=document.getElementById('onThemeIcon');
+  var icon=document.getElementById('tbxThemeIcon');
   if(icon)icon.textContent=t==='light'?'☀️':'🌙';
   localStorage.setItem('obix-theme',t);theme=t;
 }
 applyTheme(theme);
-var themeBtn=document.getElementById('onTheme');
+var themeBtn=document.getElementById('tbxTheme');
 if(themeBtn)themeBtn.addEventListener('click',function(){applyTheme(theme==='light'?'dark':'light');});
 
 /* ── LANGUAGE ── */
 var lang=localStorage.getItem('obix-lang')||localStorage.getItem('obix_lang')||'th';
 function applyLang(l){
   document.body.classList.toggle('lang-en',l==='en');
-  var lbl=document.getElementById('onLangLabel');
+  var lbl=document.getElementById('tbxLangLabel');
   if(lbl)lbl.textContent=l==='en'?'EN':'TH';
-  ['','Mobile'].forEach(function(s){
-    var i=document.getElementById('langIcon'+s),t=document.getElementById('langLabel'+s),b=document.getElementById('langBtn'+s);
-    if(i)i.textContent=l==='en'?'🇬🇧':'🇹🇭';
-    if(t)t.textContent=l==='en'?'EN':'TH';
-    if(b)b.classList.toggle('lang-en',l==='en');
-  });
   localStorage.setItem('obix-lang',l);localStorage.setItem('obix_lang',l);lang=l;
 }
 applyLang(lang);
 window.toggleLang=function(){applyLang(lang==='th'?'en':'th');};
-var langBtn=document.getElementById('onLang');
+var langBtn=document.getElementById('tbxLang');
 if(langBtn)langBtn.addEventListener('click',function(){window.toggleLang();});
 
-/* ── DRAWER ── */
-function getFocusable(){
-  if(!drawer)return[];
-  return Array.prototype.slice.call(drawer.querySelectorAll('a,button,input,[tabindex]:not([tabindex="-1"])'))
-    .filter(function(el){return el.offsetParent!==null;});
+/* ── TOOLBOX OPEN / CLOSE ── */
+var lastFocus=null;
+function focusablesIn(el){
+  return Array.prototype.slice.call(el.querySelectorAll('a[href],button:not([disabled]),input:not([disabled])'))
+    .filter(function(n){return n.offsetParent!==null;});
 }
-function trapFocus(e){
+function trapKey(e){
+  if(e.key==='Escape'){closeToolbox();return;}
   if(e.key!=='Tab')return;
-  var f=getFocusable();
+  var f=focusablesIn(panel);
   if(!f.length)return;
   var first=f[0],last=f[f.length-1];
   if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
   else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
 }
-function openDrawer(){
-  if(ham){ham.setAttribute('aria-expanded','true');ham.classList.add('on-open');}
-  if(drawer)drawer.classList.add('on-open');
-  if(overlay){overlay.classList.add('on-open');overlay.setAttribute('aria-hidden','false');}
-  document.addEventListener('keydown',handleKey);
+function openToolbox(){
+  lastFocus=document.activeElement;
+  if(toggle){toggle.setAttribute('aria-expanded','true');toggle.classList.add('tbx-open');}
+  if(panel)panel.classList.add('tbx-open');
+  if(overlay){overlay.classList.add('tbx-open');overlay.setAttribute('aria-hidden','false');}
+  document.addEventListener('keydown',trapKey);
   document.body.style.overflow='hidden';
-  renderRecent();
-  setTimeout(function(){if(searchEl)searchEl.focus();},80);
+  setTimeout(function(){if(searchEl)searchEl.focus();},90);
 }
-function closeDrawer(){
-  if(ham){ham.setAttribute('aria-expanded','false');ham.classList.remove('on-open');}
-  if(drawer)drawer.classList.remove('on-open');
-  if(overlay){overlay.classList.remove('on-open');overlay.setAttribute('aria-hidden','true');}
-  document.removeEventListener('keydown',handleKey);
+function closeToolbox(){
+  if(toggle){toggle.setAttribute('aria-expanded','false');toggle.classList.remove('tbx-open');}
+  if(panel)panel.classList.remove('tbx-open');
+  if(overlay){overlay.classList.remove('tbx-open');overlay.setAttribute('aria-hidden','true');}
+  document.removeEventListener('keydown',trapKey);
   document.body.style.overflow='';
-  if(searchEl){searchEl.value='';}
-  setActiveGroup('all');
-  applyFilters();
-  if(ham)ham.focus();
+  if(searchEl){searchEl.value='';filterLinks('');}
+  if(lastFocus&&typeof lastFocus.focus==='function')lastFocus.focus();
+  else if(toggle)toggle.focus();
 }
-function handleKey(e){
-  if(e.key==='Escape')closeDrawer();
-  if(e.key==='/'&&document.activeElement!==searchEl){e.preventDefault();if(searchEl)searchEl.focus();}
-  trapFocus(e);
-}
-window.onNavOpen=openDrawer;window.onNavClose=closeDrawer;
-if(ham)ham.addEventListener('click',function(){ham.getAttribute('aria-expanded')==='true'?closeDrawer():openDrawer();});
-if(overlay)overlay.addEventListener('click',closeDrawer);
-if(closeBtn)closeBtn.addEventListener('click',closeDrawer);
-if(searchBtn)searchBtn.addEventListener('click',openDrawer);
-/* Delegated: recording "recent" + closing on mobile after tapping a real tool link
-   (covers both the static list and any dynamically-rendered Recent items). */
-if(navEl)navEl.addEventListener('click',function(e){
-  var l=e.target.closest('.on-dlink');
-  if(!l)return;
-  recordRecent(l);
-  closeDrawer();
+window.tbxOpen=openToolbox;window.tbxClose=closeToolbox;
+if(toggle)toggle.addEventListener('click',function(){toggle.getAttribute('aria-expanded')==='true'?closeToolbox():openToolbox();});
+if(overlay)overlay.addEventListener('click',closeToolbox);
+if(closeBtn)closeBtn.addEventListener('click',closeToolbox);
+if(searchBtn)searchBtn.addEventListener('click',openToolbox);
+if(listEl)listEl.querySelectorAll('.tbx-link').forEach(function(l){
+  l.addEventListener('click',function(){closeToolbox();});
 });
 document.addEventListener('keydown',function(e){
   var tag=document.activeElement?document.activeElement.tagName:'';
-  if(e.key==='/'&&tag!=='INPUT'&&tag!=='TEXTAREA'){e.preventDefault();openDrawer();}
+  if(e.key==='/'&&tag!=='INPUT'&&tag!=='TEXTAREA'){e.preventDefault();openToolbox();}
 });
 
-/* ── SWIPE (floating popup: swipe down to dismiss, touch devices) ── */
-if(drawer){
+/* ── SWIPE TO CLOSE (mobile) ── */
+if(panel){
   var tx=0,ty=0;
-  drawer.addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;ty=e.changedTouches[0].clientY;},{passive:true});
-  drawer.addEventListener('touchmove',function(e){
-    var dy=e.changedTouches[0].clientY-ty;
-    if(dy>0){var r=Math.min(dy*.4,80);drawer.style.transform='translate(-50%,'+r+'px) scale(1)';drawer.style.transition='none';}
-  },{passive:true});
-  drawer.addEventListener('touchend',function(e){
-    drawer.style.transform='';drawer.style.transition='';
-    var dy=e.changedTouches[0].clientY-ty,dx=Math.abs(e.changedTouches[0].clientX-tx);
-    if(dy>90&&dx<80)closeDrawer();
-  },{passive:true});
+  panel.addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;ty=e.changedTouches[0].clientY;},{passive:true});
+  panel.addEventListener('touchmove',function(e){var dx=e.changedTouches[0].clientX-tx;if(dx<0){var r=Math.min(Math.abs(dx)*.35,40);panel.style.transform='translateX(-'+r+'px)';panel.style.transition='none';}},{passive:true});
+  panel.addEventListener('touchend',function(e){panel.style.transform='';panel.style.transition='';var dx=e.changedTouches[0].clientX-tx,dy=Math.abs(e.changedTouches[0].clientY-ty);if(dx<-60&&dy<80)closeToolbox();},{passive:true});
 }
 
-/* ── RECENT TOOLS ── */
-function getRecent(){
-  try{return JSON.parse(localStorage.getItem('obix-recent')||'[]');}catch(e){return[];}
-}
-function recordRecent(linkEl){
-  var href=linkEl.getAttribute('href');
-  if(!href||href.charAt(0)==='#')return;
-  var titleEl=linkEl.querySelector('.on-dtitle'),icoEl=linkEl.querySelector('.on-ico');
-  var entry={
-    href:href,
-    label:titleEl?titleEl.textContent.trim():linkEl.textContent.trim().slice(0,40),
-    icon:icoEl?icoEl.textContent.trim():'🔧',
-    group:linkEl.dataset.group||''
-  };
-  var list=getRecent().filter(function(r){return r.href!==href;});
-  list.unshift(entry);
-  list=list.slice(0,6);
-  try{localStorage.setItem('obix-recent',JSON.stringify(list));}catch(e){}
-}
-function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-function renderRecent(){
-  if(!recentList)return;
-  var q=searchEl?searchEl.value.trim():'';
-  var show=!q&&activeGroup==='all';
-  var here=window.location.pathname;
-  var items=getRecent().filter(function(r){return r.href!==here;}).slice(0,4);
-  if(!show||!items.length){
-    recentList.innerHTML='';
-    if(recentHd)recentHd.hidden=true;
-    if(recentDiv)recentDiv.hidden=true;
-    return;
-  }
-  recentList.innerHTML=items.map(function(r){
-    return '<a class="on-dlink" href="'+esc(r.href)+'" data-group="'+esc(r.group)+'">'
-      +'<span class="on-ico g">'+esc(r.icon)+'</span>'
-      +'<span class="on-dbody"><span class="on-dtitle">'+esc(r.label)+'</span></span>'
-      +'</a>';
-  }).join('');
-  if(recentHd)recentHd.hidden=false;
-  if(recentDiv)recentDiv.hidden=false;
-}
-
-/* ── CATEGORY CHIPS ── */
-function setActiveGroup(g){
-  activeGroup=g;
-  if(chipsEl)chipsEl.querySelectorAll('.on-chip').forEach(function(c){
-    var on=c.dataset.chipGroup===g;
-    c.classList.toggle('on-chip-active',on);
-    c.setAttribute('aria-pressed',String(on));
-  });
-}
-if(chipsEl)chipsEl.querySelectorAll('.on-chip').forEach(function(c){
-  c.addEventListener('click',function(){setActiveGroup(c.dataset.chipGroup);applyFilters();});
-});
-
-/* ── SEARCH + CATEGORY FILTER (combined) ── */
-function applyFilters(){
-  var q=searchEl?searchEl.value.trim().toLowerCase():'';
-  var links=navEl?navEl.querySelectorAll('.on-dlink'):[],
-      groups=navEl?navEl.querySelectorAll('.on-grp'):[],
-      visible=0;
-  groups.forEach(function(g){
-    if(g.id==='onRecentHd'||g.id==='onRecentDiv')return; // handled by renderRecent
-    var groupOk=activeGroup==='all'||g.dataset.group===activeGroup;
-    g.style.display=(groupOk&&!q)?'':'none';
-  });
-  links.forEach(function(l){
-    if(l.closest('#onRecentList'))return; // recent items aren't part of the filtered count
-    var groupOk=activeGroup==='all'||l.dataset.group===activeGroup;
-    var text=(l.textContent+' '+(l.dataset.search||'')).toLowerCase();
-    var queryOk=!q||text.indexOf(q)!==-1;
-    var show=groupOk&&queryOk;
-    l.style.display=show?'':'none';
-    if(show)visible++;
-  });
-  if(searchClearBtn)searchClearBtn.hidden=!q;
+/* ── SEARCH / FILTER ── */
+function filterLinks(q){
+  q=q.trim().toLowerCase();
+  var links=listEl?listEl.querySelectorAll('.tbx-link'):[],groups=listEl?listEl.querySelectorAll('.tbx-grp'):[],visible=0;
+  if(!q){links.forEach(function(l){l.style.display='';});groups.forEach(function(g){g.style.display='';});if(noRes)noRes.style.display='none';if(chips)chips.style.display='';return;}
+  if(chips)chips.style.display='none';
+  groups.forEach(function(g){g.style.display='none';});
+  links.forEach(function(l){var t=(l.textContent+' '+(l.dataset.search||'')).toLowerCase(),show=t.indexOf(q)!==-1;l.style.display=show?'':'none';if(show)visible++;});
   if(noRes)noRes.style.display=visible===0?'block':'none';
-  renderRecent();
 }
 if(searchEl){
-  searchEl.addEventListener('input',applyFilters);
+  searchEl.addEventListener('input',function(){filterLinks(this.value);});
   searchEl.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){if(this.value){this.value='';applyFilters();e.stopPropagation();}else closeDrawer();}
+    if(e.key==='Escape'){if(this.value){this.value='';filterLinks('');e.stopPropagation();}else closeToolbox();}
   });
 }
-if(searchClearBtn)searchClearBtn.addEventListener('click',function(){
-  if(searchEl){searchEl.value='';searchEl.focus();}
-  applyFilters();
-});
 
-/* ── DESKTOP DROPDOWN keyboard a11y ── */
-document.querySelectorAll('.on-mg-btn').forEach(function(btn){
-  btn.addEventListener('keydown',function(e){
-    if(e.key==='Enter'||e.key===' '){e.preventDefault();var g=btn.closest('.on-mg'),o=g.classList.toggle('on-dd-open');btn.setAttribute('aria-expanded',String(o));}
-    if(e.key==='Escape'){btn.closest('.on-mg').classList.remove('on-dd-open');btn.setAttribute('aria-expanded','false');btn.focus();}
+/* ── QUICK-JUMP CATEGORY CHIPS ── */
+if(chips)chips.querySelectorAll('.tbx-chip').forEach(function(chip){
+  chip.addEventListener('click',function(){
+    var id=chip.getAttribute('data-jump'),target=id?document.getElementById(id):null;
+    if(target&&listEl){
+      listEl.scrollTo({top:target.offsetTop-4,behavior:'smooth'});
+      chips.querySelectorAll('.tbx-chip').forEach(function(c){c.classList.remove('tbx-chip-active');});
+      chip.classList.add('tbx-chip-active');
+    }
   });
-});
-document.addEventListener('click',function(e){
-  if(!e.target.closest('.on-mg')){
-    document.querySelectorAll('.on-mg.on-dd-open').forEach(function(g){g.classList.remove('on-dd-open');var b=g.querySelector('.on-mg-btn');if(b)b.setAttribute('aria-expanded','false');});
-  }
 });
 }());
 </script>
