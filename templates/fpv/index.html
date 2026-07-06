@@ -156,15 +156,25 @@
     </style>
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ui-enhance.css') }}">
 </head>
 <body>
 {% set nav_page = "fpv" %}
+{% include "partials/nav.html" %}
+{% include "partials/page_actions.html" %}
 {% include "partials/page_actions.html" %}
 
-    <nav class="navbar">
-        <a href="/" class="logo">Config<span>Doctor</span></a>
-        <a href="/app" class="btn-tool"><i class="fas fa-calculator"></i> Use Calculator</a>
-    </nav>
+{% set hero_badge = "📖 FPV KNOWLEDGE HUB" %}
+{% set hero_badge_color = "green" %}
+{% set hero_back_url = "/app" %}
+{% set hero_back2_url = "/landing" %}
+{% set hero_back2_label = "🏠 HOME" %}
+{% set hero_eyebrow = "FPV Learning Center" %}
+{% set hero_title = "FPV <span class=\"hl\">Knowledge</span> Hub" %}
+{% set hero_sub = "รวมบทความ เครื่องมือ และ Simulator สำหรับนักบิน FPV ชาวไทย" %}
+{% include "partials/page_hero.html" %}
+
 
     <header class="hero">
         <h1>FPV Knowledge Hub</h1>
@@ -229,5 +239,28 @@
     </footer>
 
 {% include "partials/footer_nav.html" %}
+
+<!-- Global toast -->
+<div id="uiToast" role="status" aria-live="polite"></div>
+<script>
+window.showToast = function(msg, type, dur) {
+  var t = document.getElementById('uiToast');
+  if (!t) return;
+  t.textContent = msg;
+  t.className = (type === 'error' ? 'error' : type === 'info' ? 'info' : '') + ' show';
+  clearTimeout(t._tid);
+  t._tid = setTimeout(function() { t.className = t.className.replace(' show',''); }, dur || 2400);
+};
+// Scroll-animate observer (re-runs on DOMContentLoaded)
+document.addEventListener('DOMContentLoaded', function() {
+(function() {
+  if (!window.IntersectionObserver) return;
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('ui-visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.ui-fade-up').forEach(function(el) { obs.observe(el); });
+})();
+});
+</script>
 </body>
 </html>
