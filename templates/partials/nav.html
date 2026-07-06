@@ -110,24 +110,117 @@ body.lang-en .on-en{display:inline}
 }
 @keyframes onSweep{0%{background-position:100%}100%{background-position:-100%}}
 @media(prefers-reduced-motion:reduce){.on-bar::after{animation:none;background-position:0 0;}}
-/* ── HAMBURGER ── */
-.on-ham{
-  width:36px;height:36px;flex-shrink:0;background:none;
-  border:1px solid rgba(255,255,255,.08);border-radius:8px;
-  display:none;flex-direction:column;align-items:center;justify-content:center;gap:4.5px;
-  cursor:pointer;transition:border-color .18s,background .18s;
-  -webkit-tap-highlight-color:transparent;
+
+/* ── TOOLS BUTTON (replaces hamburger) ─────────────────────────
+   Mobile-only pill: animated grid icon + "TOOLS" label.
+   Morphs the 4-dot grid → ✕ when the drawer is open.
+   ─────────────────────────────────────────────────────────── */
+.on-ham {
+  display: none;            /* shown via media query below */
+  align-items: center;
+  gap: 8px;
+  padding: 0 13px 0 10px;
+  height: 38px;
+  flex-shrink: 0;
+  background: rgba(16,196,122,.07);
+  border: 1px solid rgba(16,196,122,.22);
+  border-radius: 10px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
+  transition: background .2s, border-color .2s, box-shadow .2s;
 }
-.on-ham:hover{border-color:rgba(16,196,122,.4);background:rgba(16,196,122,.04);}
-.on-ham span{
-  display:block;width:16px;height:1.5px;background:var(--on-muted2);border-radius:2px;
-  transition:background .2s,transform .28s cubic-bezier(.68,-.6,.32,1.6),opacity .2s;
-  transform-origin:center;
+/* shimmer on hover */
+.on-ham::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(16,196,122,.12), transparent);
+  transform: translateX(-100%);
+  transition: transform .45s ease;
 }
-.on-ham:hover span{background:var(--on-green);}
-.on-ham.on-open span:nth-child(1){transform:translateY(6px) rotate(45deg);background:var(--on-green);}
-.on-ham.on-open span:nth-child(2){opacity:0;transform:scaleX(0);}
-.on-ham.on-open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);background:var(--on-green);}
+.on-ham:hover::before { transform: translateX(100%); }
+.on-ham:hover {
+  background: rgba(16,196,122,.13);
+  border-color: rgba(16,196,122,.45);
+  box-shadow: 0 0 14px rgba(16,196,122,.18), 0 0 0 3px rgba(16,196,122,.07);
+}
+/* glow ring on open */
+.on-ham.on-open {
+  background: rgba(16,196,122,.14);
+  border-color: rgba(16,196,122,.55);
+  box-shadow: 0 0 18px rgba(16,196,122,.25), 0 0 0 3px rgba(16,196,122,.1);
+}
+
+/* ── Grid icon: 4 dots in 2×2 ── */
+.on-ham-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5px;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  position: relative;
+}
+.on-ham-dot {
+  width: 5px; height: 5px;
+  border-radius: 1.5px;
+  background: var(--on-green);
+  transition: transform .32s cubic-bezier(.68,-.6,.32,1.6),
+              opacity .22s ease,
+              border-radius .22s ease;
+  transform-origin: center;
+}
+/* ✕ morph on open: diagonals cross */
+.on-ham.on-open .on-ham-dot:nth-child(1) {
+  transform: translate(8.5px, 8.5px) rotate(45deg) scale(1.15);
+  border-radius: 2px;
+}
+.on-ham.on-open .on-ham-dot:nth-child(2) {
+  transform: translate(-8.5px, 8.5px) rotate(-45deg) scale(1.15);
+  border-radius: 2px;
+}
+.on-ham.on-open .on-ham-dot:nth-child(3) {
+  transform: translate(8.5px, -8.5px) rotate(-45deg) scale(1.15);
+  border-radius: 2px;
+}
+.on-ham.on-open .on-ham-dot:nth-child(4) {
+  transform: translate(-8.5px, -8.5px) rotate(45deg) scale(1.15);
+  border-radius: 2px;
+}
+
+/* ── Label ── */
+.on-ham-lbl {
+  font-family: 'Orbitron', monospace;
+  font-size: .63rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  color: var(--on-green);
+  line-height: 1;
+  transition: opacity .2s;
+}
+/* hide label on very small screens, keep icon */
+@media(max-width: 380px) { .on-ham-lbl { display: none; } }
+
+/* ── Live dot ── */
+.on-ham-live {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--on-green);
+  flex-shrink: 0;
+  box-shadow: 0 0 7px var(--on-green);
+  animation: hamPulse 2.4s ease-in-out infinite;
+  transition: background .2s, box-shadow .2s;
+}
+.on-ham.on-open .on-ham-live {
+  background: #f87171;
+  box-shadow: 0 0 7px #f87171;
+  animation: none;
+}
+@keyframes hamPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: .4; transform: scale(.6); }
+}
 /* ── LOGO ── */
 .on-logo-link{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;position:relative;}
 .on-logo-img{height:30px;width:auto;filter:drop-shadow(0 0 7px rgba(16,196,122,.35));transition:filter .2s,transform .2s;position:relative;z-index:1;}
@@ -358,8 +451,13 @@ body.lang-en .on-en{display:inline}
 /* ── LIGHT MODE ── */
 body.light .on-bar{background:rgba(248,250,252,.97);border-bottom-color:rgba(0,0,0,.08);}
 body.light .on-bar::before{background:linear-gradient(90deg,transparent,rgba(5,150,105,.2),transparent);}
-body.light .on-ham span{background:#475569;}
-body.light .on-ham{border-color:rgba(0,0,0,.1);}
+body.light .on-ham{background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.25);}
+body.light .on-ham:hover{background:rgba(5,150,105,.13);border-color:rgba(5,150,105,.45);box-shadow:0 0 14px rgba(5,150,105,.15);}
+body.light .on-ham.on-open{background:rgba(5,150,105,.14);border-color:rgba(5,150,105,.55);}
+body.light .on-ham-dot{background:#059669;}
+body.light .on-ham-lbl{color:#059669;}
+body.light .on-ham-live{background:#059669;box-shadow:0 0 7px #059669;}
+body.light .on-ham.on-open .on-ham-live{background:#dc2626;box-shadow:0 0 7px #dc2626;}
 body.light .on-logo-link{background:rgba(4,9,14,.92);padding:5px 10px;border-radius:9px;}
 body.light .on-logo-dot{background:#059669;box-shadow:0 0 5px #059669;}
 body.light .on-crumb{color:#059669;background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.25);}
@@ -822,8 +920,15 @@ body.light .on-tools-btn:hover{background:rgba(5,150,105,.16);border-color:rgba(
 
 <!-- ═══ TOP BAR ═══ -->
 <div class="on-bar" role="banner">
-  <button type="button" id="onHam" class="on-ham" aria-label="เปิดเมนู" aria-expanded="false" aria-controls="onDrawer">
-    <span></span><span></span><span></span>
+  <button type="button" id="onHam" class="on-ham" aria-label="เปิด/ปิดเมนู" aria-expanded="false" aria-controls="onDrawer">
+    <span class="on-ham-grid" aria-hidden="true">
+      <span class="on-ham-dot"></span>
+      <span class="on-ham-dot"></span>
+      <span class="on-ham-dot"></span>
+      <span class="on-ham-dot"></span>
+    </span>
+    <span class="on-ham-lbl">TOOLS</span>
+    <span class="on-ham-live" title="System Online"></span>
   </button>
   <a href="/app" class="on-logo-link" aria-label="ConfigDoctor Home">
     <img src="{{ url_for('static', filename='img/configdoctor-logo.png') }}" alt="ConfigDoctor — FPV Drone Diagnostic Platform" class="on-logo-img">
