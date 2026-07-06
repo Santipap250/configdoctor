@@ -279,51 +279,20 @@ body.lang-en .on-en{display:inline}
 .on-overlay.on-open{opacity:1;pointer-events:all;}
 /* ── DRAWER ── */
 .on-drawer{
-  position:fixed;z-index:700;
+  position:fixed;left:0;top:0;bottom:0;z-index:700;
+  width:min(300px,calc(100vw - 48px));
   background:radial-gradient(ellipse 140% 60% at 0% 0%,rgba(16,196,122,.05),transparent 60%),#03080d;
+  border-right:1px solid rgba(255,255,255,.07);
   display:flex;flex-direction:column;overflow:hidden;
+  transform:translateX(-100%);transition:transform .3s cubic-bezier(.32,.72,.28,1);
   will-change:transform;-webkit-overflow-scrolling:touch;
 }
+.on-drawer.on-open{transform:translateX(0);box-shadow:8px 0 48px rgba(0,0,0,.75);}
 .on-drawer::before,.on-drawer::after{
   content:'';position:absolute;width:22px;height:22px;pointer-events:none;opacity:.5;z-index:2;
 }
 .on-drawer::before{top:10px;right:10px;border-top:2px solid var(--on-green);border-right:2px solid var(--on-green);border-top-right-radius:4px;}
 .on-drawer::after{bottom:10px;right:10px;border-bottom:2px solid var(--on-cyan);border-right:2px solid var(--on-cyan);border-bottom-right-radius:4px;}
-/* MOBILE (< 960px): full-screen command sheet — slides up from the bottom.
-   Chosen over a bottom sheet because there are 30+ tools to browse; a
-   partial-height sheet would just trade one cramped list for another.
-   Full-screen gives search + category chips + recent + the whole list
-   room to breathe, while still feeling like an overlay (slide + backdrop). */
-@media(max-width:959px){
-  .on-drawer{
-    inset:0;width:100%;height:100%;border-radius:0;
-    transform:translateY(100%);
-    transition:transform .32s cubic-bezier(.32,.72,.28,1);
-  }
-  .on-drawer.on-open{transform:translateY(0);box-shadow:none;}
-  .on-drawer::before,.on-drawer::after{display:none;}
-}
-/* DESKTOP (≥ 960px): centered command-palette modal (⌘K-style) — this is
-   the secondary "find anything fast" surface, separate from the always-
-   visible mega-dropdown top nav which stays the primary way to browse. */
-@media(min-width:960px){
-  .on-drawer{
-    left:50%;top:9vh;width:min(640px,90vw);max-height:78vh;
-    border-radius:16px;border:1px solid rgba(255,255,255,.08);
-    box-shadow:0 30px 90px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.03);
-    transform:translate(-50%,-10px) scale(.97);opacity:0;visibility:hidden;pointer-events:none;
-    transition:transform .22s cubic-bezier(.2,.9,.3,1.2),opacity .18s ease,visibility .22s;
-  }
-  .on-drawer.on-open{transform:translate(-50%,0) scale(1);opacity:1;visibility:visible;pointer-events:auto;}
-}
-@media(prefers-reduced-motion:reduce){
-  .on-drawer{transition:opacity .15s ease,visibility .15s;}
-  .on-drawer.on-open{transform:none;}
-}
-@media(prefers-reduced-motion:reduce) and (max-width:959px){
-  .on-drawer{transform:none;opacity:0;visibility:hidden;}
-  .on-drawer.on-open{opacity:1;visibility:visible;}
-}
 .on-dh{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;position:relative;}
 .on-dh-brand{display:flex;align-items:center;gap:10px;}
 .on-dh-icon{width:34px;height:34px;border-radius:9px;background:rgba(16,196,122,.08);border:1px solid rgba(16,196,122,.2);display:grid;place-items:center;font-size:16px;flex-shrink:0;position:relative;}
@@ -345,34 +314,17 @@ body.lang-en .on-en{display:inline}
 .on-search-icon{color:var(--on-muted);font-size:12px;flex-shrink:0;}
 .on-search-input{background:none;border:none;outline:none;color:var(--on-text);font-family:'Sarabun',sans-serif;font-size:13px;width:100%;}
 .on-search-input::placeholder{color:rgba(74,98,114,.7);}
-.on-search-clear{background:none;border:none;color:var(--on-muted);cursor:pointer;font-size:11px;padding:2px 4px;flex-shrink:0;border-radius:4px;line-height:1;}
-.on-search-clear:hover{color:#ff5566;}
-/* ── CATEGORY CHIPS ── */
-.on-chips{display:flex;gap:6px;padding:10px 12px;overflow-x:auto;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.05);scrollbar-width:none;}
-.on-chips::-webkit-scrollbar{display:none;}
-.on-chip{
-  flex-shrink:0;font-family:'Sarabun',sans-serif;font-size:12px;font-weight:600;
-  padding:7px 13px;border-radius:100px;background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.08);color:var(--on-muted2);cursor:pointer;
-  transition:background .16s,border-color .16s,color .16s;white-space:nowrap;
-}
-.on-chip:hover{color:var(--on-text);border-color:rgba(255,255,255,.16);}
-.on-chip.on-chip-active{background:rgba(16,196,122,.12);border-color:rgba(16,196,122,.4);color:var(--on-green);}
-.on-chip:focus-visible{outline:2px solid rgba(16,196,122,.4);}
-/* ── RECENT ── */
-.on-recent-hd{display:flex;align-items:center;gap:6px;}
-.on-recent-list .on-dlink{background:rgba(255,255,255,.02);}
-.on-dnav{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 8px calc(16px + env(safe-area-inset-bottom));scrollbar-width:thin;scrollbar-color:rgba(16,196,122,.15) transparent;}
+.on-dnav{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 8px 16px;scrollbar-width:thin;scrollbar-color:rgba(16,196,122,.15) transparent;}
 .on-dnav::-webkit-scrollbar{width:4px;}
 .on-dnav::-webkit-scrollbar-track{background:transparent;}
 .on-dnav::-webkit-scrollbar-thumb{background:rgba(16,196,122,.15);border-radius:4px;}
 .on-dgroup{font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;letter-spacing:.18em;color:rgba(74,98,114,.8);padding:10px 8px 4px;}
 .on-ddiv{height:1px;background:rgba(255,255,255,.045);margin:6px 0;}
-.on-dlink{display:flex;align-items:center;gap:10px;padding:11px 10px;min-height:48px;border-radius:10px;border:1px solid transparent;text-decoration:none;transition:background .14s,border-color .14s,padding-left .14s;margin-bottom:2px;}
-.on-dlink:hover{background:rgba(16,196,122,.05);border-color:rgba(16,196,122,.12);padding-left:12px;}
+.on-dlink{display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:8px;border:1px solid transparent;text-decoration:none;transition:background .14s,border-color .14s,padding-left .14s;margin-bottom:1px;}
+.on-dlink:hover{background:rgba(16,196,122,.05);border-color:rgba(16,196,122,.12);padding-left:11px;}
 .on-dlink.on-act{background:rgba(16,196,122,.08);border-color:rgba(16,196,122,.22);}
-.on-dlink:focus-visible{outline:2px solid rgba(16,196,122,.4);border-radius:10px;}
-.on-ico{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;font-size:14px;flex-shrink:0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);}
+.on-dlink:focus-visible{outline:2px solid rgba(16,196,122,.4);border-radius:8px;}
+.on-ico{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;font-size:13px;flex-shrink:0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);}
 .on-ico.g{background:rgba(16,196,122,.07);border-color:rgba(16,196,122,.2);}
 .on-ico.b{background:rgba(58,130,246,.07);border-color:rgba(58,130,246,.2);}
 .on-ico.a{background:rgba(245,158,11,.07);border-color:rgba(245,158,11,.2);}
@@ -438,12 +390,6 @@ body.light .on-dclose{color:#94a3b8;border-color:rgba(0,0,0,.1);}
 body.light .on-search-inner{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);}
 body.light .on-search-input{color:#1e293b;}
 body.light .on-search-input::placeholder{color:#94a3b8;}
-body.light .on-search-clear{color:#94a3b8;}
-body.light .on-chips{border-bottom-color:rgba(0,0,0,.06);}
-body.light .on-chip{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08);color:#64748b;}
-body.light .on-chip:hover{color:#0f172a;border-color:rgba(0,0,0,.16);}
-body.light .on-chip.on-chip-active{background:rgba(5,150,105,.08);border-color:rgba(5,150,105,.35);color:#059669;}
-body.light .on-recent-list .on-dlink{background:rgba(0,0,0,.015);}
 body.light .on-dgroup{color:#cbd5e1;}
 body.light .on-ddiv{background:rgba(0,0,0,.07);}
 body.light .on-dlink:hover{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08);padding-left:11px;}
@@ -464,19 +410,290 @@ body.light .on-pill.hot{background:rgba(220,38,38,.07);border-color:rgba(220,38,
 body.light .on-no-results{color:#94a3b8;}
 body.light .on-dfoot{border-top-color:rgba(0,0,0,.07);color:#94a3b8;}
 body.light .on-dfoot-ver{color:#059669;}
+
+/* ══════════════════════════════════════════════════════
+   TOOL PANEL (.tp-) — Side-panel launcher (Pattern D)
+   Slides in from the right.
+   ══════════════════════════════════════════════════════ */
+.on-tools-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:8px;
+  background:rgba(16,196,122,.09);border:1px solid rgba(16,196,122,.28);
+  color:var(--on-green);font-family:var(--on-fd);font-size:.68rem;font-weight:700;
+  letter-spacing:.07em;cursor:pointer;white-space:nowrap;
+  transition:background .16s,border-color .16s,transform .16s,box-shadow .16s;
+  -webkit-tap-highlight-color:transparent;
+}
+.on-tools-btn:hover{
+  background:rgba(16,196,122,.16);border-color:rgba(16,196,122,.5);
+  transform:translateY(-1px);box-shadow:0 4px 16px rgba(16,196,122,.2);
+}
+.on-tools-btn .tp-btn-ico{font-size:.88rem;}
+.on-tools-btn .tp-btn-key{
+  font-family:var(--on-fm);font-size:.58rem;
+  background:rgba(0,0,0,.3);border:1px solid rgba(16,196,122,.22);
+  border-radius:4px;padding:1px 5px;color:rgba(16,196,122,.65);
+}
+
+.tp-overlay{
+  position:fixed;inset:0;z-index:800;
+  background:rgba(0,0,0,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  opacity:0;pointer-events:none;transition:opacity .25s;touch-action:none;
+}
+.tp-overlay.tp-open{opacity:1;pointer-events:all;}
+
+.tp-panel{
+  position:fixed;top:0;right:0;bottom:0;z-index:810;
+  width:min(560px,100vw);display:flex;flex-direction:column;
+  background:rgba(3,6,10,.99);border-left:1px solid rgba(255,255,255,.09);
+  transform:translateX(100%);will-change:transform;overflow:hidden;
+  transition:transform .28s cubic-bezier(.22,1,.36,1);
+}
+.tp-panel.tp-open{transform:translateX(0);box-shadow:-20px 0 72px rgba(0,0,0,.9);}
+.tp-panel::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;z-index:1;
+  background:linear-gradient(90deg,transparent,rgba(16,196,122,.55) 30%,rgba(0,229,255,.5) 65%,transparent);
+}
+
+/* header */
+.tp-header{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 18px 13px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;
+}
+.tp-header-brand{display:flex;align-items:center;gap:10px;}
+.tp-header-icon{
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  background:rgba(16,196,122,.08);border:1px solid rgba(16,196,122,.22);
+  display:grid;place-items:center;font-size:18px;
+}
+.tp-header-title{font-family:var(--on-fd);font-size:.72rem;font-weight:700;letter-spacing:.09em;color:#d8e8f4;}
+.tp-header-sub{font-size:.7rem;color:var(--on-muted);margin-top:2px;}
+.tp-close{
+  width:34px;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,.09);
+  background:transparent;color:var(--on-muted);cursor:pointer;font-size:14px;
+  display:grid;place-items:center;flex-shrink:0;
+  transition:color .16s,border-color .16s,background .16s;
+}
+.tp-close:hover{color:#f87171;border-color:rgba(248,113,113,.35);background:rgba(248,113,113,.07);}
+
+/* search */
+.tp-search{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0;}
+.tp-search-inner{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);
+  border-radius:9px;padding:8px 12px;transition:border-color .16s;
+}
+.tp-search-inner:focus-within{border-color:rgba(16,196,122,.4);}
+.tp-search-ic{color:var(--on-muted);font-size:13px;flex-shrink:0;}
+.tp-search-input{
+  flex:1;background:transparent;border:none;outline:none;
+  color:var(--on-text);font-family:var(--on-fn);font-size:13px;
+}
+.tp-search-input::placeholder{color:rgba(74,98,114,.6);}
+.tp-search-count{
+  font-family:var(--on-fm);font-size:9.5px;color:var(--on-muted);
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;padding:2px 8px;flex-shrink:0;
+}
+
+/* body */
+.tp-body{display:flex;flex:1;overflow:hidden;}
+
+/* left: category sidebar */
+.tp-cats{
+  width:108px;flex-shrink:0;background:rgba(2,4,8,.65);
+  border-right:1px solid rgba(255,255,255,.06);
+  display:flex;flex-direction:column;padding:8px 5px;gap:2px;
+  overflow-y:auto;scrollbar-width:none;
+}
+.tp-cats::-webkit-scrollbar{display:none;}
+.tp-cat{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:10px 5px;border-radius:10px;cursor:pointer;border:none;
+  background:transparent;
+  border-left:3px solid transparent;
+  transition:background .14s,border-color .14s;
+  -webkit-tap-highlight-color:transparent;
+}
+.tp-cat:hover{background:rgba(255,255,255,.04);}
+.tp-cat.active{
+  background:rgba(var(--tpc-rgb,16,196,122),.07);
+  border-left-color:var(--tpc,var(--on-green));
+}
+.tp-cat-ico{font-size:20px;line-height:1;}
+.tp-cat-lbl{font-size:10px;font-weight:700;font-family:var(--on-fn);color:var(--on-muted);transition:color .14s;text-align:center;line-height:1.3;}
+.tp-cat.active .tp-cat-lbl{color:var(--tpc,var(--on-green));}
+.tp-cat-cnt{
+  font-family:var(--on-fm);font-size:9px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;padding:1px 6px;color:var(--on-muted);
+  transition:background .14s,color .14s,border-color .14s;
+}
+.tp-cat.active .tp-cat-cnt{
+  background:rgba(var(--tpc-rgb,16,196,122),.12);
+  border-color:rgba(var(--tpc-rgb,16,196,122),.3);
+  color:var(--tpc,var(--on-green));
+}
+
+/* right: tool list */
+.tp-list{
+  flex:1;overflow-y:auto;padding:12px 10px;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(16,196,122,.15) transparent;
+}
+.tp-list::-webkit-scrollbar{width:4px;}
+.tp-list::-webkit-scrollbar-thumb{background:rgba(16,196,122,.15);border-radius:4px;}
+
+.tp-list-hd{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:10px;padding-bottom:8px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.tp-list-pip{display:block;width:3px;height:13px;border-radius:2px;flex-shrink:0;background:var(--tpc,var(--on-green));}
+.tp-list-name{font-family:var(--on-fd);font-size:.63rem;font-weight:700;letter-spacing:.14em;color:var(--tpc,var(--on-green));}
+.tp-list-cnt{margin-left:auto;font-family:var(--on-fm);font-size:.63rem;color:var(--on-muted);}
+
+.tp-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:11px;
+  text-decoration:none;
+  border:1px solid transparent;margin-bottom:5px;
+  transition:background .13s,border-color .13s,padding-left .13s;
+}
+.tp-item:hover{
+  background:rgba(var(--tpc-rgb,16,196,122),.06);
+  border-color:rgba(var(--tpc-rgb,16,196,122),.2);
+  padding-left:15px;
+}
+.tp-item:focus-visible{outline:2px solid rgba(var(--tpc-rgb,16,196,122),.5);border-radius:11px;}
+.tp-item-ico{
+  width:40px;height:40px;border-radius:11px;display:grid;place-items:center;
+  font-size:19px;flex-shrink:0;
+  background:rgba(var(--tpc-rgb,16,196,122),.07);
+  border:1px solid rgba(var(--tpc-rgb,16,196,122),.18);
+  transition:background .13s,border-color .13s;
+}
+.tp-item:hover .tp-item-ico{background:rgba(var(--tpc-rgb,16,196,122),.13);border-color:rgba(var(--tpc-rgb,16,196,122),.35);}
+.tp-item-body{flex:1;min-width:0;}
+.tp-item-name{font-size:13px;font-weight:700;color:rgba(212,230,244,.9);display:block;}
+.tp-item-desc{font-family:var(--on-fm);font-size:10.5px;color:var(--on-muted);display:block;margin-top:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.tp-item-arr{color:var(--on-muted);font-size:13px;flex-shrink:0;opacity:.4;transition:opacity .13s,transform .13s;}
+.tp-item:hover .tp-item-arr{opacity:.85;transform:translateX(3px);}
+
+.tp-empty{display:none;text-align:center;padding:40px 16px;color:var(--on-muted);font-size:14px;}
+.tp-empty-ico{font-size:2rem;display:block;margin-bottom:8px;opacity:.55;}
+
+/* footer */
+.tp-footer{
+  padding:9px 16px;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:var(--on-fm);font-size:10px;color:var(--on-muted);
+}
+.tp-footer kbd{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:1px 6px;}
+
+@media(max-width:520px){
+  .tp-panel{width:100vw;border-left:none;}
+  .tp-cats{width:86px;}
+  .tp-cat-lbl{font-size:9px;}
+}
+
+body.light .tp-overlay{background:rgba(0,0,0,.4);}
+body.light .tp-panel{background:#f8fafc;border-left-color:rgba(0,0,0,.09);}
+body.light .tp-header{border-bottom-color:rgba(0,0,0,.07);}
+body.light .tp-header-icon{background:rgba(5,150,105,.07);border-color:rgba(5,150,105,.22);}
+body.light .tp-header-title{color:#1e293b;}body.light .tp-header-sub{color:#94a3b8;}
+body.light .tp-close{color:#94a3b8;border-color:rgba(0,0,0,.1);}
+body.light .tp-close:hover{color:#dc2626;border-color:rgba(220,38,38,.3);background:rgba(220,38,38,.06);}
+body.light .tp-search-inner{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);}
+body.light .tp-search-input{color:#1e293b;}
+body.light .tp-cats{background:rgba(241,245,249,.8);border-right-color:rgba(0,0,0,.07);}
+body.light .tp-cat:hover{background:rgba(0,0,0,.04);}
+body.light .tp-item-name{color:#1e293b;}body.light .tp-item-desc{color:#94a3b8;}
+body.light .tp-item:hover{background:rgba(5,150,105,.05);border-color:rgba(5,150,105,.2);}
+body.light .tp-footer{border-top-color:rgba(0,0,0,.07);color:#94a3b8;}
+body.light .on-tools-btn{background:rgba(5,150,105,.09);border-color:rgba(5,150,105,.3);color:#059669;}
+body.light .on-tools-btn:hover{background:rgba(5,150,105,.16);border-color:rgba(5,150,105,.5);}
 </style>
 
 <!-- ═══ OVERLAY ═══ -->
 <div id="onOverlay" class="on-overlay" aria-hidden="true"></div>
 
+<!-- ═══ TOOL PANEL ═══ -->
+<div id="tpOverlay" class="tp-overlay" aria-hidden="true"></div>
+<aside id="tpPanel" class="tp-panel" role="dialog" aria-modal="true" aria-label="Tool Launcher">
+
+  <div class="tp-header">
+    <div class="tp-header-brand">
+      <div class="tp-header-icon">🛠️</div>
+      <div>
+        <div class="tp-header-title">TOOL LAUNCHER</div>
+        <div class="tp-header-sub">เลือกเครื่องมือ · 23 tools ใน 5 หมวด</div>
+      </div>
+    </div>
+    <button type="button" id="tpClose" class="tp-close" aria-label="ปิด Tool Launcher">✕</button>
+  </div>
+
+  <div class="tp-search">
+    <div class="tp-search-inner">
+      <span class="tp-search-ic">🔍</span>
+      <input id="tpSearch" class="tp-search-input" type="search" autocomplete="off" spellcheck="false" placeholder="ค้นหาเครื่องมือ...">
+      <span class="tp-search-count" id="tpCount">23</span>
+    </div>
+  </div>
+
+  <div class="tp-body">
+    <!-- Category sidebar -->
+    <div class="tp-cats" id="tpCats">
+      <button type="button" class="tp-cat active" data-cat="TUNE"   style="--tpc:#10c47a;--tpc-rgb:16,196,122">
+        <span class="tp-cat-ico">🩺</span><span class="tp-cat-lbl">Tune</span><span class="tp-cat-cnt">6</span>
+      </button>
+      <button type="button" class="tp-cat" data-cat="HW"     style="--tpc:#00e5ff;--tpc-rgb:0,229,255">
+        <span class="tp-cat-ico">⚙️</span><span class="tp-cat-lbl">Hardware</span><span class="tp-cat-cnt">5</span>
+      </button>
+      <button type="button" class="tp-cat" data-cat="ANALYZE" style="--tpc:#f5a623;--tpc-rgb:245,166,35">
+        <span class="tp-cat-ico">📊</span><span class="tp-cat-lbl">Analyze</span><span class="tp-cat-cnt">6</span>
+      </button>
+      <button type="button" class="tp-cat" data-cat="VIDEO"  style="--tpc:#4f8ef7;--tpc-rgb:79,142,247">
+        <span class="tp-cat-ico">📡</span><span class="tp-cat-lbl">Video</span><span class="tp-cat-cnt">3</span>
+      </button>
+      <button type="button" class="tp-cat" data-cat="EXPLORE" style="--tpc:#a855f7;--tpc-rgb:168,85,247">
+        <span class="tp-cat-ico">🎮</span><span class="tp-cat-lbl">Explore</span><span class="tp-cat-cnt">6</span>
+      </button>
+      <button type="button" class="tp-cat" data-cat="ALL"    style="--tpc:#8892a4;--tpc-rgb:136,146,164">
+        <span class="tp-cat-ico">⊞</span><span class="tp-cat-lbl">ทั้งหมด</span><span class="tp-cat-cnt">26</span>
+      </button>
+    </div>
+
+    <!-- Tool list -->
+    <div class="tp-list" id="tpList">
+      <div class="tp-list-hd" id="tpListHd">
+        <span class="tp-list-pip" id="tpListPip"></span>
+        <span class="tp-list-name" id="tpListName">TUNE</span>
+        <span class="tp-list-cnt" id="tpListCnt"></span>
+      </div>
+      <div id="tpItems"></div>
+      <div class="tp-empty" id="tpEmpty">
+        <span class="tp-empty-ico">🔍</span>ไม่พบเครื่องมือที่ค้นหา<br>
+        <span style="font-size:12px;margin-top:6px;display:block">ลองพิมพ์คำอื่น เช่น "pid" หรือ "vtx"</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tp-footer">
+    <span><kbd>ESC</kbd> ปิด &nbsp; <kbd>↑↓</kbd> เลือก &nbsp; <kbd>↵</kbd> เปิด</span>
+    <span>OBIXConfig · <span style="color:var(--on-green)">v7.0</span></span>
+  </div>
+
+</aside>
+
 <!-- ═══ DRAWER ═══ -->
-<aside id="onDrawer" class="on-drawer" role="dialog" aria-modal="true" aria-label="ศูนย์ควบคุมเครื่องมือ ConfigDoctor">
+<aside id="onDrawer" class="on-drawer" role="dialog" aria-modal="true" aria-label="เมนูหลัก">
   <div class="on-dh">
     <div class="on-dh-brand">
       <div class="on-dh-icon">🚁</div>
       <div>
-        <div class="on-dh-name"><span class="on-th">ศูนย์ควบคุมเครื่องมือ</span><span class="on-en">CONTROL CENTER</span></div>
-        <div class="on-dh-sub">ConfigDoctor · v7.0 Nova</div>
+        <div class="on-dh-name">OBIX CONFIG DOCTOR</div>
+        <div class="on-dh-sub">FPV Tuning Toolkit · v6.0 APEX PRO</div>
       </div>
     </div>
     <button type="button" id="onClose" class="on-dclose" aria-label="ปิดเมนู">✕</button>
@@ -485,127 +702,114 @@ body.light .on-dfoot-ver{color:#059669;}
     <div class="on-search-inner">
       <span class="on-search-icon">🔍</span>
       <input id="onSearch" class="on-search-input" type="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="ค้นหาเครื่องมือ... เช่น PID, ESC, VTX" aria-label="ค้นหาเครื่องมือ">
-      <button type="button" id="onSearchClear" class="on-search-clear" aria-label="ล้างคำค้นหา" hidden>✕</button>
     </div>
-  </div>
-  <div class="on-chips" id="onChips" aria-label="กรองตามหมวดหมู่">
-    <button type="button" class="on-chip on-chip-active" data-chip-group="all" aria-pressed="true">ทั้งหมด</button>
-    <button type="button" class="on-chip" data-chip-group="tune" aria-pressed="false">🩺 Tune</button>
-    <button type="button" class="on-chip" data-chip-group="hw" aria-pressed="false">⚙️ HW</button>
-    <button type="button" class="on-chip" data-chip-group="analysis" aria-pressed="false">📊 Analyze</button>
-    <button type="button" class="on-chip" data-chip-group="video" aria-pressed="false">📡 Video</button>
-    <button type="button" class="on-chip" data-chip-group="explore" aria-pressed="false">🎮 Explore</button>
   </div>
   <nav class="on-dnav" id="onNav" aria-label="เมนูทั้งหมด">
     <div class="on-no-results" id="onNoResults">ไม่พบเครื่องมือที่ค้นหา 🔍</div>
-    <div class="on-dgroup on-grp on-recent-hd" id="onRecentHd" hidden><span class="on-th">🕓 ใช้ล่าสุด</span><span class="on-en">🕓 Recent</span></div>
-    <div class="on-recent-list" id="onRecentList"></div>
-    <div class="on-ddiv on-grp on-recent-div" id="onRecentDiv" hidden></div>
-    <div class="on-dgroup on-grp" data-group="tune"><span class="on-th">🔬 หน้าหลัก</span><span class="on-en">🔬 Main</span></div>
-
-    <a class="on-dlink {% if nav_page=='home' %}on-act{% endif %}" data-group="tune" href="/app" data-search="drone analyzer วิเคราะห์ pid filter motor">
+    <div class="on-dgroup on-grp"><span class="on-th">🔬 หน้าหลัก</span><span class="on-en">🔬 Main</span></div>
+    <a class="on-dlink {% if nav_page=='home' %}on-act{% endif %}" href="/app" data-search="drone analyzer วิเคราะห์ pid filter motor">
       <span class="on-ico g">🔬</span><span class="on-dbody"><span class="on-dtitle">Drone Analyzer</span><span class="on-dmeta on-th">วิเคราะห์ PID · Filter · Flight time</span><span class="on-dmeta on-en">PID · Filter · Motor · Flight time</span></span><span class="on-pill nw">main</span>
     </a>
-    <div class="on-ddiv on-grp" data-group="tune"></div>
-    <div class="on-dgroup on-grp" data-group="tune"><span class="on-th">🩺 PID &amp; Tuning</span><span class="on-en">🩺 PID &amp; Tuning</span></div>
-    <a class="on-dlink {% if nav_page=='pid_advisor' %}on-act{% endif %}" data-group="tune" href="/pid-advisor" data-search="pid symptom advisor อาการ bounce propwash oscillation">
+    <div class="on-ddiv on-grp"></div>
+    <div class="on-dgroup on-grp"><span class="on-th">🩺 PID &amp; Tuning</span><span class="on-en">🩺 PID &amp; Tuning</span></div>
+    <a class="on-dlink {% if nav_page=='pid_advisor' %}on-act{% endif %}" href="/pid-advisor" data-search="pid symptom advisor อาการ bounce propwash oscillation">
       <span class="on-ico p">💊</span><span class="on-dbody"><span class="on-dtitle">PID Symptom Advisor</span><span class="on-dmeta on-th">บอกอาการ → รับคำแนะนำ PID</span><span class="on-dmeta on-en">Describe symptoms → PID fixes</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='quick_tune' %}on-act{% endif %}" data-group="tune" href="/quick-tune" data-search="quick tune pad pid delta อาการ">
+    <a class="on-dlink {% if nav_page=='quick_tune' %}on-act{% endif %}" href="/quick-tune" data-search="quick tune pad pid delta อาการ">
       <span class="on-ico g">⚡</span><span class="on-dbody"><span class="on-dtitle">Quick Tune Pad</span><span class="on-dmeta on-th">เลือกอาการ → PID delta + CLI</span><span class="on-dmeta on-en">Symptom → PID delta + CLI</span></span><span class="on-pill nw">v5</span>
     </a>
-    <a class="on-dlink {% if nav_page=='rpm_filter' %}on-act{% endif %}" data-group="tune" href="/rpm-filter" data-search="rpm filter calculator harmonic dyn notch">
+    <a class="on-dlink {% if nav_page=='rpm_filter' %}on-act{% endif %}" href="/rpm-filter" data-search="rpm filter calculator harmonic dyn notch">
       <span class="on-ico g">⚙️</span><span class="on-dbody"><span class="on-dtitle">RPM Filter Calculator</span><span class="on-dmeta on-th">คำนวณ harmonic + dyn_notch</span><span class="on-dmeta on-en">Compute harmonics + dyn_notch</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='rates' %}on-act{% endif %}" data-group="tune" href="/rates-visualizer" data-search="rates visualizer curve expo rc rate">
+    <a class="on-dlink {% if nav_page=='rates' %}on-act{% endif %}" href="/rates-visualizer" data-search="rates visualizer curve expo rc rate">
       <span class="on-ico b">📈</span><span class="on-dbody"><span class="on-dtitle">Rates Visualizer</span><span class="on-dmeta on-th">Curve real-time · per-axis</span><span class="on-dmeta on-en">Real-time rate curve · per-axis</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='bf_wizard' %}on-act{% endif %}" data-group="tune" href="/bf-wizard" data-search="betaflight wizard config cli 7 ขั้นตอน">
+    <a class="on-dlink {% if nav_page=='bf_wizard' %}on-act{% endif %}" href="/bf-wizard" data-search="betaflight wizard config cli 7 ขั้นตอน">
       <span class="on-ico g">⚡</span><span class="on-dbody"><span class="on-dtitle">BF Config Wizard</span><span class="on-dmeta on-th">7 ขั้นตอน → CLI พร้อม paste</span><span class="on-dmeta on-en">7 steps → paste-ready CLI</span></span>
     </a>
-    <div class="on-ddiv on-grp" data-group="hw"></div>
-    <div class="on-dgroup on-grp" data-group="hw"><span class="on-th">⚙️ Hardware</span><span class="on-en">⚙️ Hardware</span></div>
-    <a class="on-dlink {% if nav_page=='motor_prop' %}on-act{% endif %}" data-group="hw" href="/motor-prop" data-search="motor prop recommender มอเตอร์ ใบพัด kv stator">
+    <div class="on-ddiv on-grp"></div>
+    <div class="on-dgroup on-grp"><span class="on-th">⚙️ Hardware</span><span class="on-en">⚙️ Hardware</span></div>
+    <a class="on-dlink {% if nav_page=='motor_prop' %}on-act{% endif %}" href="/motor-prop" data-search="motor prop recommender มอเตอร์ ใบพัด kv stator">
       <span class="on-ico c">🧭</span><span class="on-dbody"><span class="on-dtitle">Motor × Prop Recommender</span><span class="on-dmeta on-th">แนะนำมอเตอร์/ใบพัดตามสเปค</span><span class="on-dmeta on-en">Motor &amp; prop match by spec</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='esc_checker' %}on-act{% endif %}" data-group="hw" href="/esc-checker" data-search="esc checker compatibility amps protocol dshot">
+    <a class="on-dlink {% if nav_page=='esc_checker' %}on-act{% endif %}" href="/esc-checker" data-search="esc checker compatibility amps protocol dshot">
       <span class="on-ico a">⚡</span><span class="on-dbody"><span class="on-dtitle">ESC Compatibility Checker</span><span class="on-dmeta on-th">ตรวจ ESC amps · protocol · KV</span><span class="on-dmeta on-en">Check ESC amps · protocol</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='battery_health' %}on-act{% endif %}" data-group="hw" href="/battery-health" data-search="battery health advisor แบต ir sag">
+    <a class="on-dlink {% if nav_page=='battery_health' %}on-act{% endif %}" href="/battery-health" data-search="battery health advisor แบต ir sag">
       <span class="on-ico g">🔋</span><span class="on-dbody"><span class="on-dtitle">Battery Health Advisor</span><span class="on-dmeta on-th">IR · Sag · Health Score · อายุแบต</span><span class="on-dmeta on-en">IR · Sag · Health Score</span></span><span class="on-pill nw">v5</span>
     </a>
-    <a class="on-dlink {% if nav_page=='motor_thermal' %}on-act{% endif %}" data-group="hw" href="/motor-thermal" data-search="motor thermal estimator อุณหภูมิ winding temp">
+    <a class="on-dlink {% if nav_page=='motor_thermal' %}on-act{% endif %}" href="/motor-thermal" data-search="motor thermal estimator อุณหภูมิ winding temp">
       <span class="on-ico r">🌡️</span><span class="on-dbody"><span class="on-dtitle">Motor Thermal Estimator</span><span class="on-dmeta on-th">อุณหภูมิ motor · thermal margin</span><span class="on-dmeta on-en">Estimate winding temp · safe zone</span></span><span class="on-pill nw">v5</span>
     </a>
-    <a class="on-dlink {% if nav_page=='loop_analyzer' %}on-act{% endif %}" data-group="hw" href="/loop-analyzer" data-search="control loop analyzer latency looptime">
+    <a class="on-dlink {% if nav_page=='loop_analyzer' %}on-act{% endif %}" href="/loop-analyzer" data-search="control loop analyzer latency looptime">
       <span class="on-ico p">🔄</span><span class="on-dbody"><span class="on-dtitle">Control Loop Analyzer</span><span class="on-dmeta on-th">Stick→Prop latency · bottleneck</span><span class="on-dmeta on-en">Stick→Prop latency chain</span></span><span class="on-pill nw">v5</span>
     </a>
-    <div class="on-ddiv on-grp" data-group="analysis"></div>
-    <div class="on-dgroup on-grp" data-group="analysis"><span class="on-th">📊 Analysis</span><span class="on-en">📊 Analysis</span></div>
-    <a class="on-dlink {% if nav_page=='blackbox' %}on-act{% endif %}" data-group="analysis" href="/blackbox" data-search="blackbox csv analyzer flight log pid score">
+    <div class="on-ddiv on-grp"></div>
+    <div class="on-dgroup on-grp"><span class="on-th">📊 Analysis</span><span class="on-en">📊 Analysis</span></div>
+    <a class="on-dlink {% if nav_page=='blackbox' %}on-act{% endif %}" href="/blackbox" data-search="blackbox csv analyzer flight log pid score">
       <span class="on-ico b">📊</span><span class="on-dbody"><span class="on-dtitle">Blackbox CSV Analyzer</span><span class="on-dmeta on-th">วิเคราะห์ flight log · PID score</span><span class="on-dmeta on-en">Analyze flight log · PID score</span></span><span class="on-pill hot">HOT</span>
     </a>
-    <a class="on-dlink {% if nav_page=='cli_surgeon' %}on-act{% endif %}" data-group="analysis" href="/cli_surgeon" data-search="cli surgeon diff all dump วิเคราะห์">
+    <a class="on-dlink {% if nav_page=='cli_surgeon' %}on-act{% endif %}" href="/cli_surgeon" data-search="cli surgeon diff all dump วิเคราะห์">
       <span class="on-ico a">🩺</span><span class="on-dbody"><span class="on-dtitle">CLI Surgeon</span><span class="on-dmeta on-th">วิเคราะห์ diff all / dump</span><span class="on-dmeta on-en">Analyze diff all / dump</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='comparator' %}on-act{% endif %}" data-group="analysis" href="/cli-comparator" data-search="cli diff comparator compare เปรียบเทียบ">
+    <a class="on-dlink {% if nav_page=='comparator' %}on-act{% endif %}" href="/cli-comparator" data-search="cli diff comparator compare เปรียบเทียบ">
       <span class="on-ico a">⚖️</span><span class="on-dbody"><span class="on-dtitle">CLI Diff Comparator</span><span class="on-dmeta on-th">วาง 2 config → เห็นทุกค่าที่เปลี่ยน</span><span class="on-dmeta on-en">Paste 2 configs → see every diff</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='osd' %}on-act{% endif %}" data-group="analysis" href="/osd" data-search="osd designer layout export cli">
+    <a class="on-dlink {% if nav_page=='osd' %}on-act{% endif %}" href="/osd" data-search="osd designer layout export cli">
       <span class="on-ico p">🖥️</span><span class="on-dbody"><span class="on-dtitle">OSD Designer</span><span class="on-dmeta on-th">ออกแบบ layout OSD + export CLI</span><span class="on-dmeta on-en">Design OSD layout + export CLI</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='build_card' %}on-act{% endif %}" data-group="analysis" href="/build-card" data-search="build card generator สเปค โดรน social">
+    <a class="on-dlink {% if nav_page=='build_card' %}on-act{% endif %}" href="/build-card" data-search="build card generator สเปค โดรน social">
       <span class="on-ico a">🃏</span><span class="on-dbody"><span class="on-dtitle">Build Card Generator</span><span class="on-dmeta on-th">สร้างรูปสเปคโดรนแชร์ Social</span><span class="on-dmeta on-en">Share your build spec card</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='tuning_log' %}on-act{% endif %}" data-group="analysis" href="/tuning-log" data-search="tuning log session บันทึก pid เปรียบเทียบ">
+    <a class="on-dlink {% if nav_page=='tuning_log' %}on-act{% endif %}" href="/tuning-log" data-search="tuning log session บันทึก pid เปรียบเทียบ">
       <span class="on-ico b">📋</span><span class="on-dbody"><span class="on-dtitle">Tuning Log</span><span class="on-dmeta on-th">บันทึก session · เปรียบเทียบ PID</span><span class="on-dmeta on-en">Log sessions · compare PID</span></span>
     </a>
-    <div class="on-ddiv on-grp" data-group="video"></div>
-    <div class="on-dgroup on-grp" data-group="video">📡 VTX &amp; Signal</div>
-    <a class="on-dlink {% if nav_page=='vtx' %}on-act{% endif %}" data-group="video" href="/vtx" data-search="vtx bands channels ตาราง band channel">
+    <div class="on-ddiv on-grp"></div>
+    <div class="on-dgroup on-grp">📡 VTX &amp; Signal</div>
+    <a class="on-dlink {% if nav_page=='vtx' %}on-act{% endif %}" href="/vtx" data-search="vtx bands channels ตาราง band channel">
       <span class="on-ico g">📡</span><span class="on-dbody"><span class="on-dtitle">VTX Bands &amp; Channels</span><span class="on-dmeta on-th">ตาราง Band/Channel + CLI</span><span class="on-dmeta on-en">Band/Channel table + CLI</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='vtx_range' %}on-act{% endif %}" data-group="video" href="/vtx-range" data-search="vtx range calculator ระยะสัญญาณ signal">
+    <a class="on-dlink {% if nav_page=='vtx_range' %}on-act{% endif %}" href="/vtx-range" data-search="vtx range calculator ระยะสัญญาณ signal">
       <span class="on-ico b">🏞️</span><span class="on-dbody"><span class="on-dtitle">VTX Range Calculator</span><span class="on-dmeta on-th">ประมาณระยะสัญญาณ + กราฟ</span><span class="on-dmeta on-en">Estimate signal range + graph</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='vtx_smartaudio' %}on-act{% endif %}" data-group="video" href="/vtx-smartaudio" data-search="vtx smartaudio tramp commands">
+    <a class="on-dlink {% if nav_page=='vtx_smartaudio' %}on-act{% endif %}" href="/vtx-smartaudio" data-search="vtx smartaudio tramp commands">
       <span class="on-ico a">🎙️</span><span class="on-dbody"><span class="on-dtitle">VTX SmartAudio Guide</span><span class="on-dmeta">SmartAudio / Tramp commands</span></span>
     </a>
-    <div class="on-ddiv on-grp" data-group="explore"></div>
-    <div class="on-dgroup on-grp" data-group="explore"><span class="on-th">🎮 Simulator &amp; Community</span><span class="on-en">🎮 Simulator &amp; Community</span></div>
-    <a class="on-dlink {% if nav_page=='fpv_trainer' %}on-act{% endif %}" data-group="explore" href="/fpv-trainer" data-search="fpv trainer simulator ฝึกบิน 3d gamepad">
+    <div class="on-ddiv on-grp"></div>
+    <div class="on-dgroup on-grp"><span class="on-th">🎮 Simulator &amp; Community</span><span class="on-en">🎮 Simulator &amp; Community</span></div>
+    <a class="on-dlink {% if nav_page=='fpv_trainer' %}on-act{% endif %}" href="/fpv-trainer" data-search="fpv trainer simulator ฝึกบิน 3d gamepad">
       <span class="on-ico g">🕹️</span><span class="on-dbody"><span class="on-dtitle">FPV Training Simulator</span><span class="on-dmeta on-th">ฝึกบิน 3D · 4 โหมด · Gamepad</span><span class="on-dmeta on-en">3D drone sim · Tutorial · Race</span></span><span class="on-pill hot">FUN</span>
     </a>
-    <a class="on-dlink {% if nav_page=='flight_quiz' %}on-act{% endif %}" data-group="explore" href="/flight-quiz" data-search="flight style quiz rates preset สไตล์">
+    <a class="on-dlink {% if nav_page=='flight_quiz' %}on-act{% endif %}" href="/flight-quiz" data-search="flight style quiz rates preset สไตล์">
       <span class="on-ico a">🎯</span><span class="on-dbody"><span class="on-dtitle">Flight Style Quiz</span><span class="on-dmeta on-th">5 คำถาม → rates + preset แนะนำ</span><span class="on-dmeta on-en">5 questions → rates + preset</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='military_uas' %}on-act{% endif %}" data-group="explore" href="/military-uas" data-search="military uas analyzer โดรนทหาร physics">
+    <a class="on-dlink {% if nav_page=='military_uas' %}on-act{% endif %}" href="/military-uas" data-search="military uas analyzer โดรนทหาร physics">
       <span class="on-ico r">🎖️</span><span class="on-dbody"><span class="on-dtitle">Military UAS Analyzer</span><span class="on-dmeta on-th">วิเคราะห์โดรนทหาร · 6 modules</span><span class="on-dmeta on-en">Military drone analysis · 6 modules</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='leaderboard' %}on-act{% endif %}" data-group="explore" href="/leaderboard" data-search="config leaderboard vote rank community">
+    <a class="on-dlink {% if nav_page=='leaderboard' %}on-act{% endif %}" href="/leaderboard" data-search="config leaderboard vote rank community">
       <span class="on-ico a">🏆</span><span class="on-dbody"><span class="on-dtitle">Config Leaderboard</span><span class="on-dmeta on-th">Vote · rank · copy config ชุมชน</span><span class="on-dmeta on-en">Vote · rank · share configs</span></span>
     </a>
-    <div class="on-ddiv on-grp" data-group="explore"></div>
-    <div class="on-dgroup on-grp" data-group="explore"><span class="on-th">📚 แหล่งข้อมูล</span><span class="on-en">📚 Resources</span></div>
-    <a class="on-dlink {% if nav_page=='fpv' %}on-act{% endif %}" data-group="explore" href="/fpv" data-search="fpv hub knowledge ความรู้ โดรน บทความ">
+    <div class="on-ddiv on-grp"></div>
+    <div class="on-dgroup on-grp"><span class="on-th">📚 แหล่งข้อมูล</span><span class="on-en">📚 Resources</span></div>
+    <a class="on-dlink {% if nav_page=='fpv' %}on-act{% endif %}" href="/fpv" data-search="fpv hub knowledge ความรู้ โดรน บทความ">
       <span class="on-ico g">📖</span><span class="on-dbody"><span class="on-dtitle"><span class="on-th">FPV Knowledge Hub</span><span class="on-en">FPV Knowledge Hub</span></span><span class="on-dmeta on-th">รวมบทความ &amp; เครื่องมือทั้งหมด</span><span class="on-dmeta on-en">All articles &amp; tools in one place</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='fpv_gear' %}on-act{% endif %}" data-group="explore" href="/fpv-gear" data-search="fpv gear guide affiliate มอเตอร์ เฟรม ใบพัด แนะนำอุปกรณ์">
+    <a class="on-dlink {% if nav_page=='fpv_gear' %}on-act{% endif %}" href="/fpv-gear" data-search="fpv gear guide affiliate มอเตอร์ เฟรม ใบพัด แนะนำอุปกรณ์">
       <span class="on-ico b">🛒</span><span class="on-dbody"><span class="on-dtitle"><span class="on-th">FPV Gear Guide</span><span class="on-en">FPV Gear Guide</span></span><span class="on-dmeta on-th">แนะนำอุปกรณ์ตาม class/style</span><span class="on-dmeta on-en">Parts matched to class &amp; style</span></span><span class="on-pill nw">NEW</span>
     </a>
-    <a class="on-dlink {% if nav_page=='downloads' %}on-act{% endif %}" data-group="explore" href="/downloads" data-search="downloads diff dump files ไฟล์ config">
+    <a class="on-dlink {% if nav_page=='downloads' %}on-act{% endif %}" href="/downloads" data-search="downloads diff dump files ไฟล์ config">
       <span class="on-ico">📁</span><span class="on-dbody"><span class="on-dtitle"><span class="on-th">ไฟล์ DIFF &amp; DUMP</span><span class="on-en">DIFF &amp; DUMP Files</span></span><span class="on-dmeta on-th">รวม CLI config สำเร็จรูป</span><span class="on-dmeta on-en">Ready-to-use CLI configs</span></span>
     </a>
-    <a class="on-dlink" data-group="explore" href="https://www.facebook.com/banmysanti/" target="_blank" rel="noopener" data-search="facebook obixconfig lab เพจ ชุมชน">
+    <a class="on-dlink" href="https://www.facebook.com/banmysanti/" target="_blank" rel="noopener" data-search="facebook obixconfig lab เพจ ชุมชน">
       <span class="on-ico b">📘</span><span class="on-dbody"><span class="on-dtitle">OBIXConfig Lab</span><span class="on-dmeta on-th">ถาม-แนะนำ &amp; ตัวอย่างการตั้งค่า</span><span class="on-dmeta on-en">Community Q&amp;A &amp; examples</span></span><span class="on-pill">↗</span>
     </a>
-    <a class="on-dlink {% if nav_page=='about' %}on-act{% endif %}" data-group="explore" href="/about" data-search="about เกี่ยวกับ ที่มา วิธีใช้">
+    <a class="on-dlink {% if nav_page=='about' %}on-act{% endif %}" href="/about" data-search="about เกี่ยวกับ ที่มา วิธีใช้">
       <span class="on-ico">ℹ️</span><span class="on-dbody"><span class="on-dtitle"><span class="on-th">เกี่ยวกับ</span><span class="on-en">About</span></span><span class="on-dmeta on-th">ที่มา &amp; วิธีใช้งาน</span><span class="on-dmeta on-en">Background &amp; how to use</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='team' %}on-act{% endif %}" data-group="explore" href="/team" data-search="team ทีม developer ผู้พัฒนา">
+    <a class="on-dlink {% if nav_page=='team' %}on-act{% endif %}" href="/team" data-search="team ทีม developer ผู้พัฒนา">
       <span class="on-ico">👥</span><span class="on-dbody"><span class="on-dtitle"><span class="on-th">ทีมพัฒนา</span><span class="on-en">Team</span></span><span class="on-dmeta on-th">ผู้พัฒนา &amp; AI Partners</span><span class="on-dmeta on-en">Developers &amp; AI partners</span></span>
     </a>
-    <a class="on-dlink {% if nav_page=='changelog' %}on-act{% endif %}" data-group="explore" href="/changelog" data-search="changelog อัปเดต update history">
+    <a class="on-dlink {% if nav_page=='changelog' %}on-act{% endif %}" href="/changelog" data-search="changelog อัปเดต update history">
       <span class="on-ico g">📝</span><span class="on-dbody"><span class="on-dtitle">Changelog</span><span class="on-dmeta on-th">บันทึกการอัปเดต</span><span class="on-dmeta on-en">Update history</span></span><span class="on-pill">v5.3</span>
     </a>
   </nav>
@@ -700,6 +904,9 @@ body.light .on-dfoot-ver{color:#059669;}
       <span class="on-crumb-dot"></span>{{ nav_label }}
     </span>
     <button type="button" id="onSearchBtn" class="on-search-btn" aria-label="Open search (press /)">🔍<span class="on-search-hint">/</span></button>
+    <button type="button" id="tpBtn" class="on-tools-btn" aria-label="Open Tool Launcher" aria-haspopup="dialog">
+      <span class="tp-btn-ico">⊞</span> TOOLS <span class="tp-btn-key">T</span>
+    </button>
     <button type="button" class="on-icon-btn" id="onLang" title="Switch TH/EN" aria-label="Toggle language"><span id="onLangLabel">TH</span></button>
     <button type="button" class="on-icon-btn" id="onTheme" title="Toggle dark/light" aria-label="Toggle theme"><span id="onThemeIcon">🌙</span></button>
   </div>
@@ -711,11 +918,7 @@ body.light .on-dfoot-ver{color:#059669;}
 var ham=document.getElementById('onHam'),drawer=document.getElementById('onDrawer'),
     overlay=document.getElementById('onOverlay'),closeBtn=document.getElementById('onClose'),
     searchEl=document.getElementById('onSearch'),navEl=document.getElementById('onNav'),
-    noRes=document.getElementById('onNoResults'),searchBtn=document.getElementById('onSearchBtn'),
-    searchClearBtn=document.getElementById('onSearchClear'),chipsEl=document.getElementById('onChips'),
-    recentHd=document.getElementById('onRecentHd'),recentList=document.getElementById('onRecentList'),
-    recentDiv=document.getElementById('onRecentDiv');
-var activeGroup='all';
+    noRes=document.getElementById('onNoResults'),searchBtn=document.getElementById('onSearchBtn');
 
 /* ── THEME ── */
 var theme=localStorage.getItem('obix-theme')||'dark';
@@ -750,26 +953,12 @@ var langBtn=document.getElementById('onLang');
 if(langBtn)langBtn.addEventListener('click',function(){window.toggleLang();});
 
 /* ── DRAWER ── */
-function getFocusable(){
-  if(!drawer)return[];
-  return Array.prototype.slice.call(drawer.querySelectorAll('a,button,input,[tabindex]:not([tabindex="-1"])'))
-    .filter(function(el){return el.offsetParent!==null;});
-}
-function trapFocus(e){
-  if(e.key!=='Tab')return;
-  var f=getFocusable();
-  if(!f.length)return;
-  var first=f[0],last=f[f.length-1];
-  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
-  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
-}
 function openDrawer(){
   if(ham){ham.setAttribute('aria-expanded','true');ham.classList.add('on-open');}
   if(drawer)drawer.classList.add('on-open');
   if(overlay){overlay.classList.add('on-open');overlay.setAttribute('aria-hidden','false');}
   document.addEventListener('keydown',handleKey);
   if(window.innerWidth<960)document.body.style.overflow='hidden';
-  renderRecent();
   setTimeout(function(){if(searchEl)searchEl.focus();},80);
 }
 function closeDrawer(){
@@ -778,140 +967,49 @@ function closeDrawer(){
   if(overlay){overlay.classList.remove('on-open');overlay.setAttribute('aria-hidden','true');}
   document.removeEventListener('keydown',handleKey);
   document.body.style.overflow='';
-  if(searchEl){searchEl.value='';}
-  setActiveGroup('all');
-  applyFilters();
+  if(searchEl){searchEl.value='';filterLinks('');}
   if(ham)ham.focus();
 }
 function handleKey(e){
   if(e.key==='Escape')closeDrawer();
   if(e.key==='/'&&document.activeElement!==searchEl){e.preventDefault();if(searchEl)searchEl.focus();}
-  trapFocus(e);
 }
 window.onNavOpen=openDrawer;window.onNavClose=closeDrawer;
 if(ham)ham.addEventListener('click',function(){ham.getAttribute('aria-expanded')==='true'?closeDrawer():openDrawer();});
 if(overlay)overlay.addEventListener('click',closeDrawer);
 if(closeBtn)closeBtn.addEventListener('click',closeDrawer);
 if(searchBtn)searchBtn.addEventListener('click',openDrawer);
-/* Delegated: recording "recent" + closing on mobile after tapping a real tool link
-   (covers both the static list and any dynamically-rendered Recent items). */
-if(navEl)navEl.addEventListener('click',function(e){
-  var l=e.target.closest('.on-dlink');
-  if(!l)return;
-  recordRecent(l);
-  if(window.innerWidth<960)closeDrawer();
+if(navEl)navEl.querySelectorAll('.on-dlink').forEach(function(l){
+  l.addEventListener('click',function(){if(window.innerWidth<960)closeDrawer();});
 });
 document.addEventListener('keydown',function(e){
   var tag=document.activeElement?document.activeElement.tagName:'';
   if(e.key==='/'&&tag!=='INPUT'&&tag!=='TEXTAREA'){e.preventDefault();openDrawer();}
 });
 
-/* ── SWIPE (mobile full-screen sheet: swipe down to close) ── */
+/* ── SWIPE ── */
 if(drawer){
   var tx=0,ty=0;
   drawer.addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;ty=e.changedTouches[0].clientY;},{passive:true});
-  drawer.addEventListener('touchmove',function(e){
-    if(window.innerWidth>=960)return;
-    var dy=e.changedTouches[0].clientY-ty;
-    if(dy>0){var r=Math.min(dy*.4,80);drawer.style.transform='translateY('+r+'px)';drawer.style.transition='none';}
-  },{passive:true});
-  drawer.addEventListener('touchend',function(e){
-    if(window.innerWidth>=960)return;
-    drawer.style.transform='';drawer.style.transition='';
-    var dy=e.changedTouches[0].clientY-ty,dx=Math.abs(e.changedTouches[0].clientX-tx);
-    if(dy>90&&dx<80)closeDrawer();
-  },{passive:true});
+  drawer.addEventListener('touchmove',function(e){var dx=e.changedTouches[0].clientX-tx;if(dx<0){var r=Math.min(Math.abs(dx)*.35,40);drawer.style.transform='translateX(-'+r+'px)';drawer.style.transition='none';}},{passive:true});
+  drawer.addEventListener('touchend',function(e){drawer.style.transform='';drawer.style.transition='';var dx=e.changedTouches[0].clientX-tx,dy=Math.abs(e.changedTouches[0].clientY-ty);if(dx<-60&&dy<80)closeDrawer();},{passive:true});
 }
 
-/* ── RECENT TOOLS ── */
-function getRecent(){
-  try{return JSON.parse(localStorage.getItem('obix-recent')||'[]');}catch(e){return[];}
-}
-function recordRecent(linkEl){
-  var href=linkEl.getAttribute('href');
-  if(!href||href.charAt(0)==='#')return;
-  var titleEl=linkEl.querySelector('.on-dtitle'),icoEl=linkEl.querySelector('.on-ico');
-  var entry={
-    href:href,
-    label:titleEl?titleEl.textContent.trim():linkEl.textContent.trim().slice(0,40),
-    icon:icoEl?icoEl.textContent.trim():'🔧',
-    group:linkEl.dataset.group||''
-  };
-  var list=getRecent().filter(function(r){return r.href!==href;});
-  list.unshift(entry);
-  list=list.slice(0,6);
-  try{localStorage.setItem('obix-recent',JSON.stringify(list));}catch(e){}
-}
-function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-function renderRecent(){
-  if(!recentList)return;
-  var q=searchEl?searchEl.value.trim():'';
-  var show=!q&&activeGroup==='all';
-  var here=window.location.pathname;
-  var items=getRecent().filter(function(r){return r.href!==here;}).slice(0,4);
-  if(!show||!items.length){
-    recentList.innerHTML='';
-    if(recentHd)recentHd.hidden=true;
-    if(recentDiv)recentDiv.hidden=true;
-    return;
-  }
-  recentList.innerHTML=items.map(function(r){
-    return '<a class="on-dlink" href="'+esc(r.href)+'" data-group="'+esc(r.group)+'">'
-      +'<span class="on-ico g">'+esc(r.icon)+'</span>'
-      +'<span class="on-dbody"><span class="on-dtitle">'+esc(r.label)+'</span></span>'
-      +'</a>';
-  }).join('');
-  if(recentHd)recentHd.hidden=false;
-  if(recentDiv)recentDiv.hidden=false;
-}
-
-/* ── CATEGORY CHIPS ── */
-function setActiveGroup(g){
-  activeGroup=g;
-  if(chipsEl)chipsEl.querySelectorAll('.on-chip').forEach(function(c){
-    var on=c.dataset.chipGroup===g;
-    c.classList.toggle('on-chip-active',on);
-    c.setAttribute('aria-pressed',String(on));
-  });
-}
-if(chipsEl)chipsEl.querySelectorAll('.on-chip').forEach(function(c){
-  c.addEventListener('click',function(){setActiveGroup(c.dataset.chipGroup);applyFilters();});
-});
-
-/* ── SEARCH + CATEGORY FILTER (combined) ── */
-function applyFilters(){
-  var q=searchEl?searchEl.value.trim().toLowerCase():'';
-  var links=navEl?navEl.querySelectorAll('.on-dlink'):[],
-      groups=navEl?navEl.querySelectorAll('.on-grp'):[],
-      visible=0;
-  groups.forEach(function(g){
-    if(g.id==='onRecentHd'||g.id==='onRecentDiv')return; // handled by renderRecent
-    var groupOk=activeGroup==='all'||g.dataset.group===activeGroup;
-    g.style.display=(groupOk&&!q)?'':'none';
-  });
-  links.forEach(function(l){
-    if(l.closest('#onRecentList'))return; // recent items aren't part of the filtered count
-    var groupOk=activeGroup==='all'||l.dataset.group===activeGroup;
-    var text=(l.textContent+' '+(l.dataset.search||'')).toLowerCase();
-    var queryOk=!q||text.indexOf(q)!==-1;
-    var show=groupOk&&queryOk;
-    l.style.display=show?'':'none';
-    if(show)visible++;
-  });
-  if(searchClearBtn)searchClearBtn.hidden=!q;
+/* ── SEARCH ── */
+function filterLinks(q){
+  q=q.trim().toLowerCase();
+  var links=navEl?navEl.querySelectorAll('.on-dlink'):[],groups=navEl?navEl.querySelectorAll('.on-grp'):[],visible=0;
+  if(!q){links.forEach(function(l){l.style.display='';});groups.forEach(function(g){g.style.display='';});if(noRes)noRes.style.display='none';return;}
+  groups.forEach(function(g){g.style.display='none';});
+  links.forEach(function(l){var t=(l.textContent+' '+(l.dataset.search||'')).toLowerCase(),show=t.indexOf(q)!==-1;l.style.display=show?'':'none';if(show)visible++;});
   if(noRes)noRes.style.display=visible===0?'block':'none';
-  renderRecent();
 }
 if(searchEl){
-  searchEl.addEventListener('input',applyFilters);
+  searchEl.addEventListener('input',function(){filterLinks(this.value);});
   searchEl.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){if(this.value){this.value='';applyFilters();e.stopPropagation();}else closeDrawer();}
+    if(e.key==='Escape'){if(this.value){this.value='';filterLinks('');e.stopPropagation();}else closeDrawer();}
   });
 }
-if(searchClearBtn)searchClearBtn.addEventListener('click',function(){
-  if(searchEl){searchEl.value='';searchEl.focus();}
-  applyFilters();
-});
 
 /* ── DESKTOP DROPDOWN keyboard a11y ── */
 document.querySelectorAll('.on-mg-btn').forEach(function(btn){
@@ -925,5 +1023,188 @@ document.addEventListener('click',function(e){
     document.querySelectorAll('.on-mg.on-dd-open').forEach(function(g){g.classList.remove('on-dd-open');var b=g.querySelector('.on-mg-btn');if(b)b.setAttribute('aria-expanded','false');});
   }
 });
+/* ── TOOL PANEL ─────────────────────────────────────── */
+(function(){
+var TP_TOOLS={
+  TUNE:[
+    {n:'Drone Analyzer',d:'PID · Filter · Flight time · Motor physics',u:'/app',ic:'🔬'},
+    {n:'PID Symptom Advisor',d:'บอกอาการ → รับคำแนะนำ PID/Filter + CLI',u:'/pid-advisor',ic:'💊'},
+    {n:'Quick Tune Pad',d:'เลือกอาการ → PID delta + CLI พร้อม copy',u:'/quick-tune',ic:'⚡'},
+    {n:'RPM Filter Calculator',d:'คำนวณ harmonic Hz + dyn_notch',u:'/rpm-filter',ic:'⚙️'},
+    {n:'Rates Visualizer',d:'Real-time rate curve · per-axis',u:'/rates-visualizer',ic:'📈'},
+    {n:'BF Config Wizard',d:'7 ขั้นตอน → CLI พร้อม paste',u:'/bf-wizard',ic:'🧙'},
+  ],
+  HW:[
+    {n:'Motor × Prop Recommender',d:'แนะนำ motor/prop ตาม KV + สเปค',u:'/motor-prop',ic:'🧭'},
+    {n:'ESC Compatibility Checker',d:'ตรวจ ESC amps · protocol · KV limit',u:'/esc-checker',ic:'⚡'},
+    {n:'Battery Health Advisor',d:'IR · Sag · Health Score',u:'/battery-health',ic:'🔋'},
+    {n:'Motor Thermal Estimator',d:'อุณหภูมิ winding · thermal margin',u:'/motor-thermal',ic:'🌡️'},
+    {n:'Control Loop Analyzer',d:'Stick→Prop latency chain',u:'/loop-analyzer',ic:'🔄'},
+  ],
+  ANALYZE:[
+    {n:'Blackbox CSV Analyzer',d:'วิเคราะห์ flight log · PID score A–D',u:'/blackbox',ic:'📊'},
+    {n:'CLI Surgeon',d:'วิเคราะห์ diff all / dump CLI',u:'/cli_surgeon',ic:'🩺'},
+    {n:'CLI Diff Comparator',d:'วาง 2 config → เห็นทุกค่าที่เปลี่ยน',u:'/cli-comparator',ic:'⚖️'},
+    {n:'OSD Designer',d:'ออกแบบ OSD layout + export CLI',u:'/osd',ic:'🖥️'},
+    {n:'Build Card Generator',d:'สร้างรูปสเปคแชร์ Social',u:'/build-card',ic:'🃏'},
+    {n:'Tuning Log',d:'บันทึก session · เปรียบเทียบ PID',u:'/tuning-log',ic:'📋'},
+  ],
+  VIDEO:[
+    {n:'VTX Bands & Channels',d:'ตาราง Band/Channel + CLI generator',u:'/vtx',ic:'📡'},
+    {n:'VTX Range Calculator',d:'ประมาณระยะสัญญาณ + กราฟ',u:'/vtx-range',ic:'🏞️'},
+    {n:'VTX SmartAudio Guide',d:'SmartAudio / Tramp commands',u:'/vtx-smartaudio',ic:'🎙️'},
+  ],
+  EXPLORE:[
+    {n:'FPV Training Simulator',d:'ฝึกบิน 3D · 4 โหมด · Gamepad',u:'/fpv-trainer',ic:'🕹️'},
+    {n:'Flight Style Quiz',d:'5 คำถาม → rates + preset แนะนำ',u:'/flight-quiz',ic:'🎯'},
+    {n:'Config Leaderboard',d:'Vote · rank · copy config',u:'/leaderboard',ic:'🏆'},
+    {n:'FPV Knowledge Hub',d:'รวมบทความ & เครื่องมือ',u:'/fpv',ic:'📖'},
+    {n:'FPV Gear Guide',d:'แนะนำอุปกรณ์ตาม class/style',u:'/fpv-gear',ic:'🛒'},
+    {n:'Downloads',d:'DIFF & DUMP config files',u:'/downloads',ic:'📁'},
+  ],
+};
+var TP_COLORS={
+  TUNE:{c:'#10c47a',rgb:'16,196,122'},
+  HW:{c:'#00e5ff',rgb:'0,229,255'},
+  ANALYZE:{c:'#f5a623',rgb:'245,166,35'},
+  VIDEO:{c:'#4f8ef7',rgb:'79,142,247'},
+  EXPLORE:{c:'#a855f7',rgb:'168,85,247'},
+  ALL:{c:'#8892a4',rgb:'136,146,164'},
+};
+var ALL_TOOLS=[];
+Object.keys(TP_TOOLS).forEach(function(k){TP_TOOLS[k].forEach(function(t){ALL_TOOLS.push(Object.assign({},t,{cat:k}));});});
+
+var tpOv=document.getElementById('tpOverlay'),
+    tpPn=document.getElementById('tpPanel'),
+    tpBtn=document.getElementById('tpBtn'),
+    tpClose=document.getElementById('tpClose'),
+    tpSearch=document.getElementById('tpSearch'),
+    tpItems=document.getElementById('tpItems'),
+    tpEmpty=document.getElementById('tpEmpty'),
+    tpCount=document.getElementById('tpCount'),
+    tpListHd=document.getElementById('tpListHd'),
+    tpListPip=document.getElementById('tpListPip'),
+    tpListName=document.getElementById('tpListName'),
+    tpListCnt=document.getElementById('tpListCnt'),
+    tpCats=document.getElementById('tpCats');
+
+var curCat='TUNE', curSel=-1, curItems=[];
+
+function openTP(){
+  if(!tpOv||!tpPn)return;
+  tpOv.classList.add('tp-open');tpPn.classList.add('tp-open');
+  tpOv.setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden';
+  document.addEventListener('keydown',tpKey);
+  setTimeout(function(){if(tpSearch)tpSearch.focus();},60);
+  renderCat(curCat);
+}
+function closeTP(){
+  if(!tpOv||!tpPn)return;
+  tpOv.classList.remove('tp-open');tpPn.classList.remove('tp-open');
+  tpOv.setAttribute('aria-hidden','true');
+  document.body.style.overflow='';
+  document.removeEventListener('keydown',tpKey);
+  if(tpSearch){tpSearch.value='';renderCat(curCat);}
+  curSel=-1;
+  if(tpBtn)tpBtn.focus();
+}
+function tpKey(e){
+  if(e.key==='Escape'){closeTP();return;}
+  if(e.key==='ArrowDown'){e.preventDefault();moveSel(1);}
+  else if(e.key==='ArrowUp'){e.preventDefault();moveSel(-1);}
+  else if(e.key==='Enter'&&curSel>=0&&curItems[curSel]){window.location.href=curItems[curSel].href;}
+}
+function moveSel(dir){
+  var els=curItems;if(!els.length)return;
+  curSel=Math.max(0,Math.min(els.length-1,curSel+dir));
+  els.forEach(function(el,i){el.classList.toggle('tp-sel',i===curSel);if(i===curSel)el.scrollIntoView({block:'nearest'});});
+}
+
+function renderCat(cat){
+  var q=(tpSearch&&tpSearch.value.trim().toLowerCase())||'';
+  var col=TP_COLORS[cat]||TP_COLORS.ALL;
+
+  // update header
+  if(tpListPip)tpListPip.style.background=col.c;
+  if(tpListName){tpListName.textContent=cat;tpListName.style.color=col.c;}
+
+  // update sidebar CSS vars on list
+  if(tpItems){
+    tpItems.style.setProperty('--tpc',col.c);
+    tpItems.style.setProperty('--tpc-rgb',col.rgb);
+  }
+  // find parent .tp-list and set vars there
+  var tpList=document.getElementById('tpList');
+  if(tpList){
+    tpList.style.setProperty('--tpc',col.c);
+    tpList.style.setProperty('--tpc-rgb',col.rgb);
+  }
+
+  var tools=cat==='ALL'?ALL_TOOLS:(TP_TOOLS[cat]||[]).map(function(t){return Object.assign({},t,{cat:cat});});
+  if(q)tools=tools.filter(function(t){return (t.n+' '+t.d+' '+t.cat).toLowerCase().indexOf(q)!==-1;});
+
+  if(tpListCnt)tpListCnt.textContent=tools.length+' tools';
+  if(tpCount)tpCount.textContent=tools.length;
+
+  if(!tpItems)return;
+  tpItems.innerHTML='';curItems=[];curSel=-1;
+  if(tools.length===0){if(tpEmpty)tpEmpty.style.display='block';return;}
+  if(tpEmpty)tpEmpty.style.display='none';
+
+  tools.forEach(function(t,i){
+    var c=TP_COLORS[t.cat]||col;
+    var a=document.createElement('a');
+    a.className='tp-item';a.href=t.u;
+    a.style.setProperty('--tpc',c.c);
+    a.style.setProperty('--tpc-rgb',c.rgb);
+    a.innerHTML='<div class="tp-item-ico">'+t.ic+'</div>'
+      +'<div class="tp-item-body"><span class="tp-item-name">'+t.n+'</span>'
+      +'<span class="tp-item-desc">'+t.d+'</span></div>'
+      +'<span class="tp-item-arr">→</span>';
+    tpItems.appendChild(a);curItems.push(a);
+  });
+}
+
+function setCat(cat){
+  curCat=cat;
+  var col=TP_COLORS[cat]||TP_COLORS.ALL;
+  document.querySelectorAll('#tpCats .tp-cat').forEach(function(b){
+    var isAct=b.dataset.cat===cat;
+    b.classList.toggle('active',isAct);
+    if(isAct){
+      b.style.setProperty('--tpc',col.c);
+      b.style.setProperty('--tpc-rgb',col.rgb);
+    }
+  });
+  if(tpSearch)tpSearch.value='';
+  renderCat(cat);
+}
+
+// wire events
+if(tpBtn)tpBtn.addEventListener('click',function(){tpPn&&tpPn.classList.contains('tp-open')?closeTP():openTP();});
+if(tpClose)tpClose.addEventListener('click',closeTP);
+if(tpOv)tpOv.addEventListener('click',closeTP);
+if(tpSearch)tpSearch.addEventListener('input',function(){renderCat(curCat);});
+if(tpSearch)tpSearch.addEventListener('keydown',function(e){if(e.key==='Escape'){if(this.value){this.value='';renderCat(curCat);e.stopPropagation();}else closeTP();}});
+if(tpCats)tpCats.querySelectorAll('.tp-cat').forEach(function(btn){btn.addEventListener('click',function(){setCat(btn.dataset.cat);});});
+
+// keyboard shortcut: T = open tool panel (when not in input)
+document.addEventListener('keydown',function(e){
+  if(document.activeElement&&['INPUT','TEXTAREA','SELECT'].indexOf(document.activeElement.tagName)!==-1)return;
+  if(e.key==='t'||e.key==='T'){
+    if(tpPn&&!tpPn.classList.contains('tp-open')){e.preventDefault();openTP();}
+  }
+});
+
+// swipe-to-close
+if(tpPn){
+  var sx=0,sy=0;
+  tpPn.addEventListener('touchstart',function(e){sx=e.changedTouches[0].clientX;sy=e.changedTouches[0].clientY;},{passive:true});
+  tpPn.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-sx,dy=Math.abs(e.changedTouches[0].clientY-sy);
+    if(dx>55&&dy<80)closeTP();
+  },{passive:true});
+}
 }());
 </script>
