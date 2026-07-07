@@ -33,6 +33,71 @@ DEFAULT_CELLS = 4
 _CELL_RE = re.compile(r'(\d+)\s*[Ss]')
 
 
+# ============================================================
+# DEFAULT BATTERY CAPACITY (mAh) — used only when the user leaves the
+# battery-capacity field blank, to estimate flight time.
+#
+# WHY THIS EXISTS: analyzer/advanced_analysis.py and analyzer/thrust_logic.py
+# each had their own default-mAh guess table — one keyed by size+cell count,
+# the other by size only (ignoring cell count entirely). Both run in the
+# SAME request (app.py's /app and /api/analyze both call make_advanced_report
+# AND estimate_battery_runtime_detail back to back) and their numbers were
+# never reconciled: for a 5" 6S build with no mAh entered, advanced_analysis
+# guessed 1100 mAh while thrust_logic guessed 1500 mAh — a 36% gap, exposed
+# as two disagreeing flight-time numbers (est_flight_time_min vs
+# flight_time_detail.avg_flight_min) in the same /api/analyze JSON response.
+#
+# Per-project decision (Tony, 2026-07-07): the size+cell-aware table
+# (originally in advanced_analysis.py) is the more physically accurate one —
+# more series cells for the same pack size generally means fewer parallel
+# groups and therefore lower mAh at the same energy/weight — so it wins
+# wherever it has data. For the four sizes it didn't cover (4.5", 5.5",
+# 7.5", 10"), we keep thrust_logic's flat (cell-agnostic) values rather
+# than inventing new numbers. No existing table value was changed — this
+# only decides which existing value wins when they disagreed.
+# ============================================================
+DEFAULT_BATTERY_MAH_TABLE = {
+    2.5: {3: 450, 4: 450},
+    3.0: {3: 550, 4: 650},
+    3.5: {3: 650, 4: 850},
+    4.0: {3: 850, 4: 1000},
+    4.5: 1200,   # thrust_logic-only size — no per-cell breakdown available
+    5.0: {4: 1500, 5: 1300, 6: 1100},
+    5.5: 1500,   # thrust_logic-only size
+    6.0: {4: 1800, 5: 1500, 6: 1300},
+    7.0: {5: 2200, 6: 2200, 7: 1500},
+    7.5: 2200,   # thrust_logic-only size
+    8.0: {6: 3000, 7: 2200, 8: 1800},
+    10.0: 3500,  # thrust_logic-only size
+}
+
+
+def default_battery_mah(size_inch: float, cells: int) -> int:
+    """
+    Guess a default battery capacity (mAh) from frame size and cell count,
+    for use when the user hasn't entered a capacity. See
+    DEFAULT_BATTERY_MAH_TABLE above for why this is the one place this
+    guess should happen.
+    """
+    try:
+        size_inch = float(size_inch)
+    except (TypeError, ValueError):
+        size_inch = 5.0
+    keys = sorted(DEFAULT_BATTERY_MAH_TABLE.keys())
+    closest = min(keys, key=lambda k: abs(k - size_inch))
+    entry = DEFAULT_BATTERY_MAH_TABLE[closest]
+    if isinstance(entry, dict):
+        try:
+            cells = int(cells)
+        except (TypeError, ValueError):
+            cells = DEFAULT_CELLS
+        if cells in entry:
+            return entry[cells]
+        available = sorted(entry.keys())
+        return entry[min(available, key=lambda c: abs(c - cells))]
+    return entry
+
+
 def cells_from_battery_string(
     battery: Optional[Union[str, int, float]],
     default: int = DEFAULT_CELLS,

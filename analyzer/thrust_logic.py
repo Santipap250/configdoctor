@@ -27,7 +27,7 @@
 # extremes (2.5", 7", 10" all predicted longer flight than the
 # validated range). Mid-range (3"-5") already matched and is unchanged.
 # ─────────────────────────────────────────────────────────────
-from analyzer.units import cells_from_battery_string
+from analyzer.units import cells_from_battery_string, default_battery_mah
 
 _HOVER_W_PER_G = {
     # size_inch: W/g at hover throttle
@@ -47,13 +47,6 @@ _HOVER_W_PER_G = {
 
 _NOMINAL_CELL_V = 3.7     # V/cell for energy calculations
 _USABLE_CAPACITY = 0.85   # 85% usable (land at 3.5V from 4.2V)
-
-# Size-aware default mAh (used when user doesn't input mAh)
-_DEFAULT_MAH_BY_SIZE = {
-    2.5: 450,  3.0: 550,  3.5: 850,  4.0: 1000,
-    4.5: 1200, 5.0: 1500, 5.5: 1500, 6.0: 1800,
-    7.0: 2200, 7.5: 2200, 8.0: 3000, 10.0: 3500,
-}
 
 # Style power multiplier relative to hover
 # Validated: 5" 4S 1500mAh freestyle → ~6 min (factor 1.55 ✓)
@@ -96,16 +89,16 @@ def _hover_w_per_g(size_inch: float) -> float:
     return 0.155  # fallback 5" typical
 
 
-def _default_mah_for_size(size_inch: float) -> int:
-    sizes = sorted(_DEFAULT_MAH_BY_SIZE.keys())
-    if size_inch <= sizes[0]:  return _DEFAULT_MAH_BY_SIZE[sizes[0]]
-    if size_inch >= sizes[-1]: return _DEFAULT_MAH_BY_SIZE[sizes[-1]]
-    for i in range(len(sizes) - 1):
-        lo, hi = sizes[i], sizes[i + 1]
-        if lo <= size_inch <= hi:
-            t = (size_inch - lo) / (hi - lo)
-            return int(_DEFAULT_MAH_BY_SIZE[lo] + t * (_DEFAULT_MAH_BY_SIZE[hi] - _DEFAULT_MAH_BY_SIZE[lo]))
-    return 1500
+def _default_mah_for_size(size_inch: float, cells: int = 4) -> int:
+    """
+    FIX: this used to guess default battery mAh from size ALONE, ignoring
+    cell count entirely — it disagreed with advanced_analysis.py's guess
+    (which does account for cells) for the same input, producing two
+    different flight-time numbers for one analysis. Now delegates to the
+    shared table in analyzer.units so both modules agree. See
+    analyzer.units.DEFAULT_BATTERY_MAH_TABLE for details.
+    """
+    return default_battery_mah(size_inch, cells)
 
 
 def calculate_thrust_weight(motor_load, weight,
@@ -156,7 +149,7 @@ def estimate_battery_runtime_detail(weight, battery, battery_mAh=None,
     try:
         w     = float(weight)
         cells = _cells_from_str(battery)
-        mAh   = float(battery_mAh) if battery_mAh else _default_mah_for_size(float(size_inch or 5.0))
+        mAh   = float(battery_mAh) if battery_mAh else _default_mah_for_size(float(size_inch or 5.0), cells)
         size  = float(size_inch or 5.0)
 
         voltage      = cells * _NOMINAL_CELL_V

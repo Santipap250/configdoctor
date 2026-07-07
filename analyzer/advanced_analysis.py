@@ -15,22 +15,22 @@ import math
 import json
 from typing import Dict, Any, Optional
 
+from analyzer.units import cells_from_battery_string, default_battery_mah as _shared_default_battery_mah
+
 NOMINAL_CELL_V   = 3.7
 MAX_CELL_V       = 4.2
 KV_THRESHOLD_HIGH = 1500
 HIGH_VOLTAGE_CELLS = 7
 DEFAULT_MOTORS   = 4
 
-_DEFAULT_BATT_MAH_BY_SIZE = {
-    2.5: {3:450,4:450},
-    3.0: {3:550,4:650},
-    3.5: {3:650,4:850},
-    4.0: {3:850,4:1000},
-    5.0: {4:1500,5:1300,6:1100},
-    6.0: {4:1800,5:1500,6:1300},
-    7.0: {5:2200,6:2200,7:1500},
-    8.0: {6:3000,7:2200,8:1800}
-}
+# FIX: this local table used to disagree with analyzer/thrust_logic.py's
+# own default-mAh table for the same size+cell combo (e.g. 5"/6S: 1100
+# here vs 1500 in thrust_logic) — both run in the same /app and
+# /api/analyze request, producing two different flight-time numbers for
+# identical input. Moved to analyzer.units.DEFAULT_BATTERY_MAH_TABLE as
+# the single source of truth; see that module for the merge rationale.
+def _guess_batt_mAh(size_inch, cells):
+    return _shared_default_battery_mah(size_inch, cells)
 
 # W/g hover table — v5.4: REAL single source of truth.
 # Previously this was a separately-maintained copy of the table in
@@ -38,7 +38,6 @@ _DEFAULT_BATT_MAH_BY_SIZE = {
 # could silently drift apart since nothing enforced they matched.
 # Now imported directly so there is exactly one table in the codebase.
 from analyzer.thrust_logic import _HOVER_W_PER_G as _W_PER_G_TABLE
-from analyzer.units import cells_from_battery_string
 
 # Style × size flight power factor
 # Higher style factor = burns more power relative to hover
@@ -62,14 +61,6 @@ _STYLE_FACTORS = {
 # parser so the clamp range can't drift out of sync again.
 def _cells_from_str(s):
     return cells_from_battery_string(s, default=4, lo=1, hi=12)
-
-def _guess_batt_mAh(size_inch, cells):
-    keys = sorted(_DEFAULT_BATT_MAH_BY_SIZE.keys())
-    closest = min(keys, key=lambda k: abs(k-size_inch))
-    table = _DEFAULT_BATT_MAH_BY_SIZE[closest]
-    if cells in table: return table[cells]
-    available = sorted(table.keys())
-    return table[min(available, key=lambda c: abs(c-cells))]
 
 def _hover_w_per_g(size_inch):
     sizes = sorted(_W_PER_G_TABLE.keys())
