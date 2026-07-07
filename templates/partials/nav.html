@@ -1080,16 +1080,33 @@ function handleKey(e){
   if(e.key==='/'&&document.activeElement!==searchEl){e.preventDefault();if(searchEl)searchEl.focus();}
 }
 window.onNavOpen=openDrawer;window.onNavClose=closeDrawer;
-if(ham)ham.addEventListener('click',function(){ham.getAttribute('aria-expanded')==='true'?closeDrawer():openDrawer();});
+/* sync ham button when tpPanel closes externally */
+document.addEventListener('tpClosed',function(){
+  if(ham){ham.setAttribute('aria-expanded','false');ham.classList.remove('on-open');}
+});
+if(ham)ham.addEventListener('click',function(){
+  if(window.openTP){
+    var open=document.getElementById('tpPanel')&&document.getElementById('tpPanel').classList.contains('tp-open');
+    if(open){window.closeTP&&window.closeTP();ham.setAttribute('aria-expanded','false');ham.classList.remove('on-open');}
+    else{window.openTP();ham.setAttribute('aria-expanded','true');ham.classList.add('on-open');}
+  } else { ham.getAttribute('aria-expanded')==='true'?closeDrawer():openDrawer(); }
+});
 if(overlay)overlay.addEventListener('click',closeDrawer);
 if(closeBtn)closeBtn.addEventListener('click',closeDrawer);
-if(searchBtn)searchBtn.addEventListener('click',openDrawer);
+if(searchBtn)searchBtn.addEventListener('click',function(){
+  if(window.openTP){window.openTP();setTimeout(function(){var s=document.getElementById('tpSearch');if(s)s.focus();},80);}
+  else openDrawer();
+});
 if(navEl)navEl.querySelectorAll('.on-dlink').forEach(function(l){
   l.addEventListener('click',function(){if(window.innerWidth<960)closeDrawer();});
 });
 document.addEventListener('keydown',function(e){
   var tag=document.activeElement?document.activeElement.tagName:'';
-  if(e.key==='/'&&tag!=='INPUT'&&tag!=='TEXTAREA'){e.preventDefault();openDrawer();}
+  if(e.key==='/'||e.key==='t'||e.key==='T'){
+    e.preventDefault();
+    if(window.openTP){window.openTP();setTimeout(function(){var s=document.getElementById('tpSearch');if(s)s.focus();},80);}
+    else openDrawer();
+  }
 });
 
 /* ── SWIPE ── */
@@ -1195,7 +1212,7 @@ var tpOv=document.getElementById('tpOverlay'),
 
 var curCat='TUNE', curSel=-1, curItems=[];
 
-function openTP(){
+window.openTP=function openTP(){
   if(!tpOv||!tpPn)return;
   tpOv.classList.add('tp-open');tpPn.classList.add('tp-open');
   tpOv.setAttribute('aria-hidden','false');
@@ -1204,7 +1221,8 @@ function openTP(){
   setTimeout(function(){if(tpSearch)tpSearch.focus();},60);
   renderCat(curCat);
 }
-function closeTP(){
+window.closeTP=function closeTP(){
+  document.dispatchEvent(new CustomEvent('tpClosed'));
   if(!tpOv||!tpPn)return;
   tpOv.classList.remove('tp-open');tpPn.classList.remove('tp-open');
   tpOv.setAttribute('aria-hidden','true');
