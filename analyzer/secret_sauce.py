@@ -5,7 +5,6 @@
 # ทุกค่า derived จาก physics + community tuning data จริง
 # ============================================================
 from __future__ import annotations
-import math
 from typing import Dict, Any, Optional
 
 from analyzer.units import cells_from_battery_string

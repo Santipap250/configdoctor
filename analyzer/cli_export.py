@@ -11,7 +11,7 @@ Functions:
   - validate_cli_snippet(cli_text): ตรวจสอบ CLI syntax พื้นฐาน
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 from datetime import datetime
 import json
 import logging

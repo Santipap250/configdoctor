@@ -11,7 +11,6 @@
 #   - RPM formula: kv × cells × V/cell × load (ถูกต้อง)
 # ============================================================
 import math
-from typing import Optional
 
 # ─────────────────────────────────────────────────────────────
 # g/W BASE EFFICIENCY (hover average, validated RCBenchmark)
