@@ -4,11 +4,16 @@
   "description": "Web application for analyzing FPV drone CLI dumps.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1e1e2e",
-  "theme_color": "#00bef8",
+  "background_color": "#040808",
+  "theme_color": "#00ff44",
   "icons": [
     {
-      "src": "/static/img/icon-512.png",
+      "src": "/static/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/favicon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
