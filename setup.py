@@ -29,17 +29,20 @@ setup(
         'python-dotenv>=1.0.0',
         'Flask-WTF>=1.2.0',
         'Flask-Limiter>=3.5.0',
-        'limits[redis]>=3.6.0',
         'Flask-Compress>=1.14',
         'numpy>=1.24.0',
         'pandas>=2.0.0',
         'Pillow>=10.0.0',
     ],
     extras_require={
+        # NOTE: pytest-flask intentionally excluded — it imports
+        # `flask._request_ctx_stack`, removed in Flask 3.x, which crashes
+        # pytest at collection time. tests/conftest.py defines its own
+        # app/client fixtures, so nothing here depends on it.
         'dev': [
             'pytest>=7.4.0',
             'pytest-cov>=4.1.0',
-            'pytest-flask>=1.2.0',
+            'pytest-mock>=3.11.1',
             'black>=23.7.0',
             'flake8>=6.0.0',
         ],
