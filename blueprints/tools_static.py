@@ -102,3 +102,8 @@ def motor_thermal():
 @bp.route('/loop-analyzer')
 def loop_analyzer():
     return render_template('loop_analyzer.html')
+
+
+@bp.route('/osd')
+def osd_page():
+    return render_template('osd.html')
