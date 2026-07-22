@@ -224,7 +224,7 @@
         <button class="dl-btn-copy" data-fc="{{ it.fc }}" data-fn="{{ it.filename }}">
           📋 Copy CLI
         </button>
-        <a class="dl-btn-dl" href="{{ url_for('download_diff', fc=it.fc, filename=it.filename) }}" download>
+        <a class="dl-btn-dl" href="{{ url_for('downloads.download_diff', fc=it.fc, filename=it.filename) }}" download>
           ⬇️ Download
         </a>
       </div>
