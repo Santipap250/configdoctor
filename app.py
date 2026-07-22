@@ -545,45 +545,6 @@ def analyze_drone(size, battery, style, prop_result, weight, detected_class=None
 # Does NOT read analyzer/PID/motor-prop/blackbox internals — only plain
 # strings already computed elsewhere are passed in. No context → falls
 # back to generic starter kits.
-@app.route('/fpv-gear')
-def fpv_gear():
-    drone_class = (request.args.get('class') or '').strip() or None
-    style       = (request.args.get('style') or '').strip() or None
-    size_inch   = (request.args.get('size') or '').strip() or None
-
-    matched_ids = set()
-    starter_kits = []
-    all_by_category = {}
-
-    if GEAR_MODULE_AVAILABLE:
-        try:
-            all_by_category = _gear_all_by_category()
-        except Exception:
-            logger.exception("gear_recommender.get_all_by_category failed")
-        try:
-            matched = _gear_recommend(drone_class=drone_class, style=style, size_inch=size_inch)
-            if matched:
-                for items in matched.values():
-                    for p in items:
-                        matched_ids.add(p['id'])
-        except Exception:
-            logger.exception("gear_recommender.recommend failed")
-        try:
-            starter_kits = _gear_starter_kits()
-        except Exception:
-            logger.exception("gear_recommender.get_starter_kits failed")
-
-    return render_template(
-        'fpv_gear.html',
-        all_by_category=all_by_category,
-        matched_ids=matched_ids,
-        starter_kits=starter_kits,
-        drone_class=drone_class, style=style, size_inch=size_inch,
-        categories=(_gear_categories() if GEAR_MODULE_AVAILABLE else {}),
-        category_order=_GEAR_CATEGORY_ORDER,
-        gear_disclaimer=(_gear_disclaimer() if GEAR_MODULE_AVAILABLE else {"th": "", "en": ""}),
-    )
-
 # ── Analysis helper — extracted from index() for readability ─────────────
 def _parse_analysis_form():
     """Parse + validate form inputs. Returns (params_dict, warnings_list)."""
@@ -959,37 +920,6 @@ def index():
 
 
 
-@app.route('/downloads/<fc>/<filename>')
-def download_diff(fc, filename):
-    safe_fc = secure_filename(fc)
-    safe_fn = secure_filename(filename)
-    base_root = os.path.realpath(os.path.join(app.root_path, 'static', 'downloads', 'diff_all'))
-    if not safe_fc: abort(404)
-    candidate_fc_dir = os.path.realpath(os.path.join(base_root, safe_fc))
-    if not (candidate_fc_dir.startswith(base_root + os.sep) and os.path.isdir(candidate_fc_dir)):
-        abort(404)
-    file_path = os.path.realpath(os.path.join(candidate_fc_dir, safe_fn))
-    if not file_path.startswith(candidate_fc_dir + os.sep): abort(404)
-    if not os.path.isfile(file_path): abort(404)
-    return send_from_directory(candidate_fc_dir, safe_fn, as_attachment=True)
-
-@app.route('/downloads')
-def downloads_index():
-    base = os.path.realpath(os.path.join(app.root_path, 'static', 'downloads', 'diff_all'))
-    items = []
-    if os.path.isdir(base):
-        for fc in sorted(os.listdir(base)):
-            fcdir = os.path.realpath(os.path.join(base, fc))
-            if not os.path.isdir(fcdir): continue
-            for fn in sorted(os.listdir(fcdir)):
-                path = os.path.join(fcdir, fn)
-                if not os.path.isfile(path): continue
-                items.append({'fc': fc, 'filename': fn,
-                              'size': os.path.getsize(path),
-                              'mtime': int(os.path.getmtime(path)),
-                              'sha': _file_sha256(path)})
-    return render_template('downloads.html', items=items)
-
 # ── Motor × Prop recommender ──────────────────────────────────────────────
 def _recommend_motor_prop(form):
     try:
@@ -1102,22 +1032,6 @@ except Exception as e:
     def calculate_rpm_filter(kv, battery, prop_size=5.0): return {"error": "rpm_filter_calc not available"}
     logging.warning("rpm_filter_calc import failed: %s", e)
 
-@app.route('/rpm-filter', methods=['GET', 'POST'])
-def rpm_filter():
-    result = None
-    form   = {}
-    if request.method == 'POST':
-        try:
-            kv        = int(request.form.get('kv', 2400))
-            battery   = request.form.get('battery', '4S')
-            prop_size = float(request.form.get('prop_size', 5.0))
-            form = {'kv': kv, 'battery': battery, 'prop_size': prop_size}
-            result = calculate_rpm_filter(kv, battery, prop_size)
-        except Exception as e:
-            logger.exception("rpm_filter error")
-            result = {"error": "เกิดข้อผิดพลาดในการคำนวณ RPM Filter"}
-    return render_template('rpm_filter.html', result=result, form=form)
-
 # ── Rates Visualizer ──────────────────────────────────────────────────────
 # ── Blackbox CSV Analyzer ─────────────────────────────────────────────────────
 try:
@@ -1219,8 +1133,6 @@ def compare_cli():
         return jsonify({"error": "เกิดข้อผิดพลาดในการเปรียบเทียบ กรุณาลองใหม่"}), 500
 
 # ── OSD Designer ──────────────────────────────────────────────────────────
-@app.route('/osd')
-def osd_page(): return render_template('osd.html')
 
 def _cleanup_osd_files(max_age_hours: int = 24) -> None:
     """ลบไฟล์ OSD เก่ากว่า max_age_hours ออกจาก static/downloads/osd/
@@ -1377,212 +1289,34 @@ def rate_limit_exceeded(e):
         return jsonify({"error": "คำขอมากเกินไป กรุณารอสักครู่แล้วลองใหม่"}), 429
     return render_template("429.html"), 429
 
-@app.route("/healthz")
-def healthz():
-    # ไม่เปิดเผย module status ใน production
-    return jsonify({"status": "ok"})
-
-# ── SEO: robots.txt ────────────────────────────────────────────────────────
-@app.route("/robots.txt")
-def robots_txt():
-    content = (
-        "User-agent: *\n"
-        "Crawl-delay: 10\n"
-        "Allow: /\n"
-        "Disallow: /static/downloads/osd/\n"
-        "Disallow: /analyze_cli\n"
-        "Disallow: /compare_cli\n"
-        "Disallow: /blackbox/analyze\n"
-        "Disallow: /api/\n"
-        "\n"
-        "User-agent: GPTBot\nDisallow: /\n\n"
-        "User-agent: CCBot\nDisallow: /\n\n"
-        "User-agent: anthropic-ai\nDisallow: /\n\n"
-        "User-agent: Claude-Web\nDisallow: /\n\n"
-        "User-agent: Bytespider\nDisallow: /\n\n"
-        "User-agent: PetalBot\nDisallow: /\n\n"
-        "User-agent: SemrushBot\nDisallow: /\n\n"
-        "User-agent: AhrefsBot\nDisallow: /\n\n"
-        "User-agent: MJ12bot\nDisallow: /\n\n"
-        "\n"
-        f"Sitemap: {_BASE_URL}/sitemap.xml\n"
-    )
-    from flask import Response
-    resp = Response(content, mimetype="text/plain")
-    resp.headers["Cache-Control"] = "public, max-age=86400"
-    return resp
-
-# ── SEO: sitemap.xml ───────────────────────────────────────────────────────
-@app.route("/sitemap.xml")
-def sitemap_xml():
-    from flask import Response
-    today = datetime.now().strftime("%Y-%m-%d")
-    if _SITEMAP_CACHE.get("date") == today and _SITEMAP_CACHE.get("base") == _BASE_URL and _SITEMAP_CACHE.get("xml"):
-        xml = _SITEMAP_CACHE["xml"]
-    else:
-        pages = [
-            ("/team",             "monthly", "0.7"),
-            ("/flight-quiz",      "weekly",  "0.8"),
-            ("/bf-wizard",        "weekly",  "0.9"),
-            ("/build-card",       "weekly",  "0.8"),
-            ("/tuning-log",       "weekly",  "0.7"),
-            ("/leaderboard",      "weekly",  "0.8"),
-            ("/landing",          "weekly",  "1.0"),
-            ("/blackbox",         "weekly",  "1.0"),
-            ("/app",              "weekly",  "0.9"),
-            ("/cli_surgeon",      "weekly",  "0.9"),
-            ("/pid-advisor",      "weekly",  "0.9"),
-            ("/quick-tune",       "weekly",  "0.9"),
-            ("/rpm-filter",       "weekly",  "0.8"),
-            ("/motor-prop",       "weekly",  "0.8"),
-            ("/rates-visualizer", "weekly",  "0.8"),
-            ("/cli-comparator",   "weekly",  "0.8"),
-            ("/esc-checker",      "weekly",  "0.8"),
-            ("/fpv-trainer",      "weekly",  "0.9"),
-            ("/battery-health",   "weekly",  "0.8"),
-            ("/motor-thermal",    "weekly",  "0.8"),
-            ("/loop-analyzer",    "weekly",  "0.8"),
-            ("/osd",              "weekly",  "0.7"),
-            ("/vtx",              "monthly", "0.6"),
-            ("/vtx-range",        "monthly", "0.6"),
-            ("/vtx-smartaudio",   "monthly", "0.6"),
-            ("/downloads",        "weekly",  "0.7"),
-            ("/fpv",              "monthly", "0.6"),
-            ("/about",            "monthly", "0.5"),
-            ("/changelog",        "weekly",  "0.5"),
-            ("/military-uas",     "weekly",  "0.8"),
-        ]
-        base = _BASE_URL
-        urls = "\n".join(
-            f"""  <url>
-    <loc>{base}{loc}</loc>
-    <lastmod>{today}</lastmod>
-    <changefreq>{freq}</changefreq>
-    <priority>{pri}</priority>
-  </url>"""
-            for loc, freq, pri in pages
-        )
-        xml = f"""<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-{urls}
-</urlset>"""
-        _SITEMAP_CACHE["xml"] = xml
-        _SITEMAP_CACHE["date"] = today
-        _SITEMAP_CACHE["base"] = _BASE_URL
-    resp = Response(xml, mimetype="application/xml")
-    resp.headers["Cache-Control"] = "public, max-age=86400"
-    return resp
-
-
-# ── GET /api/rating — public stats ───────────────────────────────────────
-@app.route('/api/rating', methods=['GET'])
-@_rate("60 per minute;600 per day")
-def api_rating_get():
-    # FIX C4: ใช้ try/finally ทุกที่เพื่อป้องกัน connection leak
-    try:
-        with _db_lock:
-            conn = _get_db()
-            try:
-                row = conn.execute(
-                    "SELECT COUNT(*) AS cnt, COALESCE(AVG(stars),0) AS avg FROM ratings"
-                ).fetchone()
-                likes_row = conn.execute("SELECT COUNT(*) AS cnt FROM likes").fetchone()
-            finally:
-                conn.close()
-        avg = round(row['avg'], 2) if row['cnt'] > 0 else None
-        return jsonify({
-            'count':  row['cnt'],
-            'avg':    avg,
-            'likes':  likes_row['cnt'],
-        })
-    except Exception:
-        logger.exception("api_rating_get error")
-        return jsonify({'error': 'เกิดข้อผิดพลาดกรุณาลองใหม่'}), 500
-
-
-# ── POST /api/rating — submit star (1-5) ─────────────────────────────────
-@app.route('/api/rating', methods=['POST'])
-@_rate("5 per minute;20 per day")
-def api_rating_post():
-    # FIX C4: try/finally on conn + FIX C2: ไม่ส่ง str(e) กลับ client
-    try:
-        data  = request.get_json(force=True) or {}
-        try:
-            stars = int(data.get('stars', 0))
-        except (TypeError, ValueError):
-            return jsonify({'error': 'stars must be an integer 1–5'}), 400
-        if stars < 1 or stars > 5:
-            return jsonify({'error': 'stars must be 1–5'}), 400
-        h = _ip_hash(request)
-        with _db_lock:
-            conn = _get_db()
-            try:
-                existing = conn.execute(
-                    "SELECT id FROM ratings WHERE ip_hash = ?", (h,)
-                ).fetchone()
-                if existing:
-                    return jsonify({'error': 'already_rated'}), 409
-                conn.execute(
-                    "INSERT INTO ratings (ip_hash, stars) VALUES (?, ?)", (h, stars)
-                )
-                conn.commit()
-                row = conn.execute(
-                    "SELECT COUNT(*) AS cnt, AVG(stars) AS avg FROM ratings"
-                ).fetchone()
-            finally:
-                conn.close()
-        return jsonify({
-            'ok':    True,
-            'count': row['cnt'],
-            'avg':   round(row['avg'], 2),
-        })
-    except Exception:
-        logger.exception("api_rating_post error")
-        return jsonify({'error': 'เกิดข้อผิดพลาดกรุณาลองใหม่'}), 500
-
-
-# ── POST /api/like — toggle like (once per IP) ───────────────────────────
-@app.route('/api/like', methods=['POST'])
-@_rate("5 per minute;10 per day")
-def api_like_post():
-    # FIX C4: try/finally on conn
-    try:
-        h = _ip_hash(request)
-        with _db_lock:
-            conn = _get_db()
-            try:
-                existing = conn.execute(
-                    "SELECT id FROM likes WHERE ip_hash = ?", (h,)
-                ).fetchone()
-                if existing:
-                    return jsonify({'error': 'already_liked'}), 409
-                conn.execute("INSERT INTO likes (ip_hash) VALUES (?)", (h,))
-                conn.commit()
-                cnt = conn.execute("SELECT COUNT(*) AS cnt FROM likes").fetchone()['cnt']
-            finally:
-                conn.close()
-        return jsonify({'ok': True, 'likes': cnt})
-    except Exception:
-        logger.exception("api_like_post error")
-        return jsonify({'error': 'เกิดข้อผิดพลาดกรุณาลองใหม่'}), 500
-# ─────────────────────────────────────────────────────────────────────────────
 
 
 # ═════════════════════════════════════════════════════════════════════════
-# Blueprints — feature-grouped routes split out of this file (Phase 2 of the
-# 2026-07-22 audit). Imported here, at the bottom, because tools_advisor.py
-# imports get_all_symptoms/_get_symptom_advice back from this module; those
-# names must already exist in app's namespace before that import runs.
+# Blueprints — feature-grouped routes split out of this file
+# (Phase 2 + Phase 3 of the 2026-07-22 audit). Imported here, at the bottom,
+# because several of these modules import names back from this module
+# (e.g. get_all_symptoms, _get_db, _rate); those names must already exist
+# in app's namespace before those imports run.
 # ═════════════════════════════════════════════════════════════════════════
 from blueprints.content_pages import bp as _content_pages_bp
 from blueprints.tools_vtx import bp as _tools_vtx_bp
 from blueprints.tools_static import bp as _tools_static_bp
 from blueprints.tools_advisor import bp as _tools_advisor_bp
+from blueprints.meta import bp as _meta_bp
+from blueprints.downloads import bp as _downloads_bp
+from blueprints.api_community import bp as _api_community_bp
+from blueprints.tools_gear import bp as _tools_gear_bp
+from blueprints.tools_rpm import bp as _tools_rpm_bp
 
 app.register_blueprint(_content_pages_bp)
 app.register_blueprint(_tools_vtx_bp)
 app.register_blueprint(_tools_static_bp)
 app.register_blueprint(_tools_advisor_bp)
+app.register_blueprint(_meta_bp)
+app.register_blueprint(_downloads_bp)
+app.register_blueprint(_api_community_bp)
+app.register_blueprint(_tools_gear_bp)
+app.register_blueprint(_tools_rpm_bp)
 
 
 if __name__ == "__main__":
