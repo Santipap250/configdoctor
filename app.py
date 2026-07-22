@@ -538,10 +538,6 @@ def analyze_drone(size, battery, style, prop_result, weight, detected_class=None
 # ═════════════════════════════════════════════════════════════════════════
 # ROUTES
 # ═════════════════════════════════════════════════════════════════════════
-@app.route('/fpv')
-def fpv_hub():
-    return render_template('fpv/index.html')
-
 # ── FPV Affiliate Gear Guide — extension/UI layer only. ───────────────────
 # Reads optional ?class=&style=&size= query params (set by links from the
 # analysis result page / FPV hub) and maps them onto a small affiliate
@@ -587,20 +583,6 @@ def fpv_gear():
         category_order=_GEAR_CATEGORY_ORDER,
         gear_disclaimer=(_gear_disclaimer() if GEAR_MODULE_AVAILABLE else {"th": "", "en": ""}),
     )
-
-@app.route("/landing")
-def landing():
-    return render_template("landing.html")
-
-@app.route("/")
-def loading():
-    # PATCH BW-3: redirect ตรงไป /landing เพื่อลด double page load
-    from flask import redirect
-    return redirect("/landing", code=302)
-
-@app.route("/ping")
-def ping():
-    return "pong"
 
 # ── Analysis helper — extracted from index() for readability ─────────────
 def _parse_analysis_form():
@@ -977,15 +959,6 @@ def index():
 
 
 
-@app.route("/about")
-def about(): return render_template("about.html")
-
-@app.route("/team")
-def team(): return render_template("team.html")
-
-@app.route("/changelog")
-def changelog(): return render_template("changelog.html")
-
 @app.route('/downloads/<fc>/<filename>')
 def download_diff(fc, filename):
     safe_fc = secure_filename(fc)
@@ -1016,15 +989,6 @@ def downloads_index():
                               'mtime': int(os.path.getmtime(path)),
                               'sha': _file_sha256(path)})
     return render_template('downloads.html', items=items)
-
-@app.route("/vtx")
-def vtx(): return render_template("vtx.html")
-
-@app.route("/vtx-range")
-def vtx_range(): return render_template("vtx_range.html")
-
-@app.route("/vtx-smartaudio")
-def vtx_smartaudio(): return render_template("vtx_smartaudio.html")
 
 # ── Motor × Prop recommender ──────────────────────────────────────────────
 def _recommend_motor_prop(form):
@@ -1119,9 +1083,6 @@ def motor_prop():
         return render_template('motor_prop.html', result=result)
     return render_template('motor_prop.html')
 
-@app.route('/cli_surgeon')
-def cli_surgeon_page(): return render_template('cli_surgeon.html')
-
 # ── PID Symptom Advisor ───────────────────────────────────────────────────
 try:
     from analyzer.symptom_advisor import get_all_symptoms, get_advice as _get_symptom_advice
@@ -1131,66 +1092,6 @@ except Exception as e:
     def get_all_symptoms(): return []
     def _get_symptom_advice(sid): return {"error": "symptom_advisor not available"}
     logging.warning("symptom_advisor import failed: %s", e)
-
-@app.route('/pid-advisor')
-def pid_advisor():
-    symptoms_list = get_all_symptoms()
-    # Build advice dict keyed by id for JS
-    advice_dict = {}
-    for s in symptoms_list:
-        advice_dict[s['id']] = _get_symptom_advice(s['id'])
-    advice_json = json.dumps(advice_dict, ensure_ascii=False)
-    return render_template('pid_advisor.html', symptoms=symptoms_list, advice_json=advice_json)
-
-# ── Quick Tune Pad ───────────────────────────────────────────────────────────
-@app.route('/quick-tune')
-def quick_tune():
-    symptoms_list = get_all_symptoms()
-    advice_dict = {}
-    for s in symptoms_list:
-        advice_dict[s['id']] = _get_symptom_advice(s['id'])
-    advice_json = json.dumps(advice_dict, ensure_ascii=False)
-    return render_template('quick_tune.html', symptoms=symptoms_list, advice_json=advice_json)
-
-@app.route('/api/symptom/<symptom_id>')
-def api_symptom(symptom_id):
-    # SECURITY: allow only alphanumeric + underscore IDs
-    if not re.match(r'^[a-zA-Z0-9_]{1,80}$', str(symptom_id)):
-        return jsonify({"error": "invalid symptom ID"}), 400
-    advice = _get_symptom_advice(symptom_id)
-    # FIX v2.2: คืน 404 สำหรับ unknown symptom ID
-    if "error" in advice:
-        return jsonify(advice), 404
-    return jsonify(advice)
-
-
-# ── Flight Style Quiz ────────────────────────────────────────────────────────
-@app.route('/flight-quiz')
-def flight_quiz():
-    """Flight Style Quiz — 5 คำถาม แนะนำ rates + preset"""
-    return render_template('flight_quiz.html')
-
-# ── Betaflight Config Wizard ─────────────────────────────────────────────────
-@app.route('/bf-wizard')
-def bf_wizard():
-    """Betaflight Config Wizard — 7 ขั้นตอน → CLI พร้อม paste"""
-    return render_template('bf_wizard.html')
-
-# ── v2.3 Community Features ───────────────────────────────────────────────────
-@app.route('/build-card')
-def build_card():
-    """Build Card Generator — สร้างรูปสเปคโดรนแชร์ Social ได้เลย"""
-    return render_template('build_card.html')
-
-@app.route('/tuning-log')
-def tuning_log():
-    """Tuning Log — บันทึก session การ tune ทุก session"""
-    return render_template('tuning_log.html')
-
-@app.route('/leaderboard')
-def leaderboard():
-    """Community Config Leaderboard — vote + rank config"""
-    return render_template('leaderboard.html')
 
 # ── RPM Filter Calculator ────────────────────────────────────────────────
 try:
@@ -1218,15 +1119,6 @@ def rpm_filter():
     return render_template('rpm_filter.html', result=result, form=form)
 
 # ── Rates Visualizer ──────────────────────────────────────────────────────
-@app.route('/rates-visualizer')
-def rates_visualizer():
-    return render_template('rates_visualizer.html')
-
-@app.route('/cli-comparator')
-def cli_comparator():
-    return render_template('cli_comparator.html')
-
-
 # ── Blackbox CSV Analyzer ─────────────────────────────────────────────────────
 try:
     from analyzer.blackbox_analyzer import analyze_blackbox_csv
@@ -1235,10 +1127,6 @@ except Exception as _bb_err:
     logging.warning("blackbox_analyzer import failed: %s", _bb_err)
     BLACKBOX_AVAILABLE = False
     def analyze_blackbox_csv(csv_text): return {"error": "blackbox_analyzer not available"}
-
-@app.route('/blackbox')
-def blackbox_page():
-    return render_template('blackbox.html')
 
 @app.route('/blackbox/analyze', methods=['POST'])
 @_rate("10 per minute;100 per day")
@@ -1264,14 +1152,6 @@ def blackbox_analyze():
     except Exception as e:
         logger.exception("blackbox_analyze error")
         return jsonify({"error": "เกิดข้อผิดพลาดในการวิเคราะห์ กรุณาลองใหม่"}), 500
-
-@app.route('/esc-checker')
-def esc_checker():
-    return render_template('esc_checker.html')
-
-@app.route('/fpv-trainer')
-def fpv_trainer():
-    return render_template('fpv_trainer.html')
 
 @app.route('/analyze_cli', methods=['POST'])
 @_rate("20 per minute;200 per day")
@@ -1594,26 +1474,6 @@ def sitemap_xml():
     return resp
 
 
-# ── v5.1 Additional Routes ──────────────────────────────────
-
-@app.route('/battery-health')
-def battery_health():
-    return render_template('battery_health.html')
-
-@app.route('/motor-thermal')
-def motor_thermal():
-    return render_template('motor_thermal.html')
-
-@app.route('/loop-analyzer')
-def loop_analyzer():
-    return render_template('loop_analyzer.html')
-
-@app.route('/military-uas')
-def military_uas():
-    return render_template('military_uas.html')
-
-# ────────────────────────────────────────────────────────────
-
 # ── GET /api/rating — public stats ───────────────────────────────────────
 @app.route('/api/rating', methods=['GET'])
 @_rate("60 per minute;600 per day")
@@ -1706,6 +1566,23 @@ def api_like_post():
         logger.exception("api_like_post error")
         return jsonify({'error': 'เกิดข้อผิดพลาดกรุณาลองใหม่'}), 500
 # ─────────────────────────────────────────────────────────────────────────────
+
+
+# ═════════════════════════════════════════════════════════════════════════
+# Blueprints — feature-grouped routes split out of this file (Phase 2 of the
+# 2026-07-22 audit). Imported here, at the bottom, because tools_advisor.py
+# imports get_all_symptoms/_get_symptom_advice back from this module; those
+# names must already exist in app's namespace before that import runs.
+# ═════════════════════════════════════════════════════════════════════════
+from blueprints.content_pages import bp as _content_pages_bp
+from blueprints.tools_vtx import bp as _tools_vtx_bp
+from blueprints.tools_static import bp as _tools_static_bp
+from blueprints.tools_advisor import bp as _tools_advisor_bp
+
+app.register_blueprint(_content_pages_bp)
+app.register_blueprint(_tools_vtx_bp)
+app.register_blueprint(_tools_static_bp)
+app.register_blueprint(_tools_advisor_bp)
 
 
 if __name__ == "__main__":
