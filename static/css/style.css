@@ -8,6 +8,8 @@
 
 /* ── Design Tokens ── */
 :root {
+  /* Canonical palette — static/css/site-theme.css mirrors these values
+     under its own variable names so both stylesheets render identically. */
   --bg:          #07090b;
   --bg-card:     #0c1014;
   --bg-input:    #101620;

@@ -7,15 +7,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg:#050a0d; --bg2:#070f14; --surface:#0b1520; --surface2:#0f1c2a; --surface3:#142130;
+  /* Values below are kept in sync with static/css/style.css so pages loading
+     either stylesheet render the same palette. Variable NAMES are unchanged
+     to avoid breaking any existing selector references. */
+  --bg:#07090b; --bg2:#070f14; --surface:#0b1520; --surface2:#0f1c2a; --surface3:#142130;
   --glass:rgba(11,21,32,0.92);
-  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.04); --border-hi:rgba(16,196,122,0.25);
-  --text:#d2e4ee; --text2:#8aabb8; --muted:#3d5566; --muted2:#5a7a8a;
-  --green:#10c47a; --green-lite:#2dd896; --green-dim:rgba(16,196,122,0.10); --green-glow:0 0 20px rgba(16,196,122,0.30);
-  --blue:#4a9eff; --blue-dim:rgba(74,158,255,0.10);
+  --border:rgba(255,255,255,0.055); --border2:rgba(255,255,255,0.04); --border-hi:rgba(255,255,255,0.12);
+  --text:#dde8f0; --text2:#8aabb8; --muted:#7a8fa0; --muted2:#5a7a8a;
+  --green:#10c47a; --green-lite:#2dd896; --green-dim:rgba(16,196,122,0.11); --green-glow:0 0 20px rgba(16,196,122,0.22);
+  --blue:#58a6ff; --blue-dim:rgba(88,166,255,0.11);
   --amber:#f59e0b; --amber-dim:rgba(245,158,11,0.10);
-  --red:#f87171; --red-dim:rgba(248,113,113,0.10);
-  --purple:#a78bfa; --purple-dim:rgba(167,139,250,0.10);
+  --red:#f85149; --red-dim:rgba(248,81,73,0.11);
+  --purple:#c9a6ff; --purple-dim:rgba(201,166,255,0.11);
   --cyan:#22d3ee; --cyan-dim:rgba(34,211,238,0.10);
   --orange:#fb923c; --orange-dim:rgba(251,146,60,0.10);
   --font-body:'Sarabun',system-ui,sans-serif;
