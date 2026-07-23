@@ -888,38 +888,6 @@ def _handle_analysis_post():
     return analysis
 
 
-@app.route("/app", methods=["GET", "POST"])
-def index():
-    # HTML page — NEVER rate-limit. Only /api/* endpoints are limited.
-    analysis = None
-
-    if request.method == "POST":
-        # REFACTOR: logic extracted to _handle_analysis_post() for readability
-        try:
-            analysis = _handle_analysis_post()
-        except Exception:
-            logger.exception("index POST error")
-            analysis = {"warnings": [{"level": "error", "msg": "เกิดข้อผิดพลาดในการวิเคราะห์"}]}
-        return render_template("index.html", analysis=analysis,
-                               preset_groups=PRESET_GROUPS,
-                               all_presets=PRESETS)
-
-    # GET — if share params present, auto-run analysis so shared links work
-    _SHARE_PARAMS = ("size", "battery", "style", "weight", "prop_size",
-                     "blades", "pitch", "motor_kv", "motor_count", "battery_mAh")
-    if any(request.args.get(p) for p in _SHARE_PARAMS):
-        try:
-            analysis = _handle_analysis_get_params()
-        except Exception:
-            logger.exception("index GET share-param error")
-            analysis = None
-
-    return render_template("index.html", analysis=analysis,
-                           preset_groups=PRESET_GROUPS,
-                           all_presets=PRESETS)
-
-
-
 # ── Motor × Prop recommender ──────────────────────────────────────────────
 def _recommend_motor_prop(form):
     try:
@@ -1006,13 +974,6 @@ def _recommend_motor_prop(form):
         "sample_cli":         sample_cli,
     }
 
-@app.route('/motor-prop', methods=['GET', 'POST'])
-def motor_prop():
-    if request.method == 'POST':
-        result = _recommend_motor_prop(request.form)
-        return render_template('motor_prop.html', result=result)
-    return render_template('motor_prop.html')
-
 # ── PID Symptom Advisor ───────────────────────────────────────────────────
 try:
     from analyzer.symptom_advisor import get_all_symptoms, get_advice as _get_symptom_advice
@@ -1041,96 +1002,6 @@ except Exception as _bb_err:
     logging.warning("blackbox_analyzer import failed: %s", _bb_err)
     BLACKBOX_AVAILABLE = False
     def analyze_blackbox_csv(csv_text): return {"error": "blackbox_analyzer not available"}
-
-@app.route('/blackbox/analyze', methods=['POST'])
-@_rate("10 per minute;100 per day")
-def blackbox_analyze():
-    try:
-        content_type = request.content_type or ""
-        if not request.is_json and not content_type.startswith("application/json"):
-            return jsonify({"error": "Content-Type must be application/json"}), 415
-        data     = request.get_json(force=True) or {}
-        csv_text = data.get('csv', '')
-        filename = data.get('filename', 'upload.csv')
-        # Sanitize filename (logged only, never used in file ops)
-        filename = secure_filename(str(filename)[:64]) or 'upload.csv'
-        if not csv_text:
-            return jsonify({"error": "ไม่พบข้อมูล CSV"}), 400
-        # 10MB limit
-        if len(csv_text.encode('utf-8')) > 10_000_000:
-            return jsonify({"error": "ไฟล์ใหญ่เกิน 10MB"}), 413
-        result = analyze_blackbox_csv(csv_text)
-        logger.info("blackbox_analyze: %s rows=%s",
-                    filename, result.get('meta', {}).get('rows_analyzed', '?'))
-        return jsonify(result)
-    except Exception as e:
-        logger.exception("blackbox_analyze error")
-        return jsonify({"error": "เกิดข้อผิดพลาดในการวิเคราะห์ กรุณาลองใหม่"}), 500
-
-@app.route('/analyze_cli', methods=['POST'])
-@_rate("20 per minute;200 per day")
-def analyze_cli():
-    try:
-        content_type = request.content_type or ""
-        if not request.is_json and not content_type.startswith("application/json"):
-            return jsonify({"error": "Content-Type must be application/json"}), 415
-        data = request.get_json(force=True) or {}
-        dump = data.get('dump', '')
-        if not isinstance(dump, str):
-            return jsonify({"error": "dump must be a string"}), 400
-        if not dump:
-            return jsonify({"error": "no dump provided"}), 400
-        # Size limit
-        if len(dump.encode('utf-8')) > 512_000:
-            return jsonify({"error": "ไฟล์ใหญ่เกิน 512KB"}), 413
-        result = cli_analyze_dump(dump)
-        # FIX-04b: extract PID dict from params for easier template/JS consumption
-        try:
-            params = result.get("params", {})
-            result["pid"] = {
-                "roll":  {"p": params.get("p_roll"),  "i": params.get("i_roll"),  "d": params.get("d_roll")},
-                "pitch": {"p": params.get("p_pitch"), "i": params.get("i_pitch"), "d": params.get("d_pitch")},
-                "yaw":   {"p": params.get("p_yaw"),   "i": params.get("i_yaw"),   "d": params.get("d_yaw", 0)},
-            }
-            result["motor_protocol"] = params.get("motor_pwm_protocol")
-            result["dshot_bidir"]    = params.get("dshot_bidir")
-        except Exception:
-            logger.debug("suppressed exception", exc_info=True)
-        # Enrich with firmware version detection
-        try:
-            from analyzer.cli_surgeon import detect_firmware_version
-            result['firmware'] = detect_firmware_version(dump)
-        except Exception:
-            logger.debug("suppressed exception", exc_info=True)
-        return jsonify(result)
-    except Exception as e:
-        logger.exception("analyze_cli error")
-        return jsonify({"error": "เกิดข้อผิดพลาดในการวิเคราะห์ กรุณาลองใหม่"}), 500
-
-@app.route('/compare_cli', methods=['POST'])
-@_rate("20 per minute;200 per day")
-def compare_cli():
-    """Compare two CLI dumps and return diff."""
-    try:
-        content_type = request.content_type or ""
-        if not request.is_json and not content_type.startswith("application/json"):
-            return jsonify({"error": "Content-Type must be application/json"}), 415
-        data  = request.get_json(force=True) or {}
-        dump_a = data.get('dump_a', '')
-        dump_b = data.get('dump_b', '')
-        if not isinstance(dump_a, str) or not isinstance(dump_b, str):
-            return jsonify({"error": "dump_a และ dump_b ต้องเป็น string"}), 400
-        if not dump_a or not dump_b:
-            return jsonify({"error": "ต้องการ dump_a และ dump_b"}), 400
-        # Size limit: each dump max 512KB
-        if len(dump_a.encode('utf-8')) > 512_000 or len(dump_b.encode('utf-8')) > 512_000:
-            return jsonify({"error": "ไฟล์ใหญ่เกิน 512KB ต่อ dump"}), 413
-        from analyzer.cli_surgeon import compare_dumps
-        result = compare_dumps(dump_a, dump_b)
-        return jsonify(result)
-    except Exception as e:
-        logger.exception("compare_cli error")
-        return jsonify({"error": "เกิดข้อผิดพลาดในการเปรียบเทียบ กรุณาลองใหม่"}), 500
 
 # ── OSD Designer ──────────────────────────────────────────────────────────
 
@@ -1169,36 +1040,6 @@ def _generate_cli_from_model(model):
         lines.append(f"// {i}. {it.get('type')} '{it.get('label')}' @{it.get('x')},{it.get('y')} size={it.get('size')}")
         lines.append(f"// command: osd_add {it.get('type')} {it.get('x')} {it.get('y')} \"{it.get('label')}\" size={it.get('size')}")
     return "\n".join(lines)
-
-@app.route('/osd/export', methods=['POST'])
-@_rate("5 per minute;30 per day")
-def osd_export():
-    fmt       = (request.args.get('format') or 'txt').lower()
-    save_flag = str(request.args.get('save', '0')).lower() in ('1', 'true', 'yes')
-    data      = request.get_json(silent=True)
-    if not isinstance(data, dict): return ("Invalid JSON payload", 400)
-    if fmt == 'cli':    content, ext = _generate_cli_from_model(data), 'cli.txt'
-    elif fmt == 'json': content, ext = json.dumps(data, ensure_ascii=False, indent=2), 'json'
-    else:               content, ext = _generate_osd_text_from_model(data), 'txt'
-    if save_flag:
-        # SECURITY: limit OSD save to 100KB to prevent disk fill attacks
-        if len(content.encode('utf-8')) > 100_000:
-            return ("Content too large (max 100KB)", 413)
-        out_dir = os.path.join(app.root_path, 'static', 'downloads', 'osd')
-        os.makedirs(out_dir, exist_ok=True)
-        # CLEANUP: ลบไฟล์เก่ากว่า 24 ชั่วโมงก่อน save
-        _cleanup_osd_files(max_age_hours=24)
-        fname = secure_filename(_timestamped_filename(prefix="obix_osd", ext=ext))
-        try:
-            with open(os.path.join(out_dir, fname), 'w', encoding='utf-8') as f: f.write(content)
-        except Exception:
-            # PATCH: do not leak exception detail to client
-            logger.exception("osd_export save failed")
-            return ("Failed to save file. Please try again.", 500)
-        return jsonify({"ok": True, "download_url": url_for('static', filename=f'downloads/osd/{fname}'), "filename": fname})
-    buf = io.BytesIO(); buf.write(content.encode('utf-8')); buf.seek(0)
-    return send_file(buf, mimetype='text/plain', as_attachment=True, download_name=f"obix_osd.{ext}")
-
 
 # ═════════════════════════════════════════════════════════════════════════
 # Security Headers — applied to every response
@@ -1254,23 +1095,6 @@ def set_security_headers(response):
                 response.status_code = 304
                 response.set_data(b'')
     return response
-
-# ── /api/analyze — rate-limited JSON API (used by JS fetch, not the HTML form) ──
-@app.route("/api/analyze", methods=["POST"])
-@_rate("20 per minute")
-def api_analyze():
-    """JSON endpoint for AJAX form submission.
-    Returns the full analysis dict as JSON.
-    The HTML form at /app still works via traditional POST (not rate-limited).
-    """
-    try:
-        analysis = _handle_analysis_post()
-        return jsonify(analysis)
-    except Exception:
-        logger.exception("api_analyze error")
-        return jsonify({"error": "เกิดข้อผิดพลาดในการวิเคราะห์ กรุณาลองใหม่"}), 500
-
-
 # ── Error handlers ─────────────────────────────────────────────────────────
 @app.errorhandler(404)
 def page_not_found(e): return render_template("404.html"), 404
@@ -1307,6 +1131,9 @@ from blueprints.downloads import bp as _downloads_bp
 from blueprints.api_community import bp as _api_community_bp
 from blueprints.tools_gear import bp as _tools_gear_bp
 from blueprints.tools_rpm import bp as _tools_rpm_bp
+from blueprints.tools_analysis import bp as _tools_analysis_bp
+from blueprints.tools_cli_api import bp as _tools_cli_api_bp
+from blueprints.tools_osd import bp as _tools_osd_bp
 
 app.register_blueprint(_content_pages_bp)
 app.register_blueprint(_tools_vtx_bp)
@@ -1317,6 +1144,9 @@ app.register_blueprint(_downloads_bp)
 app.register_blueprint(_api_community_bp)
 app.register_blueprint(_tools_gear_bp)
 app.register_blueprint(_tools_rpm_bp)
+app.register_blueprint(_tools_analysis_bp)
+app.register_blueprint(_tools_cli_api_bp)
+app.register_blueprint(_tools_osd_bp)
 
 
 if __name__ == "__main__":
