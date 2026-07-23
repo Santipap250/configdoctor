@@ -16,7 +16,7 @@
 {% block extra_head %}{% endblock %}
 {% set nav_page = self.page_nav_page() %}
 </head>
-<body>
+<body{% block body_attrs %}{% endblock %}>
 {% block before_nav %}{% endblock %}
 {% include "partials/nav.html" %}
 {% include "partials/page_actions.html" %}

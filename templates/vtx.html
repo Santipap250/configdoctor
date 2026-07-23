@@ -1,21 +1,16 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="utf-8">
-<title>VTX Bands & Channels — OBIXConfig Doctor</title>
-{% set og_title       = "VTX Bands & Channels — OBIXConfig Doctor" %}
-{% set og_description = "ตาราง VTX Band/Channel ครบทุก Band · Spectrum Visualizer · Race Planner · CLI Generator · SmartAudio · Tramp — FPV community tool 🇹🇭" %}
-{% set og_url = BASE_URL ~ '/vtx' %}
-{% include "partials/og_tags.html" %}
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% extends "base.html" %}
+{% block title %}VTX Bands & Channels — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}VTX Bands & Channels — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}ตาราง VTX Band/Channel ครบทุก Band · Spectrum Visualizer · Race Planner · CLI Generator · SmartAudio · Tramp — FPV community tool 🇹🇭{% endblock %}
+{% block page_og_path %}/vtx{% endblock %}
+{% block page_nav_page %}vtx{% endblock %}
+{% block page_css %}style.css{% endblock %}
+{% block body_attrs %} class="dark"{% endblock %}
+{% block extra_css_links %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
-{% set nav_page = "vtx" %}
-</head>
-<body class="dark">
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
+<style>
 /* ══════════════════════════════════════════════════════
    VTX BANDS & CHANNELS — OBIXConfig Doctor v3
    Full redesign: Spectrum, RacePlanner, Education
@@ -1739,6 +1734,4 @@ function exportFreqCSV(){
   document.getElementById('pwrSelect').addEventListener('change', updateAll);
 })();
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}
