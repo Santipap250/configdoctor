@@ -1,15 +1,12 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-{% set og_title       = "Changelog — OBIXConfig Doctor v6 Pro" %}
-{% set og_description = "อัปเดตและการเปลี่ยนแปลงทุก version ของ OBIXConfig Doctor" %}
-{% set og_url = BASE_URL ~ '/changelog' %}
-{% include "partials/og_tags.html" %}
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Changelog — ConfigDoctor</title>
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/site-theme.css') }}">
+{% extends "base.html" %}
+{% block title %}Changelog — ConfigDoctor{% endblock %}
+{% block page_og_title %}Changelog — OBIXConfig Doctor v6 Pro{% endblock %}
+{% block page_og_description %}อัปเดตและการเปลี่ยนแปลงทุก version ของ OBIXConfig Doctor{% endblock %}
+{% block page_og_path %}/changelog{% endblock %}
+{% block page_nav_page %}changelog{% endblock %}
+{% block page_css %}site-theme.css{% endblock %}
+{% block extra_head %}
+<style>
 <style>
 /* Stats strip */
 .cl-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:36px; }
@@ -182,11 +179,8 @@
 .cl-note strong{ color:var(--text); }
 
 </style>
-{% set nav_page = "changelog" %}
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 <div class="page-wrap" style="padding-top:70px">
 
@@ -344,6 +338,4 @@ function toggleCard(card){
 // Open latest by default
 document.querySelectorAll('.latest-card').forEach(function(c){ c.classList.add('expanded'); });
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

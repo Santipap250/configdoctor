@@ -1,15 +1,12 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-{% set og_title       = "Team — ConfigDoctor" %}
-{% set og_description = "ทีมผู้พัฒนา ConfigDoctor — นักบิน FPV และ AI ที่ร่วมสร้างเครื่องมือวิเคราะห์โดรนที่ดีที่สุด" %}
-{% set og_url = BASE_URL ~ '/team' %}
-{% include "partials/og_tags.html" %}
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Team — ConfigDoctor</title>
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/site-theme.css') }}">
+{% extends "base.html" %}
+{% block title %}Team — ConfigDoctor{% endblock %}
+{% block page_og_title %}Team — ConfigDoctor{% endblock %}
+{% block page_og_description %}ทีมผู้พัฒนา ConfigDoctor — นักบิน FPV และ AI ที่ร่วมสร้างเครื่องมือวิเคราะห์โดรนที่ดีที่สุด{% endblock %}
+{% block page_og_path %}/team{% endblock %}
+{% block page_nav_page %}team{% endblock %}
+{% block page_css %}site-theme.css{% endblock %}
+{% block extra_head %}
+<style>
 
 <style>
 /* ═══════════════════════════════════════════════════
@@ -659,10 +656,8 @@ body.no-team-bg-video .team-bg-video{display:none;}
   .dev-social-btn{width:100%; justify-content:center}
 }
 </style>
-
-{% set nav_page = "team" %}
-</head>
-<body>
+{% endblock %}
+{% block before_nav %}
 <div class="team-bg" aria-hidden="true">
   <video class="team-bg-video" id="teamBgVideo" autoplay muted loop playsinline preload="none"
     poster="{{ url_for('static', filename='img/index-bg-poster.jpg') }}">
@@ -670,8 +665,8 @@ body.no-team-bg-video .team-bg-video{display:none;}
     <source data-src="{{ url_for('static', filename='video/index-bg.mp4') }}" type="video/mp4">
   </video>
 </div>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 <!-- Particles -->
 <canvas id="team-particles"></canvas>
@@ -1005,6 +1000,4 @@ body.no-team-bg-video .team-bg-video{display:none;}
   });
 })();
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

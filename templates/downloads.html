@@ -1,15 +1,12 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-{% set og_title       = "CLI Diff & Dump Files — OBIXConfig Doctor" %}
-{% set og_description = "ดาวน์โหลด CLI diff all / dump สำเร็จรูปสำหรับโดรน FPV หลากหลายรุ่น แยกตาม F4 / F7" %}
-{% set og_url = BASE_URL ~ '/downloads' %}
-{% include "partials/og_tags.html" %}
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>CLI Files — OBIXConfig Doctor</title>
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/site-theme.css') }}">
+{% extends "base.html" %}
+{% block title %}CLI Files — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}CLI Diff & Dump Files — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}ดาวน์โหลด CLI diff all / dump สำเร็จรูปสำหรับโดรน FPV หลากหลายรุ่น แยกตาม F4 / F7{% endblock %}
+{% block page_og_path %}/downloads{% endblock %}
+{% block page_nav_page %}downloads{% endblock %}
+{% block page_css %}site-theme.css{% endblock %}
+{% block extra_head %}
+<style>
 <style>
 /* ── Page-specific styles ── */
 .dl-toolbar {
@@ -140,11 +137,8 @@
 .dl-empty-icon { font-size:36px; margin-bottom:12px; }
 .dl-empty-text { color:var(--muted2); font-size:13px; }
 </style>
-{% set nav_page = "downloads" %}
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 <div class="page-wrap" style="padding-top:70px">
 
@@ -313,6 +307,4 @@
   }
 })();
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}
