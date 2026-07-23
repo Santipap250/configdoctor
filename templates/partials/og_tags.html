@@ -17,13 +17,14 @@
 {% set _url   = og_url         | default(BASE_URL) %}
 {% set _img   = og_image       | default(BASE_URL ~ '/static/img/og-default.jpg') %}
 {% set _site  = "OBIXConfig Doctor" %}
+{% set _robots = og_robots | default("index, follow") %}
 
 <!-- ══ Primary Meta ══════════════════════════════════════════════ -->
 <meta name="google-site-verification" content="xmsFQcsFOev1kYS1MmET8SzZRI0TQGtO_Rt_1iARvZo" />
 <meta name="description"        content="{{ _desc }}">
 <meta name="author"             content="OBIXConfig Lab">
 <meta name="keywords"           content="FPV, Betaflight, PID tuning, drone, โดรน, CLI, filter, RPM filter, rates, ESC, motor, prop, blackbox, blackbox analyzer, ไทย, FPV Thailand, propwash, oscillation, tuning">
-<meta name="robots"             content="index, follow">
+<meta name="robots"             content="{{ _robots }}">
 <meta name="theme-color"        content="#00ff44">
 
 <!-- ══ PWA / Home-screen icons ══════════════════════════════════ -->
