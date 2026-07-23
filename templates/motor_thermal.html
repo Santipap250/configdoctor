@@ -1,13 +1,15 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<title>Motor Thermal Estimator — OBIXConfig Doctor</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% extends "base.html" %}
+{% block title %}Motor Thermal Estimator — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}Motor Thermal Estimator — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}ประมาณอุณหภูมิมอเตอร์ · thermal margin · cooling tips{% endblock %}
+{% block page_og_path %}/motor-thermal{% endblock %}
+{% block page_nav_page %}motor_thermal{% endblock %}
+{% block page_css %}style.css{% endblock %}
+{% block extra_css_links %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Sarabun:wght@300;400;600;700;800&family=JetBrains Mono:wght@400;600&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extra_head %}
 <style>
 :root{
   --green:#10c47a; --gold:#f1b65a; --blue:#58a6ff; --red:#f87171;
@@ -81,16 +83,8 @@ select option{background:#1a2030}
 .edu-card-body{font-size:.78rem;color:var(--muted);line-height:1.6}
 
 </style>
-{% set og_title = "Motor Thermal Estimator — OBIXConfig Doctor" %}
-{% set og_description = "ประมาณอุณหภูมิมอเตอร์ · thermal margin · cooling tips" %}
-{% set og_url = BASE_URL ~ '/motor-thermal' %}
-{% set nav_page = "motor_thermal" %}
-{% include "partials/og_tags.html" %}
-</head>
-<body>
-
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 <div class="page-wrap">
 
@@ -419,6 +413,4 @@ function analyzeThermal() {
   document.getElementById('hintPanel').style.display = 'none';
 }
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

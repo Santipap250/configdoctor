@@ -1,15 +1,15 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>FPV Simulator NEO — OBIXConfig Doctor</title>
-{% set og_title       = "FPV Simulator NEO — OBIXConfig Doctor" %}
-{% set og_description = "เกมส์ฝึกบินโดรน FPV 3D Cyberpunk Arena ระดับ Pro — Tutorial, Race Circuit, Gate Runner รองรับมือถือ" %}
-{% set og_url = BASE_URL ~ '/fpv-trainer' %}
-{% include "partials/og_tags.html" %}
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+{% extends "base.html" %}
+{% block title %}FPV Simulator NEO — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}FPV Simulator NEO — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}เกมส์ฝึกบินโดรน FPV 3D Cyberpunk Arena ระดับ Pro — Tutorial, Race Circuit, Gate Runner รองรับมือถือ{% endblock %}
+{% block page_og_path %}/fpv-trainer{% endblock %}
+{% block page_nav_page %}fpv_trainer{% endblock %}
+{% block page_css %}{% endblock %}
+{% block page_viewport %}width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover{% endblock %}
+{% block extra_css_links %}
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Sarabun:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extra_head %}
 <style>
 :root{
   --g:#00ff88;--gd:#10c47a;--gold:#f1b65a;--bl:#38bdf8;--pu:#a855f7;
@@ -166,11 +166,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 #gf{background:rgba(0,255,136,.18)}
 #cf{background:rgba(248,113,113,.4)}
 </style>
-{% set nav_page = "fpv_trainer" %}
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 <div id="gw">
   <canvas id="three-cv"></canvas>
   <canvas id="fx-cv"></canvas>
@@ -1290,6 +1287,4 @@ function loop(ts){
 // ── Boot ───────────────────────────────────────────────────────────
 initThree(); initMobile(); requestAnimationFrame(loop);
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

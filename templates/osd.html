@@ -1,17 +1,17 @@
-<!doctype html>
-<html lang="th">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>OSD Studio v3 — OBIXConfig Doctor</title>
-{% set og_title       = "OSD Studio v3 — OBIXConfig Doctor" %}
-{% set og_description = "ออกแบบ Betaflight OSD real-time · drag-drop · 35+ elements · 6 presets · export CLI" %}
-{% set og_url = BASE_URL ~ '/osd' %}
-{% set nav_page       = "osd" %}
-{% include "partials/og_tags.html" %}
+{% extends "base.html" %}
+{% block title %}OSD Studio v3 — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}OSD Studio v3 — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}ออกแบบ Betaflight OSD real-time · drag-drop · 35+ elements · 6 presets · export CLI{% endblock %}
+{% block page_og_path %}/osd{% endblock %}
+{% block page_nav_page %}osd{% endblock %}
+{% block page_css %}{% endblock %}
+{% block page_viewport %}width=device-width,initial-scale=1,maximum-scale=1{% endblock %}
+{% block extra_css_links %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Sarabun:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extra_head %}
 <style>
 :root{
   --bg:#010307;--bg2:#020509;--panel:#04080f;--panel2:#060c18;
@@ -321,10 +321,8 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   box-shadow:0 4px 20px rgba(0,255,136,.4);transition:opacity .22s,transform .22s}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 <div class="page">
 
@@ -1101,6 +1099,4 @@ initCanvas();
 const fBtn=document.querySelector('.ppill.pp-f');
 applyPreset('Freestyle',fBtn);
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

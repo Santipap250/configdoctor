@@ -1,19 +1,16 @@
-{# templates/motor_prop.html — OBIXConfig Doctor v5.3 PRO #}
-<!doctype html>
-<html lang="th">
-<head>
-<meta charset="utf-8">
-<title>Motor × Prop Lab — OBIXConfig Doctor</title>
-{% set og_title       = "Motor × Prop Lab — OBIXConfig Doctor" %}
-{% set og_description = "วิเคราะห์ Motor · Prop · TWR · Tip Speed · C-Rate · ESC แบบ real-time พร้อม Motor Database + CLI Export" %}
-{% set og_url = BASE_URL ~ '/motor-prop' %}
-{% set nav_page       = "motor_prop" %}
-{% include "partials/og_tags.html" %}
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+{% extends "base.html" %}
+{% block title %}Motor × Prop Lab — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}Motor × Prop Lab — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}วิเคราะห์ Motor · Prop · TWR · Tip Speed · C-Rate · ESC แบบ real-time พร้อม Motor Database + CLI Export{% endblock %}
+{% block page_og_path %}/motor-prop{% endblock %}
+{% block page_nav_page %}motor_prop{% endblock %}
+{% block page_css %}{% endblock %}
+{% block extra_css_links %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extra_head %}
 <style>
 /* ═══════════════════════════════════════════════
    MOTOR × PROP LAB v5.3 — Design System
@@ -390,10 +387,8 @@ input[type=range]::-moz-range-thumb {
 }
 #mpToast.show { opacity:1; }
 </style>
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 <div id="mpToast"></div>
 
 <div class="page">
@@ -1441,6 +1436,4 @@ document.head.appendChild(_st);
 render();
 </script>
 <script src="{{ url_for('static', filename='js/motor_prop.js') }}"></script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

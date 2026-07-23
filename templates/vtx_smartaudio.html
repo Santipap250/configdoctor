@@ -1,17 +1,16 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>VTX SmartAudio Control Center — OBIXConfig Doctor</title>
-{% set og_title       = "VTX SmartAudio Control Center — OBIXConfig Doctor" %}
-{% set og_description = "ตั้งค่า VTX Band/Channel/Power พร้อม CLI, conflict detector, country limits" %}
-{% set og_url = BASE_URL ~ '/vtx-smartaudio' %}
-{% set nav_page       = "vtx_smartaudio" %}
-{% include "partials/og_tags.html" %}
+{% extends "base.html" %}
+{% block title %}VTX SmartAudio Control Center — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}VTX SmartAudio Control Center — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}ตั้งค่า VTX Band/Channel/Power พร้อม CLI, conflict detector, country limits{% endblock %}
+{% block page_og_path %}/vtx-smartaudio{% endblock %}
+{% block page_nav_page %}vtx_smartaudio{% endblock %}
+{% block page_css %}{% endblock %}
+{% block extra_css_links %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extra_head %}
 <style>
 :root{
   --bg:#010307;--panel:#04070f;--panel2:#060b18;--border:rgba(0,200,255,.08);
@@ -101,10 +100,8 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .cli-copy-btn.ok{color:var(--green);border-color:rgba(0,255,136,.3)}
 @media(max-width:600px){.ch-matrix{grid-template-columns:repeat(4,1fr)}.pwr-grid{grid-template-columns:repeat(3,1fr)}.country-grid{grid-template-columns:1fr}}
 </style>
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 <div class="page">
 <div class="hero">
   <div>
@@ -409,6 +406,4 @@ checkCountryWarn();
 setTimeout(updateSpectrum,100);
 window.addEventListener('resize',updateSpectrum);
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

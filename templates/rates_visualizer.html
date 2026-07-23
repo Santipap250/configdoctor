@@ -1,17 +1,15 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-{% set nav_page = "rates" %}
-{% set og_title = "Rates Visualizer — OBIXConfig Doctor" %}
-{% set og_description = "วิเคราะห์ stick response curve แบบ real-time รองรับ ACTUAL, BF Legacy, KISS · per-axis · CLI export" %}
-{% set og_url = BASE_URL ~ '/rates-visualizer' %}
-{% include "partials/og_tags.html" %}
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rates Visualizer — OBIXConfig Doctor</title>
+{% extends "base.html" %}
+{% block title %}Rates Visualizer — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}Rates Visualizer — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}วิเคราะห์ stick response curve แบบ real-time รองรับ ACTUAL, BF Legacy, KISS · per-axis · CLI export{% endblock %}
+{% block page_og_path %}/rates-visualizer{% endblock %}
+{% block page_nav_page %}rates{% endblock %}
+{% block page_css %}{% endblock %}
+{% block extra_css_links %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+{% endblock %}
+{% block extra_head %}
 <style>
 :root {
   --bg:#03050a; --bg2:#06090f; --card:#080d18; --card2:#0b1220;
@@ -273,11 +271,8 @@ canvas#rv{width:100%;display:block;cursor:crosshair;}
   .main-grid{grid-template-columns:1fr;}
 }
 </style>
-</head>
-<body>
-
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 
 <div class="wrap">
@@ -1097,6 +1092,4 @@ window.addEventListener('load',()=>{
   setTimeout(()=>{ loadSl('roll'); update(); },60);
 });
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

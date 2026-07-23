@@ -1,14 +1,16 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<title>Battery Health Advisor — OBIXConfig Doctor</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% extends "base.html" %}
+{% block title %}Battery Health Advisor — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}Battery Health Advisor — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}วิเคราะห์ความสมบูรณ์แบต LiPo · IR · Voltage Sag · Cycle Life · Physics model จริง{% endblock %}
+{% block page_og_path %}/battery-health{% endblock %}
+{% block page_nav_page %}battery_health{% endblock %}
+{% block page_css %}style.css{% endblock %}
+{% block extra_css_links %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Sarabun:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extra_head %}
 <style>
 :root{
   --green:#10c47a;--gold:#f1b65a;--blue:#58a6ff;--red:#f87171;
@@ -136,15 +138,8 @@ select option{background:#111820}
 .edu-ctitle{font-size:.84rem;font-weight:700;color:var(--text);margin-bottom:5px}
 .edu-cbody{font-size:.77rem;color:var(--muted);line-height:1.65}
 </style>
-{% set og_title = "Battery Health Advisor — OBIXConfig Doctor" %}
-{% set og_description = "วิเคราะห์ความสมบูรณ์แบต LiPo · IR · Voltage Sag · Cycle Life · Physics model จริง" %}
-{% set og_url = BASE_URL ~ '/battery-health' %}
-{% set nav_page = "battery_health" %}
-{% include "partials/og_tags.html" %}
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 <div class="page-wrap">
 
@@ -407,6 +402,4 @@ function analyzeBattery() {
   document.getElementById('hintPanel').style.display = 'none';
 }
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

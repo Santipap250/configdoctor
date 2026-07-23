@@ -1,20 +1,19 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MILITARY UAS ANALYZER — ConfigDoctor v5.1</title>
-<meta name="description" content="ระบบวิเคราะห์สมรรถนะ UAS ทางทหาร — Armed Drone Performance Analysis">
-<!-- SECURITY: noindex — ไม่ให้ Google index หน้านี้เพราะเป็น educational military content -->
-<meta name="robots" content="noindex,nofollow">
-{% set og_title = 'Military UAS Analyzer — ConfigDoctor v5.1' %}
-{% set og_description = 'ระบบวิเคราะห์สมรรถนะ UAS ทางทหาร — Armed Drone Physics Engine (Educational)' %}
-{% set og_url = BASE_URL ~ '/military-uas' %}
-{% set nav_page = 'military_uas' %}
-{% include 'partials/og_tags.html' %}
+{% extends "base.html" %}
+{% block title %}MILITARY UAS ANALYZER — ConfigDoctor v5.1{% endblock %}
+{% block page_og_title %}Military UAS Analyzer — ConfigDoctor v5.1{% endblock %}
+{% block page_og_description %}ระบบวิเคราะห์สมรรถนะ UAS ทางทหาร — Armed Drone Physics Engine (Educational){% endblock %}
+{% block page_og_path %}/military-uas{% endblock %}
+{% block page_nav_page %}military_uas{% endblock %}
+{% block page_robots %}noindex,nofollow{% endblock %}
+{% block page_css %}{% endblock %}
+{% block extra_css_links %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extra_head %}
+<meta name="description" content="ระบบวิเคราะห์สมรรถนะ UAS ทางทหาร — Armed Drone Performance Analysis">
+<!-- SECURITY: noindex — ไม่ให้ Google index หน้านี้เพราะเป็น educational military content -->
 <style>
 :root{
   --bg:       #04060d;
@@ -338,10 +337,8 @@ body::after{
   .metrics-grid{grid-template-columns:1fr 1fr;}
 }
 </style>
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 <div class="hex-bg"></div>
 
 <!-- PAGE -->
@@ -1311,6 +1308,4 @@ function copyReport(){
 // ─── INIT ─────────────────────────────────────────────────
 window.addEventListener('load', runAll);
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

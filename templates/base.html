@@ -2,15 +2,17 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
+{% set og_robots %}{% block page_robots %}index, follow{% endblock %}{% endset %}
 {% set og_title = self.page_og_title() | forceescape %}
 {% set og_description = self.page_og_description() | forceescape %}
 {% set og_url = BASE_URL ~ (self.page_og_path() | forceescape) %}
 {% include "partials/og_tags.html" %}
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="{% block page_viewport %}width=device-width,initial-scale=1.0{% endblock %}">
 <title>{% block title %}{{ self.page_og_title() | forceescape }}{% endblock %}</title>
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 {% set _page_css = self.page_css() %}
 {% if _page_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/' ~ _page_css) }}">{% endif %}
+{% block extra_css_links %}{% endblock %}
 {% block extra_head %}{% endblock %}
 {% set nav_page = self.page_nav_page() %}
 </head>

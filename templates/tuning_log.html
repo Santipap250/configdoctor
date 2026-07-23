@@ -1,16 +1,14 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<title>Tuning Log — OBIXConfig Doctor</title>
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-{% set og_title = "Tuning Log — OBIXConfig Doctor" %}
-{% set og_description = "บันทึกประวัติการ Tune โดรน เปรียบเทียบ PID ทุก session ดูพัฒนาการ" %}
-{% set og_url = BASE_URL ~ '/tuning-log' %}
-{% include "partials/og_tags.html" %}
-<link rel="icon" href="{{ url_for('static',filename='favicon.ico') }}">
-{% set nav_page = "tuning_log" %}
+{% extends "base.html" %}
+{% block title %}Tuning Log — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}Tuning Log — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}บันทึกประวัติการ Tune โดรน เปรียบเทียบ PID ทุก session ดูพัฒนาการ{% endblock %}
+{% block page_og_path %}/tuning-log{% endblock %}
+{% block page_nav_page %}tuning_log{% endblock %}
+{% block page_css %}{% endblock %}
+{% block extra_css_links %}
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extra_head %}
 <style>
 :root{
   --bg:#020509;--bg2:#040b14;--surface:#060e1c;--panel:#081428;
@@ -188,10 +186,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-t);min-height
   .pval-v{font-size:12px}
 }
 </style>
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 <div class="bg-grid"></div>
 <div class="wrap">
 
@@ -473,6 +469,4 @@ function exportAll(){
 
 load();renderLog();
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

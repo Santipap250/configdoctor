@@ -1,20 +1,16 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<title>Flight Style Quiz — OBIXConfig Doctor</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-{% set og_title       = "Flight Style Quiz — OBIXConfig Doctor" %}
-{% set og_description = "ตอบ 5 คำถาม รับ rates + preset ที่เหมาะกับสไตล์การบินของคุณโดยเฉพาะ — ฟรี ไม่ต้อง login" %}
-{% set og_url = BASE_URL ~ '/flight-quiz' %}
-{% include "partials/og_tags.html" %}
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% extends "base.html" %}
+{% block title %}Flight Style Quiz — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}Flight Style Quiz — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}ตอบ 5 คำถาม รับ rates + preset ที่เหมาะกับสไตล์การบินของคุณโดยเฉพาะ — ฟรี ไม่ต้อง login{% endblock %}
+{% block page_og_path %}/flight-quiz{% endblock %}
+{% block page_nav_page %}flight_quiz{% endblock %}
+{% block page_css %}style.css{% endblock %}
+{% block page_viewport %}width=device-width, initial-scale=1.0, maximum-scale=1.0{% endblock %}
+{% block extra_css_links %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-{% set nav_page = "flight_quiz" %}
-
+{% endblock %}
+{% block extra_head %}
 <style>
 /* ══════════════════════════════════════════════
    TOKENS — ตรงกับ OBIX HUD Design System
@@ -639,10 +635,8 @@ body::after {
   .q-footer { flex-direction:row; }
 }
 </style>
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 <div class="scan-line"></div>
 
@@ -1285,6 +1279,4 @@ function retakeQuiz() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

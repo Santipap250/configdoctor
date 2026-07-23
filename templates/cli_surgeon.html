@@ -1,17 +1,16 @@
-<!doctype html>
-<html lang="th">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CLI Surgeon — OBIXConfig Doctor</title>
-{% set og_title       = "CLI Surgeon — OBIXConfig Doctor" %}
-{% set og_description = "วาง diff all / dump รับการวินิจฉัย PID · filter · protocol · failsafe พร้อม auto-fix CLI ทันที" %}
-{% set og_url = BASE_URL ~ '/cli_surgeon' %}
-{% set nav_page       = "cli_surgeon" %}
-{% include "partials/og_tags.html" %}
+{% extends "base.html" %}
+{% block title %}CLI Surgeon — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}CLI Surgeon — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}วาง diff all / dump รับการวินิจฉัย PID · filter · protocol · failsafe พร้อม auto-fix CLI ทันที{% endblock %}
+{% block page_og_path %}/cli_surgeon{% endblock %}
+{% block page_nav_page %}cli_surgeon{% endblock %}
+{% block page_css %}{% endblock %}
+{% block extra_css_links %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extra_head %}
 <style>
 /* ═══════════════════════════════════════════════════════
    CLI SURGEON — Operating Theater
@@ -416,11 +415,8 @@ body::after {
 .fade-in { animation: fadeUp .35s ease both; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
 </style>
-</head>
-<body>
-
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 <div class="page">
 
@@ -1144,6 +1140,4 @@ dz.addEventListener('drop', e => {
 
 pipe(0);
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

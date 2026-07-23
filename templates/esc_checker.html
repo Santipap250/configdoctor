@@ -1,18 +1,15 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESC Compatibility Checker v5.0 — OBIXConfig Doctor</title>
-{% set og_title       = "ESC Compatibility Checker v5.0 — OBIXConfig Doctor" %}
-{% set og_description = "วิเคราะห์ ESC กระแส, thermal, health score, signal chain — ลึกที่สุดในไทย" %}
-{% set og_url = BASE_URL ~ '/esc-checker' %}
-{% include "partials/og_tags.html" %}
-{% set nav_page = "esc_checker" %}
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% extends "base.html" %}
+{% block title %}ESC Compatibility Checker v5.0 — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}ESC Compatibility Checker v5.0 — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}วิเคราะห์ ESC กระแส, thermal, health score, signal chain — ลึกที่สุดในไทย{% endblock %}
+{% block page_og_path %}/esc-checker{% endblock %}
+{% block page_nav_page %}esc_checker{% endblock %}
+{% block page_css %}style.css{% endblock %}
+{% block extra_css_links %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Sarabun:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extra_head %}
 <style>
 :root{
   --g:#10c47a;--gd:rgba(16,196,122,.08);--gd2:rgba(16,196,122,.14);
@@ -224,10 +221,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .hidden{display:none!important}
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--g);color:#021a0e;padding:9px 20px;border-radius:8px;font-family:var(--font-d);font-size:.75rem;font-weight:700;letter-spacing:.06em;opacity:0;transition:opacity .3s;z-index:9999;pointer-events:none}
 </style>
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 <div class="wrap">
 
@@ -941,6 +936,4 @@ function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; 
 /* Init */
 (function(){ liveCheck(); })();
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

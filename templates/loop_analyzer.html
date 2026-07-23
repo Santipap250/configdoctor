@@ -1,14 +1,16 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<title>Control Loop Latency Analyzer — OBIXConfig Doctor</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% extends "base.html" %}
+{% block title %}Control Loop Latency Analyzer — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}Control Loop Latency Analyzer — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}วิเคราะห์ looptime · RC latency · FC CPU load · ESC DShot delay — breakdown ทุก stage{% endblock %}
+{% block page_og_path %}/loop-analyzer{% endblock %}
+{% block page_nav_page %}loop_analyzer{% endblock %}
+{% block page_css %}style.css{% endblock %}
+{% block extra_css_links %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Sarabun:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extra_head %}
 <style>
 :root{
   --green:#10c47a;--gold:#f1b65a;--blue:#58a6ff;--red:#f87171;
@@ -117,15 +119,8 @@ select option{background:#111820}
 #hintPanel{text-align:center;padding:64px 20px;color:var(--muted)}
 .hint-icon{font-size:3.5rem;opacity:.2;margin-bottom:18px;display:block}
 </style>
-{% set og_title = "Control Loop Latency Analyzer — OBIXConfig Doctor" %}
-{% set og_description = "วิเคราะห์ looptime · RC latency · FC CPU load · ESC DShot delay — breakdown ทุก stage" %}
-{% set og_url = BASE_URL ~ '/loop-analyzer' %}
-{% set nav_page = "loop_analyzer" %}
-{% include "partials/og_tags.html" %}
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 <div class="page-wrap">
 
@@ -425,6 +420,4 @@ function analyzeLoop() {
   document.getElementById('hintPanel').style.display='none';
 }
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

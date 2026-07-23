@@ -1,17 +1,16 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>VTX Signal Range Lab — OBIXConfig Doctor</title>
-{% set og_title       = "VTX Signal Range Lab — OBIXConfig Doctor" %}
-{% set og_description = "คำนวณระยะ VTX แบบ real-time พร้อม SVG ring visualization, antenna presets, multi-frequency comparison" %}
-{% set og_url = BASE_URL ~ '/vtx-range' %}
-{% set nav_page       = "vtx_range" %}
-{% include "partials/og_tags.html" %}
+{% extends "base.html" %}
+{% block title %}VTX Signal Range Lab — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}VTX Signal Range Lab — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}คำนวณระยะ VTX แบบ real-time พร้อม SVG ring visualization, antenna presets, multi-frequency comparison{% endblock %}
+{% block page_og_path %}/vtx-range{% endblock %}
+{% block page_nav_page %}vtx_range{% endblock %}
+{% block page_css %}{% endblock %}
+{% block extra_css_links %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extra_head %}
 <style>
 :root{
   --bg:#010507; --panel:#050d12; --panel2:#08141e; --border:rgba(0,170,255,.09);
@@ -124,10 +123,8 @@ input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.2)}
 
 @media(max-width:600px){.result-grid{grid-template-columns:1fr}.ant-grid{grid-template-columns:repeat(3,1fr)}}
 </style>
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 <div class="page">
 
 <!-- Hero -->
@@ -531,6 +528,4 @@ buildAntennaGrid('antRxGrid','antRx');
 buildEnv();
 render();
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

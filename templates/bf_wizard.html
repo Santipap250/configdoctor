@@ -1,21 +1,18 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BF Config Wizard — OBIXConfig Doctor</title>
-{% set og_title="BF Config Wizard — OBIXConfig Doctor" %}
-{% set og_description="8 ขั้นตอน กรอกสเปคโดรน → CLI Betaflight ครบสมบูรณ์ PID · Rates · Filter · Safety · OSD" %}
-{% set og_url = BASE_URL ~ '/bf-wizard' %}
-{% include "partials/og_tags.html" %}
-<link rel="icon" href="{{ url_for('static',filename='favicon.ico') }}" type="image/x-icon">
-<link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+{% extends "base.html" %}
+{% block title %}BF Config Wizard — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}BF Config Wizard — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}8 ขั้นตอน กรอกสเปคโดรน → CLI Betaflight ครบสมบูรณ์ PID · Rates · Filter · Safety · OSD{% endblock %}
+{% block page_og_path %}/bf-wizard{% endblock %}
+{% block page_nav_page %}bf_wizard{% endblock %}
+{% block page_css %}style.css{% endblock %}
+{% block extra_css_links %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/ui-enhance.css') }}">
-{% set nav_page = "bf_wizard" %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extra_head %}
 <style>
 /* ═══════════════════════════════════════════════════════════
    BF CONFIG WIZARD — APEX EDITION v3
@@ -413,10 +410,8 @@ pre#cliOut .cs{color:var(--green);font-weight:700;text-shadow:0 0 10px rgba(0,25
   .wiz-outer{padding-bottom:80px}
 }
 </style>
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 <div class="scan-line"></div>
 <div class="dot-grid"></div>
 
@@ -1592,6 +1587,4 @@ applyPID();syncPIDUI();syncFilterUI();rCLI();allSliders();
 ev('v_size',(parseInt($('s_size').value)/10).toFixed(1)+'"');
 ev('v_kv',$('s_kv').value+' KV');
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}

@@ -1,18 +1,15 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="csrf-token" content="{{ csrf_token() if csrf_token is defined else '' }}">
-<title>CLI Diff Comparator — OBIXConfig Doctor</title>
-{% set og_title       = "CLI Diff Comparator — OBIXConfig Doctor" %}
-{% set og_description = "เปรียบเทียบ 2 CLI config: Risk Score, Flight Profile, Symptom Prediction, Parameter Guide 90+ ค่า" %}
-{% set og_url = BASE_URL ~ '/cli-comparator' %}
-{% include "partials/og_tags.html" %}
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% extends "base.html" %}
+{% block title %}CLI Diff Comparator — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}CLI Diff Comparator — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}เปรียบเทียบ 2 CLI config: Risk Score, Flight Profile, Symptom Prediction, Parameter Guide 90+ ค่า{% endblock %}
+{% block page_og_path %}/cli-comparator{% endblock %}
+{% block page_nav_page %}comparator{% endblock %}
+{% block page_css %}style.css{% endblock %}
+{% block extra_css_links %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=JetBrains+Mono:wght@400;600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+{% endblock %}
+{% block extra_head %}
 <style>
 
 /* ═══════════════════════════════════════════════════════════════
@@ -622,13 +619,12 @@ body::after {
 }
 
 </style>
-{% set nav_page = "comparator" %}
-</head>
-<body>
+{% endblock %}
+{% block before_nav %}
 
 <div class="scan-line"></div>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 <div class="cmp-page">
 
@@ -2047,6 +2043,4 @@ function closeLearn(){ $('learnModal').style.display='none'; document.body.style
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeLearn(); closeParam() } });
 
 </script>
-{% include "partials/footer_nav.html" %}
-</body>
-</html>
+{% endblock %}
