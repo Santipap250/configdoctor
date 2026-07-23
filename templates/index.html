@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<title>ConfigDoctor — FPV Drone Analyzer</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-{% set og_title       = "FPV Drone Analyzer — ConfigDoctor" %}
-{% set og_description = "กรอกสเปคโดรน FPV รับค่า PID + Filter CLI ที่แม่นยำ พร้อมคำอธิบาย" %}
-{% set og_url = BASE_URL ~ '/app' %}
-{% set nav_page = "home" %}
-{% include "partials/og_tags.html" %}
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+{% extends "base.html" %}
+{% block title %}ConfigDoctor — FPV Drone Analyzer{% endblock %}
+{% block page_og_title %}FPV Drone Analyzer — ConfigDoctor{% endblock %}
+{% block page_og_description %}กรอกสเปคโดรน FPV รับค่า PID + Filter CLI ที่แม่นยำ พร้อมคำอธิบาย{% endblock %}
+{% block page_og_path %}/app{% endblock %}
+{% block page_nav_page %}home{% endblock %}
+{% block page_css %}{% endblock %}
+{% block extra_head %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -368,10 +364,8 @@ pre::-webkit-scrollbar-thumb{background:rgba(0,255,68,.2);border-radius:2px}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/ui-enhance.css') }}">
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 <div class="shell">
 
@@ -1103,8 +1097,8 @@ document.addEventListener('DOMContentLoaded',function(){
 },false);
 })();
 </script>
-{% include "partials/footer_nav.html" %}
-
+{% endblock %}
+{% block extra_scripts %}
 <!-- Global toast -->
 <div id="uiToast" role="status" aria-live="polite"></div>
 <script>
@@ -1125,5 +1119,4 @@ window.showToast = function(msg, type, dur) {
   document.querySelectorAll('.ui-fade-up').forEach(function(el) { obs.observe(el); });
 })();
 </script>
-</body>
-</html>
+{% endblock %}

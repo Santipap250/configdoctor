@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<title>Config Leaderboard — OBIXConfig Doctor</title>
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-{% set og_title = "Config Leaderboard — OBIXConfig Doctor" %}
-{% set og_description = "rank config ของชุมชน FPV ไทย vote ให้คะแนน แชร์ config ที่ดีที่สุด" %}
-{% set og_url = BASE_URL ~ '/leaderboard' %}
-{% include "partials/og_tags.html" %}
-<link rel="icon" href="{{ url_for('static',filename='favicon.ico') }}">
-{% set nav_page = "leaderboard" %}
+{% extends "base.html" %}
+{% block title %}Config Leaderboard — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}Config Leaderboard — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}rank config ของชุมชน FPV ไทย vote ให้คะแนน แชร์ config ที่ดีที่สุด{% endblock %}
+{% block page_og_path %}/leaderboard{% endblock %}
+{% block page_nav_page %}leaderboard{% endblock %}
+{% block page_css %}{% endblock %}
+{% block extra_head %}
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -196,10 +192,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-t);min-height
 <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/ui-enhance.css') }}">
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 {% set hero_badge = "🏆 LEADERBOARD" %}
 {% set hero_badge_color = "gold" %}
@@ -497,8 +491,8 @@ document.querySelectorAll('.ftab').forEach(t=>{
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 renderTable();
 </script>
-{% include "partials/footer_nav.html" %}
-
+{% endblock %}
+{% block extra_scripts %}
 <!-- Global toast -->
 <div id="uiToast" role="status" aria-live="polite"></div>
 <script>
@@ -521,5 +515,4 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 });
 </script>
-</body>
-</html>
+{% endblock %}

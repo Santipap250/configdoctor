@@ -1,18 +1,14 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<title>FPV Gear Shop — ConfigDoctor</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+{% extends "base.html" %}
+{% block title %}FPV Gear Shop — ConfigDoctor{% endblock %}
+{% block page_og_title %}FPV Gear Shop — ConfigDoctor{% endblock %}
+{% block page_og_description %}ร้านค้า FPV อุปกรณ์แนะนำโดย ConfigDoctor — มอเตอร์ เฟรม ใบพัด ESC แบต goggles คัดจากความเข้ากันได้ทางวิศวกรรม{% endblock %}
+{% block page_og_path %}/fpv-gear{% endblock %}
+{% block page_nav_page %}fpv_gear{% endblock %}
+{% block page_css %}{% endblock %}
+{% block extra_head %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Sarabun:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-{% set og_title = "FPV Gear Shop — ConfigDoctor" %}
-{% set og_description = "ร้านค้า FPV อุปกรณ์แนะนำโดย ConfigDoctor — มอเตอร์ เฟรม ใบพัด ESC แบต goggles คัดจากความเข้ากันได้ทางวิศวกรรม" %}
-{% set og_url = BASE_URL ~ '/fpv-gear' %}
-{% set nav_page = "fpv_gear" %}
-{% include "partials/og_tags.html" %}
 <style>
 /* ── RESET & ROOT ─────────────────────────────────────── */
 :root{
@@ -245,11 +241,8 @@ body::before{content:'';position:fixed;inset:0;
 </style>
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
-</head>
-<body>
-
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 {% set cat_colors = {
   'motors':    '#ff6b35',
@@ -542,8 +535,8 @@ body::before{content:'';position:fixed;inset:0;
   </button>
 </div>
 
-{% include "partials/footer_nav.html" %}
-
+{% endblock %}
+{% block extra_scripts %}
 <script>
 (function(){
   const SHOP_URLS = {
@@ -688,5 +681,4 @@ body::before{content:'';position:fixed;inset:0;
 
 })();
 </script>
-</body>
-</html>
+{% endblock %}

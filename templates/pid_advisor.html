@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-{% set og_title       = "PID Symptom Advisor v5 Pro — OBIXConfig Doctor" %}
-{% set og_description = "วินิจฉัยอาการโดรน → ได้ PID fix + CLI พร้อม paste ทันที — Advanced Diagnostic Engine" %}
-{% set og_url = BASE_URL ~ '/pid-advisor' %}
-{% set nav_page       = "pid_advisor" %}
-{% include "partials/og_tags.html" %}
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>PID Advisor v5 Pro — OBIXConfig Doctor</title>
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+{% extends "base.html" %}
+{% block title %}PID Advisor v5 Pro — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}PID Symptom Advisor v5 Pro — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}วินิจฉัยอาการโดรน → ได้ PID fix + CLI พร้อม paste ทันที — Advanced Diagnostic Engine{% endblock %}
+{% block page_og_path %}/pid-advisor{% endblock %}
+{% block page_nav_page %}pid_advisor{% endblock %}
+{% block page_css %}{% endblock %}
+{% block extra_head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/site-theme.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
 
@@ -1140,10 +1136,8 @@ body::after{
 }
 
 </style>
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 {% set hero_badge = "💊 PID ADVISOR v5" %}
 {% set hero_badge_color = "purple" %}
@@ -2135,8 +2129,8 @@ function onPidChange() {
   if(currentSymptom) renderResult(currentSymptom);
 }
 </script>
-{% include "partials/footer_nav.html" %}
-
+{% endblock %}
+{% block extra_scripts %}
 <!-- Global toast -->
 <div id="uiToast" role="status" aria-live="polite"></div>
 <script>
@@ -2159,5 +2153,4 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 });
 </script>
-</body>
-</html>
+{% endblock %}

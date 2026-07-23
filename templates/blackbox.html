@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-{% set nav_page = "blackbox" %}
-{% set og_title = "Blackbox Analyzer — ConfigDoctor" %}
-{% set og_description = "กู้ข้อมูลการบิน วิเคราะห์ oscillation, PID quality, motor balance, battery sag จาก Blackbox CSV" %}
-{% set og_url = BASE_URL ~ '/blackbox' %}
-{% include "partials/og_tags.html" %}
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="csrf-token" content="{{ csrf_token() }}">
-<title>Blackbox Analyzer — ConfigDoctor</title>
+{% extends "base.html" %}
+{% block title %}Blackbox Analyzer — ConfigDoctor{% endblock %}
+{% block page_og_title %}Blackbox Analyzer — ConfigDoctor{% endblock %}
+{% block page_og_description %}กู้ข้อมูลการบิน วิเคราะห์ oscillation, PID quality, motor balance, battery sag จาก Blackbox CSV{% endblock %}
+{% block page_og_path %}/blackbox{% endblock %}
+{% block page_nav_page %}blackbox{% endblock %}
+{% block page_css %}{% endblock %}
+{% block extra_head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
 
@@ -56,12 +52,11 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opac
   .page-wrap{padding-top:90px!important;padding-left:16px!important;padding-right:16px!important}
 }
 </style>
-</head>
-<body>
+{% endblock %}
+{% block before_nav %}
 <div class="bb-grid" aria-hidden="true"></div>
-
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 {% set hero_badge = "📊 BLACKBOX ANALYZER" %}
 {% set hero_badge_color = "blue" %}
@@ -532,8 +527,8 @@ function showToast(msg){
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function fmtNum(n){ return n ? Number(n).toLocaleString() : '—'; }
 </script>
-{% include "partials/footer_nav.html" %}
-
+{% endblock %}
+{% block extra_scripts %}
 <!-- Global toast -->
 <div id="uiToast" role="status" aria-live="polite"></div>
 <script>
@@ -556,5 +551,4 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 });
 </script>
-</body>
-</html>
+{% endblock %}

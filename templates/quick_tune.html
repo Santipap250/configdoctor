@@ -1,22 +1,15 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quick Tune Pad — OBIXConfig Doctor</title>
-{% set og_title       = "Quick Tune Pad — OBIXConfig Doctor" %}
-{% set og_description = "เลือกอาการบิน → ได้ PID delta + CLI command พร้อม paste ทันที ไม่ต้องเดา — สำหรับ Pro Pilot" %}
-{% set og_url = BASE_URL ~ '/quick-tune' %}
-{% include "partials/og_tags.html" %}
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+{% extends "base.html" %}
+{% block title %}Quick Tune Pad — OBIXConfig Doctor{% endblock %}
+{% block page_og_title %}Quick Tune Pad — OBIXConfig Doctor{% endblock %}
+{% block page_og_description %}เลือกอาการบิน → ได้ PID delta + CLI command พร้อม paste ทันที ไม่ต้องเดา — สำหรับ Pro Pilot{% endblock %}
+{% block page_og_path %}/quick-tune{% endblock %}
+{% block page_nav_page %}quick_tune{% endblock %}
+{% block page_css %}{% endblock %}
+{% block extra_head %}
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Sarabun:wght@300;400;600&family=Bebas+Neue&display=swap" rel="stylesheet">
-{% set nav_page = "quick_tune" %}
-
 <link rel="stylesheet" href="{{ url_for('static', filename='css/ui-enhance.css') }}">
-</head>
-<body>
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% endblock %}
+{% block content %}
 
 {% set hero_badge = "⚡ QUICK TUNE v5" %}
 {% set hero_badge_color = "green" %}
@@ -719,8 +712,8 @@ function notify(msg){
   setTimeout(()=>el.remove(),2200);
 }
 </script>
-{% include "partials/footer_nav.html" %}
-
+{% endblock %}
+{% block extra_scripts %}
 <!-- Global toast -->
 <div id="uiToast" role="status" aria-live="polite"></div>
 <script>
@@ -743,5 +736,4 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 });
 </script>
-</body>
-</html>
+{% endblock %}
