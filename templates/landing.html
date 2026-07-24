@@ -1,15 +1,13 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<title>ConfigDoctor — FPV Drone Diagnostic Platform</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-{% set og_title       = "ConfigDoctor — FPV Drone Diagnostic Platform" %}
-{% set og_description = "Analyze, optimize and unlock the full potential of your FPV drone. PID · Filter · Blackbox · CLI · Battery · Motor Thermal" %}
-{% set og_url         = BASE_URL ~ '/landing' %}
-{% set og_image       = BASE_URL ~ '/static/img/og-default.jpg' %}
-{% include "partials/og_tags.html" %}
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+{% extends "base.html" %}
+{% block title %}ConfigDoctor — FPV Drone Diagnostic Platform{% endblock %}
+{% block page_og_title %}ConfigDoctor — FPV Drone Diagnostic Platform{% endblock %}
+{% block page_og_description %}Analyze, optimize and unlock the full potential of your FPV drone. PID · Filter · Blackbox · CLI · Battery · Motor Thermal{% endblock %}
+{% block page_og_path %}/landing{% endblock %}
+{% block page_nav_page %}landing{% endblock %}
+{% block page_css %}{% endblock %}
+{% block show_shared_chrome %}false{% endblock %}
+{% block page_viewport %}width=device-width, initial-scale=1.0{% endblock %}
+{% block extra_head %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Sarabun:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -1736,8 +1734,8 @@ footer{
 </style>
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
-</head>
-<body>
+{% endblock %}
+{% block content %}
 <div id="top"></div>
 
 <!-- GLOBAL ELEMENTS -->
@@ -2637,5 +2635,4 @@ document.addEventListener('keydown', function(e){
 /* ── Escape closes mobile nav ── */
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeMob(); });
 </script>
-</body>
-</html>
+{% endblock %}

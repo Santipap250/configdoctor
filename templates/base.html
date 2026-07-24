@@ -17,11 +17,12 @@
 {% set nav_page = self.page_nav_page() %}
 </head>
 <body{% block body_attrs %}{% endblock %}>
+{% set _chrome %}{% block show_shared_chrome %}true{% endblock %}{% endset %}
 {% block before_nav %}{% endblock %}
-{% include "partials/nav.html" %}
-{% include "partials/page_actions.html" %}
+{% if _chrome | trim == "true" %}{% include "partials/nav.html" %}{% endif %}
+{% if _chrome | trim == "true" %}{% include "partials/page_actions.html" %}{% endif %}
 {% block content %}{% endblock %}
-{% include "partials/footer_nav.html" %}
+{% if _chrome | trim == "true" %}{% include "partials/footer_nav.html" %}{% endif %}
 {% block extra_scripts %}{% endblock %}
 </body>
 </html>
